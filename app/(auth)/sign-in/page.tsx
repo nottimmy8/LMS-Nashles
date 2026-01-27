@@ -57,7 +57,7 @@ export default function SignIn() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
-          className="w-full border p-2 rounded"
+          className="w-full border border-primary p-2 rounded"
         />
 
         <input
@@ -65,7 +65,7 @@ export default function SignIn() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
-          className="w-full border p-2 rounded"
+          className="w-full border border-primary p-2 rounded"
         />
 
         {error && <p className="text-red-500 text-sm">{error}</p>}

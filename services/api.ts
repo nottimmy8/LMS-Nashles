@@ -25,6 +25,7 @@ api.interceptors.response.use(
         return api(error.config);
       } catch {
         store.logout();
+        window.location.href = "/sign-in";
       }
     }
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Damion, Lato, Poppins, Roboto } from "next/font/google";
 import "./globals.css";
+import AuthProvider from "@/providers/auth-provider";
 
 const lato = Lato({
   subsets: ["latin"],
@@ -38,7 +39,7 @@ export default function RootLayout({
       <body
         className={`${lato.variable} ${damion.variable}  ${roboto.variable} bg-secondary  antialiased`}
       >
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

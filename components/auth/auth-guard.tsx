@@ -12,14 +12,14 @@ export function AuthGuard({
   role?: "student" | "tutor" | "admin";
 }) {
   const router = useRouter();
-  const { user } = useAuthStore();
+  const { user, accessToken } = useAuthStore();
 
   useEffect(() => {
-    if (!user) router.replace("/sign-in");
+    if (!accessToken || !user) router.replace("/sign-in");
     else if (role && user.role !== role) router.replace("/unauthorized");
   }, [user, role, router]);
 
-  if (!user) return null;
+  if (!accessToken || !user) return null;
 
   return <>{children}</>;
 }

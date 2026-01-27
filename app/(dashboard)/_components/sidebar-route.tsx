@@ -35,6 +35,12 @@ const adminRoutes = [
     label: "Courses",
     href: "/admin/courses",
   },
+  {
+    icon: MenuIcon,
+    activeIcon: MenuIconActive,
+    label: "LogOut",
+    href: "/",
+  },
 ];
 
 const studentRoutes = [
@@ -44,6 +50,12 @@ const studentRoutes = [
     label: "Overview",
     href: "/student",
   },
+  {
+    icon: MenuIcon,
+    activeIcon: MenuIconActive,
+    label: "LogOut",
+    href: "/",
+  },
 ];
 
 const tutorRoutes = [
@@ -52,6 +64,12 @@ const tutorRoutes = [
     activeIcon: MenuIconActive,
     label: "Overview",
     href: "/tutor",
+  },
+  {
+    icon: MenuIcon,
+    activeIcon: MenuIconActive,
+    label: "LogOut",
+    href: "/",
   },
 ];
 
