@@ -1,21 +1,28 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-import emailIcon from "@/public/mail.png";
-import eyeIcon from "@/public/show.png";
-import googleIcon from "@/public/google-icon.png";
-import appleIcon from "@/public/apple.png";
-
 import api from "@/services/api";
 import { useAuthStore } from "@/store/auth.store";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function SignIn() {
   const router = useRouter();
+  const { user, isInitialized } = useAuthStore();
+
+  useEffect(() => {
+    if (isInitialized && user) {
+      const role = user.role;
+      if (role === "student") router.push("/student");
+      else if (role === "tutor") router.push("/tutor");
+      else if (role === "admin") router.push("/admin");
+    }
+  }, [isInitialized, user, router]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -67,6 +74,16 @@ export default function SignIn() {
           placeholder="Password"
           className="w-full border border-primary p-2 rounded"
         />
+
+        <div className="flex justify-between align-center">
+          <span className="gap-2 flex justify-start align-start">
+            <Checkbox className="border border-primary " />
+            <label className="text-sm">Remember me</label>
+          </span>
+          <Link href="/auth/forgot-password" className="text-primary text-sm">
+            Forgot password?
+          </Link>
+        </div>
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
 

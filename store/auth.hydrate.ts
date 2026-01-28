@@ -5,6 +5,8 @@ import api from "@/services/api";
 
 export const useAuthHydrate = () => {
   const login = useAuthStore((state) => state.login);
+  const setInitialized = useAuthStore((state) => state.setInitialized);
+
 
   useEffect(() => {
     const hydrate = async () => {
@@ -13,9 +15,12 @@ export const useAuthHydrate = () => {
         login(res.data);
       } catch {
         // silent fail — user not logged in
+      } finally {
+        setInitialized(true);
       }
     };
 
     hydrate();
-  }, [login]);
+    hydrate();
+  }, [login, setInitialized]);
 };
