@@ -8,18 +8,25 @@ import api from "@/services/api";
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
     try {
       await api.post("/auth/forgot-password", { email });
+
       // Navigate to verify-otp with email
       router.push(`/auth/verify-otp?email=${encodeURIComponent(email)}`);
     } catch (error: any) {
-      console.error(error);
-      alert(error.response?.data?.message || "Failed to send reset link");
+      console.log("Forgot Password Error:", error);
+      if (error.response) {
+        console.log("Error Response Data:", error.response.data);
+        console.log("Error Response Status:", error.response.status);
+      }
+      setError(error.response?.data?.message || "Failed to send reset link");
     } finally {
       setLoading(false);
     }
@@ -41,6 +48,7 @@ const ForgotPassword = () => {
           required
           className="w-full border border-primary p-2 rounded"
         />
+        {error && <p className="text-red-500">{error}</p>}
         <motion.button
           whileTap={{ scale: 0.95 }}
           disabled={loading}

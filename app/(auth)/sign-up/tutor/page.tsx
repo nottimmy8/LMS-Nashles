@@ -12,6 +12,8 @@ import { useRouter } from "next/navigation";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Checkbox } from "@/components/ui/checkbox";
 
+import api from "@/services/api";
+
 const TutorSignUp = ({ role }: { role: "tutor" }) => {
   const router = useRouter();
 
@@ -64,16 +66,21 @@ const TutorSignUp = ({ role }: { role: "tutor" }) => {
       setLoading(true);
 
       const payload = {
-        fullName: form.fullName,
+        name: form.fullName,
         email: form.email,
         password: form.password,
         expertise: form.expertise,
         role,
       };
 
-      router.push(`/sign-up/${role}/verify`);
-    } catch {
-      setError("Something went wrong. Please try again.");
+      await api.post("/auth/register", payload);
+
+      router.push(`/sign-up/verify?email=${encodeURIComponent(form.email)}`);
+    } catch (err: any) {
+      setError(
+        err.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -96,14 +103,14 @@ const TutorSignUp = ({ role }: { role: "tutor" }) => {
             value={form.fullName}
             onChange={handleChange}
             placeholder="Enter Full Name"
-            className="border border-primary/50 w-full py-2.5 px-3 outline-none text-sm rounded-full text-black "
+            className="border border-primary/50 w-full py-2.5 px-3 outline-none text-sm rounded text-black "
           />
         </div>
         <div>
           <label className="text-sm block mb-2 font-medium text-black">
             Email address
           </label>
-          <div className="flex items-center w-full overflow-hidden border border-primary/50 rounded-full">
+          <div className="flex items-center w-full overflow-hidden border border-primary/50 rounded">
             <input
               type="text"
               name="email"
@@ -126,7 +133,7 @@ const TutorSignUp = ({ role }: { role: "tutor" }) => {
             name="expertise"
             value={form.expertise}
             onChange={handleChange}
-            className="w-full py-2.5 px-3  text-sm text-black bg-secondary  border border-primary/50 rounded-full "
+            className="w-full py-2.5 px-3  text-sm text-black bg-secondary  border border-primary/50 rounded "
           >
             <option value="" disabled>
               Select your expertise
@@ -139,7 +146,7 @@ const TutorSignUp = ({ role }: { role: "tutor" }) => {
           <label className="text-sm block mb-2 font-medium text-black">
             Password
           </label>
-          <div className="flex items-center w-full overflow-hidden border border-primary/50 rounded-full">
+          <div className="flex items-center w-full overflow-hidden border border-primary/50 rounded">
             <input
               type="password"
               name="password"
@@ -157,7 +164,7 @@ const TutorSignUp = ({ role }: { role: "tutor" }) => {
           <label className="text-sm block mb-2 font-medium text-black">
             Comfirm Password
           </label>
-          <div className="flex items-center w-full overflow-hidden border border-primary/50 rounded-full">
+          <div className="flex items-center w-full overflow-hidden border border-primary/50 rounded">
             <input
               type="password"
               name="comfirmPassword"
@@ -186,7 +193,7 @@ const TutorSignUp = ({ role }: { role: "tutor" }) => {
           whileHover={{ scale: 1.0 }}
           whileTap={{ scale: 0.95 }}
           // disabled={!isFormValid || loading}
-          className="rounded-full bg-primary text-white px-4.5 py-2 w-full "
+          className="rounded bg-primary text-white px-4.5 py-2 w-full "
         >
           {loading ? "Creating..." : "Create account"}
         </motion.button>
@@ -203,11 +210,11 @@ const TutorSignUp = ({ role }: { role: "tutor" }) => {
         <div className="w-full border border-primary/50" />
       </div>
       <div className="grid grid-cols-1 gap-4 ">
-        <button className="flex items-center justify-center px-3 py-2.5 border border-primary/50 rounded-full gap-5 text-base text-gray font-medium ">
+        <button className="flex items-center justify-center px-3 py-2.5 border border-primary/50 rounded gap-5 text-base text-gray font-medium ">
           <Image src={googleIcon} alt="google icon" width={25} height={25} />
           Continue with Google
         </button>
-        <button className="flex items-center justify-center px-3 py-2.5 border border-primary/50 rounded-full gap-5 text-base text-gray font-medium">
+        <button className="flex items-center justify-center px-3 py-2.5 border border-primary/50 rounded gap-5 text-base text-gray font-medium">
           <Image src={appleIcon} alt="google icon" width={25} height={25} />{" "}
           Continue with Apple
         </button>

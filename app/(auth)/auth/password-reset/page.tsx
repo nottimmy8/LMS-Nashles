@@ -1,9 +1,11 @@
 "use client";
 import api from "@/services/api";
+
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
+import ResetVerified from "./reset-verified";
 
 const ResetPasswordContent = () => {
   const router = useRouter();
@@ -14,17 +16,22 @@ const ResetPasswordContent = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [verified, setVerified] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
 
     if (!email || !code) {
-      alert("Missing email or verification code. Please request a new link.");
+      setError(
+        "Missing email or verification code. Please request a new link.",
+      );
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      setError("Passwords do not match");
       return;
     }
 
@@ -35,13 +42,14 @@ const ResetPasswordContent = () => {
         otp: code,
         newPassword: password,
       });
-      alert(
-        "Password reset successfully! Please login with your new password.",
-      );
-      router.push("/sign-in");
+      // alert(
+      //   "Password reset successfully! Please login with your new password.",
+      // );
+      setVerified(true);
+      // router.push("/sign-in");
     } catch (error: any) {
       console.error(error);
-      alert(error.response?.data?.message || "Failed to reset password");
+      setError(error.response?.data?.message || "Failed to reset password");
     } finally {
       setLoading(false);
     }
@@ -49,49 +57,59 @@ const ResetPasswordContent = () => {
 
   return (
     <div className="max-w-lg mx-auto mt-40">
-      <form onSubmit={handleSubmit} className="space-y-5 p-6 ">
-        <h1 className="text-2xl font-bold text-center">Reset Password</h1>
-        <p className="text-center text-gray-600">Enter your new password</p>
+      {verified ? (
+        <ResetVerified />
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-5 p-6 ">
+          <h1 className="text-2xl font-bold text-center">Reset Password</h1>
+          <p className="text-center text-gray-600">Enter your new password</p>
 
-        <div>
-          <input
-            type="password"
-            placeholder="New Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full border border-primary p-2 rounded"
-            minLength={6}
-          />
-        </div>
+          <div>
+            <input
+              type="password"
+              placeholder="New Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full border border-primary p-2 rounded"
+              minLength={6}
+            />
+          </div>
 
-        <div>
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-            className="w-full border border-primary p-2 rounded"
-            minLength={6}
-          />
-        </div>
+          <div>
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              className="w-full border border-primary p-2 rounded"
+              minLength={6}
+            />
+          </div>
 
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          disabled={loading}
-          type="submit"
-          className="w-full bg-primary text-white py-2 rounded disabled:opacity-70"
-        >
-          {loading ? "Resetting..." : "Reset Password"}
-        </motion.button>
+          {error && (
+            <span className="text-red-500 text-sm block text-center mt-2">
+              {error}
+            </span>
+          )}
 
-        <Link href="/sign-in">
-          <p className="text-center text-primary mt-4 hover:underline">
-            Back to login
-          </p>
-        </Link>
-      </form>
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            disabled={loading}
+            type="submit"
+            className="w-full bg-primary text-white py-2 rounded disabled:opacity-70"
+          >
+            {loading ? "Resetting..." : "Reset Password"}
+          </motion.button>
+
+          <Link href="/sign-in">
+            <p className="text-center text-primary mt-4 hover:underline">
+              Back to login
+            </p>
+          </Link>
+        </form>
+      )}
     </div>
   );
 };

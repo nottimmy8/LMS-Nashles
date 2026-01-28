@@ -12,6 +12,8 @@ import googleIcon from "@/public/google-icon.png";
 import eyeIcon from "@/public/show.png";
 import appleIcon from "@/public/apple.png";
 
+import api from "@/services/api";
+
 const StudentSignUp = ({ role }: { role: "student" }) => {
   const router = useRouter();
 
@@ -60,15 +62,20 @@ const StudentSignUp = ({ role }: { role: "student" }) => {
       setLoading(true);
 
       const payload = {
-        fullName: form.fullName,
+        name: form.fullName,
         email: form.email,
         password: form.password,
         role,
       };
 
-      router.push(`/sign-up/${role}/verify`);
-    } catch {
-      setError("Something went wrong. Please try again.");
+      await api.post("/auth/register", payload);
+
+      router.push(`/sign-up/verify?email=${encodeURIComponent(form.email)}`);
+    } catch (err: any) {
+      setError(
+        err.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -92,14 +99,14 @@ const StudentSignUp = ({ role }: { role: "student" }) => {
             value={form.fullName}
             onChange={handleChange}
             placeholder="Enter Full Name"
-            className="border border-primary/50  w-full py-2.5 px-3 outline-none text-sm rounded-full text-black "
+            className="border border-primary/50  w-full py-2.5 px-3 outline-none text-sm rounded text-black "
           />
         </div>
         <div>
           <label className="text-sm block mb-2 font-medium text-black">
             Email address
           </label>
-          <div className="flex items-center w-full overflow-hidden border border-primary/50  rounded-full">
+          <div className="flex items-center w-full overflow-hidden border border-primary/50  rounded">
             <input
               type="text"
               name="email"
@@ -117,7 +124,7 @@ const StudentSignUp = ({ role }: { role: "student" }) => {
           <label className="text-sm block mb-2 font-medium text-black">
             Password
           </label>
-          <div className="flex items-center w-full overflow-hidden border border-primary/50  rounded-full">
+          <div className="flex items-center w-full overflow-hidden border border-primary/50  rounded">
             <input
               type="password"
               name="password"
@@ -135,7 +142,7 @@ const StudentSignUp = ({ role }: { role: "student" }) => {
           <label className="text-sm block mb-2 font-medium text-black">
             Comfirm Password
           </label>
-          <div className="flex items-center w-full overflow-hidden border border-primary/50  rounded-full">
+          <div className="flex items-center w-full overflow-hidden border border-primary/50  rounded">
             <input
               type="password"
               name="comfirmPassword"
@@ -164,7 +171,7 @@ const StudentSignUp = ({ role }: { role: "student" }) => {
           <motion.button
             whileHover={{ scale: 1.0 }}
             whileTap={{ scale: 0.95 }}
-            className="rounded-full bg-primary text-white px-4.5 py-2 w-full "
+            className="rounded bg-primary text-white px-4.5 py-2 w-full "
           >
             Create account
           </motion.button>
@@ -182,11 +189,11 @@ const StudentSignUp = ({ role }: { role: "student" }) => {
         <div className="w-full border border-lightGray" />{" "}
       </div>
       <div className="grid grid-cols-1 gap-4 ">
-        <button className="flex items-center justify-center px-3 py-2.5 border border-primary/50 rounded-full gap-5 text-base text-gray font-medium ">
+        <button className="flex items-center justify-center px-3 py-2.5 border border-primary/50 rounded gap-5 text-base text-gray font-medium ">
           <Image src={googleIcon} alt="google icon" width={25} height={25} />
           Continue with Google
         </button>
-        <button className="flex items-center justify-center px-3 py-2.5 border border-primary/50 rounded-full gap-5 text-base text-gray font-medium">
+        <button className="flex items-center justify-center px-3 py-2.5 border border-primary/50 rounded gap-5 text-base text-gray font-medium">
           <Image src={appleIcon} alt="google icon" width={25} height={25} />{" "}
           Continue with Apple
         </button>
