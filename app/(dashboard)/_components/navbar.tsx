@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const DashNavbar = ({ title }: { title: string }) => {
   return (
-    <div className=" w-full p-4 bg-white rounded-lg flex justify-between gap-10 items-center  ">
+    <div className="  p-4 bg-white/80 backdrop-blur-md shadow-xs  bg-transparent rounded-lg flex justify-between gap-10 items-center  ">
       <h1 className="text-[22px] font-semibold ">{title} </h1>
 
       <div className="flex max-w-1/2 w-full gap-6 ">

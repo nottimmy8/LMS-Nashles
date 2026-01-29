@@ -51,6 +51,7 @@
   --color-primary: #0d0d0d;
   --color-secondary: #e5e4e2;
   --color-tertiary: #fff;
+  --color-quaternary: #0d0d0d80;
 }
 
 body {

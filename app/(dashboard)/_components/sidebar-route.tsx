@@ -7,8 +7,6 @@ import { useAuthStore } from "@/store/auth.store"; // Added useAuthStore
 import { useState } from "react";
 import { Modal } from "@/components/ui/modal";
 
-
-
 const adminRoutes = [
   {
     icon: MenuIcon,
@@ -73,6 +71,37 @@ const tutorRoutes = [
   {
     icon: MenuIcon,
     activeIcon: MenuIconActive,
+    label: "My Courses",
+    href: "/tutor/my-courses",
+  },
+  {
+    icon: MenuIcon,
+    activeIcon: MenuIconActive,
+    label: "Upload Course",
+    href: "/tutor/upload-course",
+  },
+
+  {
+    icon: MenuIcon,
+    activeIcon: MenuIconActive,
+    label: "Analytics",
+    href: "/tutor/analytics",
+  },
+  {
+    icon: MenuIcon,
+    activeIcon: MenuIconActive,
+    label: "Earnings",
+    href: "/tutor/earnings",
+  },
+  {
+    icon: MenuIcon,
+    activeIcon: MenuIconActive,
+    label: "Settings",
+    href: "/tutor/settings",
+  },
+  {
+    icon: MenuIcon,
+    activeIcon: MenuIconActive,
     label: "LogOut",
     href: "/",
   },
@@ -92,7 +121,6 @@ const SidebarRoute = () => {
     logout();
     router.replace("/sign-in");
   };
-
 
   let routes = adminRoutes;
 
@@ -139,8 +167,6 @@ const SidebarRoute = () => {
         </div>
       </Modal>
     </div>
-
-
   );
 };
 

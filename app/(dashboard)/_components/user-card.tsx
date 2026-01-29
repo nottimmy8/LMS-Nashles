@@ -11,7 +11,7 @@ const UserCard = ({
   //   icon: StaticImageData;
 }) => {
   return (
-    <div className="rounded-2xl shadow-md odd:bg-white odd:text-black even:bg-primary even:text-white p-4  flex-1 min-w-32.5 ">
+    <div className="rounded-2xl shadow-md odd:bg-white odd:text-black even:bg-primary/50 even:text-white p-4  flex-1 min-w-32.5 ">
       {/* <div>{icon} </div> */}
       <p>{type} </p>
       <h2>{value} </h2>

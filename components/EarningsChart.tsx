@@ -46,7 +46,7 @@ export function EarningsChart() {
             <XAxis dataKey="month" />
             <YAxis tickFormatter={(v) => `${v / 1000}K`} />
             <Tooltip />
-            <Bar dataKey="earnings" fill="#0d0d0d" radius={[6, 6, 0, 0]} />
+            <Bar dataKey="earnings" fill="#4c4b4bff" radius={[6, 6, 0, 0]} />
             <Bar dataKey="expense" fill="#e5e4e2" radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
