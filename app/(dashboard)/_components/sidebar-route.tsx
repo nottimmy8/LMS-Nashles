@@ -1,46 +1,54 @@
 "use client";
-import MenuIcon from "@/public/sidebarSVG/a.svg";
-import MenuIconActive from "@/public/sidebarSVG/layout.svg";
+import {
+  LayoutDashboard,
+  Users,
+  GraduationCap,
+  CalendarCheck,
+  BookOpen,
+  PlusCircle,
+  BarChart3,
+  DollarSign,
+  Settings,
+  LogOut,
+  Search,
+  PlayCircle,
+  Award,
+  Heart,
+} from "lucide-react";
 import SidebarItem from "./sidebar-item";
-import { usePathname, useRouter } from "next/navigation"; // Added useRouter
-import { useAuthStore } from "@/store/auth.store"; // Added useAuthStore
+import { usePathname, useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/auth.store";
 import { useState } from "react";
 import { Modal } from "@/components/ui/modal";
 
 const adminRoutes = [
   {
-    icon: MenuIcon,
-    activeIcon: MenuIconActive,
+    icon: LayoutDashboard,
     label: "Overview",
     href: "/admin",
   },
   {
-    icon: MenuIcon,
-    activeIcon: MenuIconActive,
+    icon: Users,
     label: "Student",
     href: "/admin/students",
   },
   {
-    icon: MenuIcon,
-    activeIcon: MenuIconActive,
+    icon: GraduationCap,
     label: "Teachers",
     href: "/admin/teachers",
   },
   {
-    icon: MenuIcon,
-    activeIcon: MenuIconActive,
+    icon: CalendarCheck,
     label: "Attendance",
     href: "/admin/attendance",
   },
   {
-    icon: MenuIcon,
-    activeIcon: MenuIconActive,
+    icon: BookOpen,
     label: "Courses",
     href: "/admin/courses",
   },
   {
-    icon: MenuIcon,
-    activeIcon: MenuIconActive,
+    icon: LogOut,
     label: "LogOut",
     href: "/",
   },
@@ -48,14 +56,37 @@ const adminRoutes = [
 
 const studentRoutes = [
   {
-    icon: MenuIcon,
-    activeIcon: MenuIconActive,
+    icon: LayoutDashboard,
     label: "Overview",
     href: "/student",
   },
   {
-    icon: MenuIcon,
-    activeIcon: MenuIconActive,
+    icon: PlayCircle,
+    label: "My Learning",
+    href: "/student/my-learning",
+  },
+  {
+    icon: Search,
+    label: "Browse Courses",
+    href: "/student/search",
+  },
+  {
+    icon: Award,
+    label: "Certificates",
+    href: "/student/certificates",
+  },
+  {
+    icon: Heart,
+    label: "Wishlist",
+    href: "/student/wishlist",
+  },
+  {
+    icon: Settings,
+    label: "Settings",
+    href: "/student/settings",
+  },
+  {
+    icon: LogOut,
     label: "LogOut",
     href: "/",
   },
@@ -63,45 +94,37 @@ const studentRoutes = [
 
 const tutorRoutes = [
   {
-    icon: MenuIcon,
-    activeIcon: MenuIconActive,
+    icon: LayoutDashboard,
     label: "Overview",
     href: "/tutor",
   },
   {
-    icon: MenuIcon,
-    activeIcon: MenuIconActive,
+    icon: BookOpen,
     label: "My Courses",
     href: "/tutor/my-courses",
   },
   {
-    icon: MenuIcon,
-    activeIcon: MenuIconActive,
+    icon: PlusCircle,
     label: "Upload Course",
     href: "/tutor/upload-course",
   },
-
   {
-    icon: MenuIcon,
-    activeIcon: MenuIconActive,
+    icon: BarChart3,
     label: "Analytics",
     href: "/tutor/analytics",
   },
   {
-    icon: MenuIcon,
-    activeIcon: MenuIconActive,
+    icon: DollarSign,
     label: "Earnings",
     href: "/tutor/earnings",
   },
   {
-    icon: MenuIcon,
-    activeIcon: MenuIconActive,
+    icon: Settings,
     label: "Settings",
     href: "/tutor/settings",
   },
   {
-    icon: MenuIcon,
-    activeIcon: MenuIconActive,
+    icon: LogOut,
     label: "LogOut",
     href: "/",
   },
@@ -138,7 +161,6 @@ const SidebarRoute = () => {
         <SidebarItem
           key={routes.href}
           icon={routes.icon}
-          activeIcon={routes.activeIcon}
           label={routes.label}
           href={routes.label === "LogOut" ? "#" : routes.href}
           onClick={routes.label === "LogOut" ? handleLogoutClick : undefined}

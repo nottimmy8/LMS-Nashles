@@ -13,7 +13,9 @@ import {
   Smartphone,
   CheckCircle2,
   Trash2,
-  ShoppingBag,
+  Bookmark,
+  Award,
+  BookOpen,
 } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -22,10 +24,9 @@ const tabs = [
   { id: "profile", label: "Profile", icon: User },
   { id: "account", label: "Account", icon: Lock },
   { id: "notifications", label: "Notifications", icon: Bell },
-  { id: "payments", label: "Payments", icon: CreditCard },
 ];
 
-const TSettingsPage = () => {
+const StudentSettings = () => {
   const [activeTab, setActiveTab] = useState("profile");
 
   return (
@@ -35,7 +36,7 @@ const TSettingsPage = () => {
           Settings
         </h1>
         <p className="text-gray-500">
-          Manage your profile, account settings, and notification preferences.
+          Manage your profile, preferences, and security.
         </p>
       </div>
 
@@ -64,17 +65,19 @@ const TSettingsPage = () => {
           {activeTab === "profile" && (
             <div className="p-8 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
               <section>
-                <h3 className="text-lg font-bold mb-6">Public Profile</h3>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-bold">Public Profile</h3>
+                  <span className="px-3 py-1 bg-gray-50 text-[10px] font-black uppercase tracking-widest text-gray-400 rounded-lg">
+                    Student Account
+                  </span>
+                </div>
+
                 <div className="flex items-center gap-6 mb-8">
                   <div className="relative group">
                     <div className="w-24 h-24 rounded-full bg-gray-100 overflow-hidden border-4 border-white shadow-sm">
-                      {/* <Image
-                        src="https://github.com/shadcn.png"
-                        alt="Profile"
-                        width={96}
-                        height={96}
-                        className="object-cover"
-                      /> */}
+                      <div className="w-full h-full flex items-center justify-center bg-indigo-50 text-indigo-500">
+                        <UserCircle size={48} />
+                      </div>
                     </div>
                     <button className="absolute bottom-0 right-0 p-2 bg-black text-white rounded-full shadow-lg hover:scale-110 transition-transform">
                       <Camera size={14} />
@@ -83,7 +86,7 @@ const TSettingsPage = () => {
                   <div>
                     <h4 className="font-bold">Profile Photo</h4>
                     <p className="text-sm text-gray-500 mb-2">
-                      PNG, JPG or GIF. Max 2MB.
+                      Help your instructors recognize you.
                     </p>
                     <div className="flex gap-2">
                       <button className="text-xs font-bold px-3 py-1.5 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
@@ -97,7 +100,7 @@ const TSettingsPage = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-1.5 focus-within:text-black group">
+                  <div className="space-y-1.5 group">
                     <label className="text-sm font-bold text-gray-400 group-focus-within:text-black transition-colors">
                       Full Name
                     </label>
@@ -108,13 +111,13 @@ const TSettingsPage = () => {
                       />
                       <input
                         type="text"
-                        placeholder="John Doe"
+                        placeholder="John Wilson"
                         className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
                       />
                     </div>
                   </div>
 
-                  <div className="space-y-1.5 focus-within:text-black group">
+                  <div className="space-y-1.5 group">
                     <label className="text-sm font-bold text-gray-400 group-focus-within:text-black transition-colors">
                       Email Address
                     </label>
@@ -125,20 +128,20 @@ const TSettingsPage = () => {
                       />
                       <input
                         type="email"
-                        placeholder="john@example.com"
+                        placeholder="john.wilson@example.com"
                         className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
                       />
                     </div>
                   </div>
 
-                  <div className="md:col-span-2 space-y-1.5 focus-within:text-black group">
+                  <div className="md:col-span-2 space-y-1.5 group">
                     <label className="text-sm font-bold text-gray-400 group-focus-within:text-black transition-colors">
-                      Bio
+                      Headline
                     </label>
-                    <textarea
-                      rows={4}
-                      placeholder="Tell us a little bit about yourself..."
-                      className="w-full px-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all resize-none"
+                    <input
+                      type="text"
+                      placeholder="Aspiring Full-Stack Developer | Design Enthusiast"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
                     />
                   </div>
                 </div>
@@ -149,7 +152,7 @@ const TSettingsPage = () => {
                   Cancel
                 </button>
                 <button className="px-6 py-3 rounded-xl bg-black text-white font-bold text-sm hover:shadow-lg transition-all">
-                  Save Changes
+                  Save Profile
                 </button>
               </div>
             </div>
@@ -180,7 +183,7 @@ const TSettingsPage = () => {
                   </div>
 
                   <div className="grid grid-cols-1 gap-6">
-                    <div className="space-y-1.5 focus-within:text-black group">
+                    <div className="space-y-1.5">
                       <label className="text-sm font-bold text-gray-400">
                         Current Password
                       </label>
@@ -190,7 +193,7 @@ const TSettingsPage = () => {
                       />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-1.5 focus-within:text-black group">
+                      <div className="space-y-1.5">
                         <label className="text-sm font-bold text-gray-400">
                           New Password
                         </label>
@@ -199,7 +202,7 @@ const TSettingsPage = () => {
                           className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
                         />
                       </div>
-                      <div className="space-y-1.5 focus-within:text-black group">
+                      <div className="space-y-1.5">
                         <label className="text-sm font-bold text-gray-400">
                           Confirm Password
                         </label>
@@ -223,7 +226,7 @@ const TSettingsPage = () => {
                       Delete Account
                     </h4>
                     <p className="text-xs text-rose-700">
-                      Once you delete your account, there is no going back.
+                      All your progress and certificates will be lost.
                     </p>
                   </div>
                   <button className="p-3 text-rose-600 hover:bg-rose-100 rounded-2xl transition-all">
@@ -234,7 +237,7 @@ const TSettingsPage = () => {
 
               <div className="pt-4 flex justify-end gap-3">
                 <button className="px-6 py-3 rounded-xl bg-black text-white font-bold text-sm hover:shadow-lg transition-all">
-                  Update Password
+                  Update Security
                 </button>
               </div>
             </div>
@@ -243,32 +246,32 @@ const TSettingsPage = () => {
           {activeTab === "notifications" && (
             <div className="p-8 space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
               <h3 className="text-lg font-bold mb-4">
-                Notification Preferences
+                What should we tell you?
               </h3>
               {[
                 {
-                  title: "Course Sales",
-                  desc: "Notify me when someone buys my course",
-                  icon: ShoppingBag,
+                  title: "Course Updates",
+                  desc: "Announcements from your instructors",
+                  icon: BookOpen,
                   default: true,
                 },
                 {
-                  title: "Student Messages",
-                  desc: "Notify me of new messages from students",
-                  icon: Mail,
+                  title: "Learning Reminders",
+                  desc: "Tips to stay on track with your goals",
+                  icon: Flame,
                   default: true,
                 },
                 {
-                  title: "Dashboard Alerts",
-                  desc: "Important updates regarding the platform",
-                  icon: Bell,
+                  title: "Achievements",
+                  desc: "When you earn a new certificate",
+                  icon: Award,
+                  default: true,
+                },
+                {
+                  title: "Promotions",
+                  desc: "Exclusive discounts on new courses",
+                  icon: Sparkles,
                   default: false,
-                },
-                {
-                  title: "App Push",
-                  desc: "Send notifications to my mobile device",
-                  icon: Smartphone,
-                  default: true,
                 },
               ].map((item, i) => (
                 <div
@@ -287,7 +290,7 @@ const TSettingsPage = () => {
                   <div
                     className={cn(
                       "w-12 h-6 rounded-full p-1 transition-all cursor-pointer",
-                      item.default ? "bg-emerald-500" : "bg-gray-300",
+                      item.default ? "bg-black" : "bg-gray-300",
                     )}
                   >
                     <div
@@ -301,66 +304,45 @@ const TSettingsPage = () => {
               ))}
             </div>
           )}
-
-          {activeTab === "payments" && (
-            <div className="p-8 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <section>
-                <h3 className="text-lg font-bold mb-6">Payout Methods</h3>
-                <div className="space-y-4">
-                  <div className="p-6 border-2 border-black rounded-3xl flex items-center justify-between shadow-sm">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-8 bg-gray-200 rounded flex items-center justify-center font-bold text-[10px] tracking-tighter italic shadow-inner">
-                        VISA
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-sm">
-                          •••• •••• •••• 4242
-                        </h4>
-                        <p className="text-xs text-gray-500">
-                          Expired 12/26 • Primary Method
-                        </p>
-                      </div>
-                    </div>
-                    <CheckCircle2 size={24} className="text-emerald-500" />
-                  </div>
-                  <button className="w-full p-6 border-2 border-dashed border-gray-200 rounded-3xl text-gray-400 font-bold text-sm hover:border-black hover:text-black transition-all flex items-center justify-center gap-2">
-                    <CreditCard size={18} />
-                    Add New Payment Method
-                  </button>
-                </div>
-              </section>
-
-              <section className="pt-8 border-t border-gray-100">
-                <h3 className="text-lg font-bold mb-4">Tax Information</h3>
-                <p className="text-sm text-gray-500 mb-6 font-medium">
-                  Verify your tax status to receive payments without
-                  interruption.
-                </p>
-                <div className="p-6 bg-indigo-50 rounded-3xl border border-indigo-100 flex items-center justify-between hover:bg-indigo-100 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-white rounded-2xl shadow-sm text-indigo-600">
-                      <ShieldCheck size={24} />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-indigo-900">
-                        Tax form W-9
-                      </h4>
-                      <p className="text-xs text-indigo-700">
-                        Not submitted yet.
-                      </p>
-                    </div>
-                  </div>
-                  <button className="text-xs font-bold px-4 py-2 bg-indigo-600 text-white rounded-xl shadow-md hover:bg-indigo-700 transition-all">
-                    Submit Now
-                  </button>
-                </div>
-              </section>
-            </div>
-          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default TSettingsPage;
+// Placeholder icons for maps
+const Flame = ({ size }: { size: number }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+  </svg>
+);
+
+const Sparkles = ({ size }: { size: number }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+    <path d="M5 3v4" />
+    <path d="M19 17v4" />
+    <path d="M3 5h4" />
+    <path d="M17 19h4" />
+  </svg>
+);
+
+export default StudentSettings;

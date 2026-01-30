@@ -1,13 +1,11 @@
-"use client";
-
 import {
   BarChart,
   Bar,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  CartesianGrid,
 } from "recharts";
 import {
   Card,
@@ -15,37 +13,24 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
+} from "./ui/card";
 import { TrendingUp } from "lucide-react";
 
 const data = [
-  { month: "Jan", earnings: 32000, withdraw: 18000 },
-  { month: "Feb", earnings: 25000, withdraw: 16000 },
-  { month: "Mar", earnings: 17000, withdraw: 8000 },
-  { month: "Apr", earnings: 26000, withdraw: 22000 },
-  { month: "May", earnings: 5000, withdraw: 15000 },
-  { month: "Jun", earnings: 22000, withdraw: 13000 },
-  { month: "Jul", earnings: 40000, withdraw: 22000 },
-  { month: "Aug", earnings: 18000, withdraw: 28000 },
-  { month: "Sep", earnings: 32000, withdraw: 15000 },
-  { month: "Oct", earnings: 25000, withdraw: 23000 },
-  { month: "Nov", earnings: 17000, withdraw: 11000 },
-  { month: "Dec", earnings: 22000, withdraw: 28000 },
+  { course: "Web Dev", students: 2450 },
+  { course: "Data Science", students: 1800 },
+  { course: "UI/UX Design", students: 1550 },
+  { course: "Marketing", students: 1200 },
+  { course: "Business", students: 950 },
+  { course: "Cybersecurity", students: 780 },
 ];
 
-export function EarningsChart() {
+export function PopularCoursesChart() {
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Total Earnings</CardTitle>
-        <Select>
-          <SelectTrigger className="w-25">
-            <SelectValue placeholder="2022" />
-          </SelectTrigger>
-        </Select>
+    <Card className="py-6">
+      <CardHeader className="mb-4">
+        <CardTitle>Popular Courses</CardTitle>
       </CardHeader>
-
       <CardContent className="h-75">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} barGap={8}>
@@ -55,16 +40,17 @@ export function EarningsChart() {
               stroke="#f0f0f0"
             />
             <XAxis
-              dataKey="month"
+              dataKey="course"
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#94a3b8", fontSize: 12 }}
+              dy={10}
             />
             <YAxis
+              domain={[500, "auto"]}
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#94a3b8", fontSize: 12 }}
-              tickFormatter={(v) => `${v / 1000}K`}
             />
             <Tooltip
               cursor={{ fill: "#f8fafc" }}
@@ -74,12 +60,15 @@ export function EarningsChart() {
                 boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
               }}
             />
-            <Bar dataKey="earnings" fill="#0d0d0d" radius={[6, 6, 0, 0]} />
-            <Bar dataKey="withdraw" fill="#94a3b8" radius={[6, 6, 0, 0]} />
+            <Bar
+              dataKey="students"
+              fill="#0d0d0d"
+              radius={[6, 6, 0, 0]}
+              barSize={40}
+            />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
-
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 leading-none font-medium">
           Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />

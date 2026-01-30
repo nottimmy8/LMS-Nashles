@@ -1,17 +1,33 @@
 import React from "react";
+import { Users, GraduationCap, UserRound, DollarSign } from "lucide-react";
 import UserCard from "../_components/user-card";
 import { EarningsChart } from "@/components/EarningsChart";
 
 const AdminDash = () => {
   return (
-    <div className="flex gap-6 flex-col  ">
+    <div className="flex gap-6 flex-col">
       {/* STAT CARD */}
       <div className="w-full">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <UserCard type="Student" value="1000" />
-          <UserCard type="Teachers" value="1000" />
-          <UserCard type="Parents" value="1000" />
-          <UserCard type="Earnings" value="1000" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <UserCard type="Student" value="1,240" icon={Users} variant="white" />
+          <UserCard
+            type="Teachers"
+            value="48"
+            icon={GraduationCap}
+            variant="dark"
+          />
+          <UserCard
+            type="Parents"
+            value="956"
+            icon={UserRound}
+            variant="white"
+          />
+          <UserCard
+            type="Earnings"
+            value="$45,200"
+            icon={DollarSign}
+            variant="white"
+          />
         </div>
       </div>
       <div className="flex w-full flex-col md:flex-row gap-6">

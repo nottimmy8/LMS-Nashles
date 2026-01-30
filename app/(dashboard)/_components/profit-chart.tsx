@@ -27,7 +27,7 @@ const chartConfig = {
   },
   chrome: {
     label: "Chrome",
-    color: "#0D0D0D80",
+    color: "#f1f5f9",
   },
   safari: {
     label: "Safari",
@@ -43,7 +43,7 @@ const MontlyProfit = () => {
   }, []);
   return (
     // <div className="border border-tertiary rounded-lg p-5 bg-white ">
-    <Card className="flex flex-col w-full md:w-122  ">
+    <Card className="flex flex-col w-full md:max-w-122  ">
       <CardHeader className="items-center pb-0">
         <CardTitle className=" text-[28px] font-semibold ">
           Montly Income

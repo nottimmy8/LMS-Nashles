@@ -1,18 +1,21 @@
 "use client";
 import { cn } from "@/lib/utils";
-import Image, { StaticImageData } from "next/image";
+import { LucideIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
 interface SidebarItemProps {
-  icon: StaticImageData;
-  activeIcon: StaticImageData;
+  icon: LucideIcon;
   label: string;
   href: string;
   onClick?: () => void;
 }
 
-const SidebarItem = ({ icon, label, href, activeIcon, onClick }: SidebarItemProps) => {
-
+const SidebarItem = ({
+  icon: Icon,
+  label,
+  href,
+  onClick,
+}: SidebarItemProps) => {
   const pathname = usePathname();
 
   const router = useRouter();
@@ -31,26 +34,25 @@ const SidebarItem = ({ icon, label, href, activeIcon, onClick }: SidebarItemProp
     }
   };
 
-
   return (
     <div>
       <button
         onClick={handleClick}
-
         type="button"
         className={cn(
-          "flex items-center gap-4 px-4 py-3.5 font-semibold w-full rounded-md mb-3.5 transition-all duration-300 text-white text-[18px]",
+          "flex items-center gap-4 px-4 py-3 font-medium w-full rounded-xl mb-1.5 transition-all duration-200 group",
           isActive
-            ? "bg-white text-primary cursor-default"
-            : "hover:bg-secondary/50 hover:text-white",
+            ? "bg-white text-black shadow-sm"
+            : "text-white/70 hover:bg-white/10 hover:text-white",
         )}
       >
-        <Image
-          src={isActive ? activeIcon : icon}
-          alt={label}
-          className="w-6 h-6"
+        <Icon
+          className={cn(
+            "w-5 h-5 transition-colors",
+            isActive ? "text-black" : "text-white/70 group-hover:text-white",
+          )}
         />
-        <span className="text-base ">{label}</span>
+        <span className="text-sm">{label}</span>
       </button>
     </div>
   );

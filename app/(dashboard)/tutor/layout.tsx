@@ -25,12 +25,12 @@ export default function TutorLayout({
           <div className="flex w-full min-h-screen">
             {/* Sidebar */}
 
-            <div className="hidden md:flex h-full w-72 bg-primary/50 flex-col fixed inset-y-0 z-50 p-6">
+            <div className="hidden md:flex h-full w-72 bg-primary/95 flex-col fixed inset-y-0 z-50 p-6">
               <Sidebar />
             </div>
             <div className="md:pl-72 flex-1 w-full h-full    ">
               {/* Navbar */}
-              <div className="w-full p-6 pb-0 sticky top-0 z-50">
+              <div className="w-full p-6 pb-0 sticky top-0 z-10">
                 <DashNavbar title="Tutor" />
               </div>
               {/*  */} <main className="w-full p-6">{children} </main>

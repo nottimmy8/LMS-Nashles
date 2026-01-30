@@ -15,13 +15,14 @@ export default function StudentLayout({
           <div className="flex w-full min-h-screen">
             {/* Sidebar */}
 
-            <div className="hidden md:flex h-full w-72 bg-primary flex-col fixed inset-y-0 z-50 p-6">
+            <div className="hidden md:flex h-full w-72 bg-primary/95 flex-col fixed inset-y-0 z-50 p-6">
               <Sidebar />
             </div>
             <div className="md:pl-72 flex-1 w-full mt-6 ml-6 mr-6  h-full    ">
               {/* Navbar */}
-              <DashNavbar title="Student" />
-              {/*  */} <main className="w-full mt-6">{children} </main>
+              {/* <DashNavbar title="Student" /> */}
+              {/*  */}
+              <main className="w-full mt-6">{children} </main>
             </div>
           </div>
           {/* footer */}

@@ -32,11 +32,11 @@ const chartData = [
 const chartConfig = {
   desktop: {
     label: "Desktop",
-    color: "var(--chart-1)",
+    color: "#0d0d0d",
   },
   mobile: {
     label: "Mobile",
-    color: "var(--chart-2)",
+    color: "#94a3b8",
   },
 } satisfies ChartConfig;
 
@@ -44,12 +44,12 @@ export function MontlyDataChart() {
   return (
     <Card>
       <CardHeader className="items-center pb-4">
-        <CardTitle>Radar Chart - Lines Only</CardTitle>
+        <CardTitle>Impressions Chart</CardTitle>
         <CardDescription>
-          Showing total visitors for the last 6 months
+          Showing total impressions for the last 6 months
         </CardDescription>
       </CardHeader>
-      <CardContent className="pb-0">
+      <CardContent className="pb-2">
         <ChartContainer
           config={chartConfig}
           className="mx-auto aspect-square max-h-[250px]"
@@ -78,7 +78,7 @@ export function MontlyDataChart() {
           </RadarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
+      <CardFooter className="flex-col gap-2 text-sm pb-3.5">
         <div className="flex items-center gap-2 leading-none font-medium">
           Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
         </div>
