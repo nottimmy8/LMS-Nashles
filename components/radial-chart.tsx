@@ -1,7 +1,7 @@
 "use client";
 
 import { RadialBarChart, RadialBar, PolarAngleAxis } from "recharts";
-import { CardHeader } from "./ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import {
   Select,
   SelectContent,
@@ -9,76 +9,93 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { ChartContainer, type ChartConfig } from "./ui/chart";
+
+const chartConfig = {
+  views: {
+    label: "Views",
+    color: "hsl(var(--chart-1))",
+  },
+} satisfies ChartConfig;
+
+interface MonthlyViewsRadialChartProps {
+  views?: number;
+  goal?: number;
+}
 
 const MonthlyViewsRadialChart = ({
-  views,
-  target,
-}: {
-  views: number;
-  target: number;
-}) => {
-  const percentage = Math.min(Math.round((views / target) * 100), 100);
+  views = 1200,
+  goal = 2000,
+}: MonthlyViewsRadialChartProps) => {
+  const percentage = Math.min(Math.round((views / goal) * 100), 100);
 
   const data = [
     {
-      name: "Views",
+      name: "views",
       value: percentage,
-      fill: "#0D0D0D80",
+      fill: "hsl(var(--orange-500))",
     },
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center bg-white rounded-2xl shadow w-full p-5 max-w-sm">
-      {/* heading Label */}
-      <div className="w-full">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <h3 className="text-lg font-semibold">Monthly Views</h3>
-          <Select>
-            <SelectTrigger className="w-20">
-              <SelectValue placeholder="JAN" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="JAN">JAN</SelectItem>
-              <SelectItem value="FEB">FEB</SelectItem>
-              <SelectItem value="MAR">MAR</SelectItem>
-              <SelectItem value="APR">APR</SelectItem>
-              <SelectItem value="MAY">MAY</SelectItem>
-              <SelectItem value="JUN">JUN</SelectItem>
-              <SelectItem value="JUL">JUL</SelectItem>
-              <SelectItem value="AUG">AUG</SelectItem>
-              <SelectItem value="SEP">SEP</SelectItem>
-              <SelectItem value="OCT">OCT</SelectItem>
-              <SelectItem value="NOV">NOV</SelectItem>
-              <SelectItem value="DEC">DEC</SelectItem>
-            </SelectContent>
-          </Select>
-        </CardHeader>
-      </div>
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <h3 className="text-lg font-semibold">Monthly Views</h3>
+        <Select defaultValue="JAN">
+          <SelectTrigger className="w-20">
+            <SelectValue placeholder="JAN" />
+          </SelectTrigger>
+          <SelectContent>
+            {[
+              "JAN",
+              "FEB",
+              "MAR",
+              "APR",
+              "MAY",
+              "JUN",
+              "JUL",
+              "AUG",
+              "SEP",
+              "OCT",
+              "NOV",
+              "DEC",
+            ].map((month) => (
+              <SelectItem key={month} value={month}>
+                {month}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </CardHeader>
 
-      <div className="px-6 ">
-        <RadialBarChart
-          width={250}
-          height={250}
-          cx="50%"
-          cy="50%"
-          innerRadius="70%"
-          outerRadius="90%"
-          barSize={14}
-          data={data}
-          startAngle={90}
-          endAngle={-270}
+      <CardContent>
+        <ChartContainer
+          config={chartConfig}
+          className="mx-auto aspect-square max-h-[250px]"
         >
-          <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
-          <RadialBar background dataKey="value" cornerRadius={10} />
-        </RadialBarChart>
-      </div>
-      {/* bottom label */}
-      <div className="text-center ">
+          <RadialBarChart
+            width={250}
+            height={250}
+            cx="50%"
+            cy="50%"
+            innerRadius="70%"
+            outerRadius="90%"
+            barSize={14}
+            data={data}
+            startAngle={90}
+            endAngle={-270}
+          >
+            <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
+            <RadialBar background dataKey="value" cornerRadius={10} />
+          </RadialBarChart>
+        </ChartContainer>
+      </CardContent>
+      <CardFooter className="text-center flex flex-col gap-2 ">
         <p className="text-3xl font-bold">{views.toLocaleString()}</p>
         <p className="text-sm text-muted-foreground">Monthly Views</p>
         <p className="text-xs text-orange-500 mt-1">{percentage}% of goal</p>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   );
 };
 

@@ -25,7 +25,7 @@ export type TutorCourse = {
   title: string;
   category: string;
   thumbnail: string;
-  status: "published" | "under review" | "draft";
+  status: "published" | "draft";
   students: number;
   views: number;
   rating: number;
@@ -63,7 +63,7 @@ export const tutorCourses: TutorCourse[] = [
     category: "Backend",
     thumbnail:
       "https://img.freepik.com/free-photo/abstract-black-white-background_53876-10264.jpg",
-    status: "under review",
+    status: "draft",
     students: 0,
     views: 342,
     rating: 0,
@@ -135,7 +135,7 @@ export const tutorCourses: TutorCourse[] = [
     category: "Backend",
     thumbnail:
       "https://img.freepik.com/free-photo/abstract-black-white-background_53876-10264.jpg",
-    status: "under review",
+    status: "draft",
     students: 0,
     views: 198,
     rating: 0,
@@ -178,3 +178,45 @@ export const tutorCourses: TutorCourse[] = [
     lastUpdated: "2026-01-06",
   },
 ];
+
+export type mockCourses = {
+  published: {
+    id: number;
+    title: string;
+    thumbnail: string;
+    students: number;
+    views: number;
+    rating: number;
+    revenue: number;
+    status: string;
+    lastUpdated: string;
+    category: string;
+    level: string;
+  }[];
+  draft: {
+    id: number;
+    title: string;
+    thumbnail: string;
+    students: number;
+    views: number;
+    rating: number;
+    revenue: number;
+    status: string;
+    lastUpdated: string;
+    category: string;
+    level: string;
+  }[];
+  archived: {
+    id: number;
+    title: string;
+    thumbnail: string;
+    students: number;
+    views: number;
+    rating: number;
+    revenue: number;
+    status: string;
+    lastUpdated: string;
+    category: string;
+    level: string;
+  }[];
+};

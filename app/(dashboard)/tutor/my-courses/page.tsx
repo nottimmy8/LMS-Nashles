@@ -24,8 +24,7 @@ const tabs = [
   { name: "Archived", value: "archived", count: 2 },
 ];
 
-// Mock data - replace with actual data from your API
-const mockCourses = {
+export const mockCourses = {
   published: [
     {
       id: 1,
@@ -38,6 +37,8 @@ const mockCourses = {
       revenue: 12450,
       status: "published",
       lastUpdated: "2026-01-12",
+      category: "Web Development",
+      level: "Intermediate",
     },
     {
       id: 2,
@@ -50,6 +51,64 @@ const mockCourses = {
       revenue: 9320,
       status: "published",
       lastUpdated: "2026-01-08",
+      category: "Design",
+      level: "Beginner",
+    },
+    {
+      id: 5,
+      title: "Advanced MongoDB",
+      thumbnail:
+        "https://img.freepik.com/free-photo/abstract-black-white-background_53876-10264.jpg",
+      students: 0,
+      views: 0,
+      rating: 0,
+      revenue: 0,
+      status: "published",
+      lastUpdated: "2026-01-25",
+      category: "Backend",
+      level: "Advanced",
+    },
+    {
+      id: 6,
+      title: "Advanced MongoDB",
+      thumbnail:
+        "https://img.freepik.com/free-photo/abstract-black-white-background_53876-10264.jpg",
+      students: 0,
+      views: 0,
+      rating: 0,
+      revenue: 0,
+      status: "published",
+      lastUpdated: "2026-01-25",
+      category: "Database",
+      level: "Intermediate",
+    },
+    {
+      id: 7,
+      title: "Advanced MongoDB",
+      thumbnail:
+        "https://img.freepik.com/free-photo/abstract-black-white-background_53876-10264.jpg",
+      students: 0,
+      views: 0,
+      rating: 0,
+      revenue: 0,
+      status: "published",
+      lastUpdated: "2026-01-25",
+      category: "Backend",
+      level: "Advanced",
+    },
+    {
+      id: 8,
+      title: "Advanced Next.js",
+      thumbnail:
+        "https://img.freepik.com/free-photo/abstract-black-white-background_53876-10264.jpg",
+      students: 100,
+      views: 400,
+      rating: 4.5,
+      revenue: 1000,
+      status: "published",
+      lastUpdated: "2026-01-25",
+      category: "Frontend",
+      level: "Advanced",
     },
   ],
   draft: [
@@ -64,6 +123,8 @@ const mockCourses = {
       revenue: 0,
       status: "draft",
       lastUpdated: "2026-01-25",
+      category: "Backend",
+      level: "Beginner",
     },
   ],
   archived: [
@@ -78,6 +139,8 @@ const mockCourses = {
       revenue: 4560,
       status: "archived",
       lastUpdated: "2025-11-15",
+      category: "Frontend",
+      level: "Beginner",
     },
   ],
 };

@@ -28,7 +28,7 @@ const Tutorpage = () => {
           <EarningsChart />
         </div>
         <div className="w-full col-span-2 md:col-span-1">
-          <MonthlyViewsRadialChart views={1200} target={1500} />
+          <MonthlyViewsRadialChart />
         </div>
       </div>
       <div className="w-full bg-white rounded-2xl shadow p-6">
