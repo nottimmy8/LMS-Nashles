@@ -3,7 +3,7 @@ import { EarningsChart } from "@/components/EarningsChart";
 import { MontlyDataChart } from "@/components/radar-chart";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "../../_components/data-table";
-import { mockCourses } from "../my-courses/page";
+// import { mockCourses } from "../my-courses/page";
 import { CardTitle } from "@/components/ui/card";
 import StatusCard from "../../_components/status-card";
 import { RevenueTrendChart } from "@/components/revenue-chart";
@@ -20,59 +20,59 @@ import {
 } from "lucide-react";
 
 const TAnalyticsPage = () => {
-  const columns: ColumnDef<(typeof mockCourses.published)[number]>[] = [
-    {
-      accessorKey: "title",
-      header: "Courses",
-      cell: ({ row }) => {
-        const course = row.original;
-        return (
-          <div>
-            <span className="flex flex-col">
-              <h1 className="font-semibold">{course.title}</h1>
-              <p className="text-sm text-gray-500">{course.category}</p>
-            </span>
-          </div>
-        );
-      },
-    },
+  // const columns: ColumnDef<(typeof mockCourses.published)[number]>[] = [
+  //   {
+  //     accessorKey: "title",
+  //     header: "Courses",
+  //     cell: ({ row }) => {
+  //       const course = row.original;
+  //       return (
+  //         <div>
+  //           <span className="flex flex-col">
+  //             <h1 className="font-semibold">{course.title}</h1>
+  //             <p className="text-sm text-gray-500">{course.category}</p>
+  //           </span>
+  //         </div>
+  //       );
+  //     },
+  //   },
 
-    {
-      accessorKey: "views",
-      header: "Views",
-    },
-    {
-      accessorKey: "revenue",
-      header: () => <div className="text-center">Revenue</div>,
-      cell: ({ row }) => {
-        const revenue = parseFloat(row.getValue("revenue"));
-        const formatted = new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "USD",
-        }).format(revenue);
+  //   {
+  //     accessorKey: "views",
+  //     header: "Views",
+  //   },
+  //   {
+  //     accessorKey: "revenue",
+  //     header: () => <div className="text-center">Revenue</div>,
+  //     cell: ({ row }) => {
+  //       const revenue = parseFloat(row.getValue("revenue"));
+  //       const formatted = new Intl.NumberFormat("en-US", {
+  //         style: "currency",
+  //         currency: "USD",
+  //       }).format(revenue);
 
-        return <div className="text-center font-medium">{formatted}</div>;
-      },
-    },
-    {
-      accessorKey: "lastUpdated",
-      header: "Last Updated",
-    },
-    {
-      // id: "actions",
-      accessorKey: "Actions",
-      cell: ({ row }) => {
-        const published = row.original;
-        return (
-          <div>
-            <button className="bg-primary text-white text-xs px-3 py-1.5 rounded hover:bg-black/90 transition-colors">
-              View More
-            </button>
-          </div>
-        );
-      },
-    },
-  ];
+  //       return <div className="text-center font-medium">{formatted}</div>;
+  //     },
+  //   },
+  //   {
+  //     accessorKey: "lastUpdated",
+  //     header: "Last Updated",
+  //   },
+  //   {
+  //     // id: "actions",
+  //     accessorKey: "Actions",
+  //     cell: ({ row }) => {
+  //       const published = row.original;
+  //       return (
+  //         <div>
+  //           <button className="bg-primary text-white text-xs px-3 py-1.5 rounded hover:bg-black/90 transition-colors">
+  //             View More
+  //           </button>
+  //         </div>
+  //       );
+  //     },
+  //   },
+  // ];
 
   return (
     <div className="space-y-6">
@@ -126,7 +126,7 @@ const TAnalyticsPage = () => {
         <div className="pb-6">
           <CardTitle className="text-2xl font-bold">Courses Uploaded</CardTitle>
         </div>
-        <DataTable columns={columns} data={mockCourses.published} />
+        {/* <DataTable columns={columns} data={mockCourses.published} /> */}
       </div>
     </div>
   );

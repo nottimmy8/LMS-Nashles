@@ -33,7 +33,8 @@ export default function TutorLayout({
               <div className="w-full p-6 pb-0 sticky top-0 z-10">
                 <DashNavbar title="Tutor" />
               </div>
-              {/*  */} <main className="w-full p-6">{children} </main>
+              {/*  */}
+              <main className="w-full p-6">{children} </main>
             </div>
           </div>
           {/* footer */}

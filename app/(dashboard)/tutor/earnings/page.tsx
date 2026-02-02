@@ -3,7 +3,7 @@ import StatusCard from "../../_components/status-card";
 import MontlyProfit from "../../_components/profit-chart";
 import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
-import { mockCourses } from "@/app/(dashboard)/tutor/my-courses/page";
+// import { mockCourses } from "@/app/(dashboard)/tutor/my-courses/page";
 import { DataTable } from "../../_components/data-table";
 import { EarningsChart } from "@/components/EarningsChart";
 import { RevenueTrendChart } from "@/components/revenue-chart";
@@ -31,79 +31,79 @@ const EarningsPage = () => {
     setWithdrawAmount("");
   };
 
-  const columns: ColumnDef<(typeof mockCourses.published)[number]>[] = [
-    {
-      accessorKey: "title",
-      header: "Courses",
-      cell: ({ row }) => {
-        const course = row.original;
-        return (
-          <div className="flex items-center gap-3">
-            <Image
-              src={course.thumbnail}
-              alt={course.title}
-              width={50}
-              height={50}
-              className="rounded-lg object-cover"
-            />
-            <span className="flex flex-col">
-              <h1 className="font-semibold text-sm">{course.title}</h1>
-              <p className="text-xs text-gray-500">{course.category}</p>
-            </span>
-          </div>
-        );
-      },
-    },
-    {
-      accessorKey: "level",
-      header: "Level",
-      cell: ({ row }) => (
-        <span className="text-xs font-medium px-2 py-1 bg-gray-100 rounded-full">
-          {row.getValue("level")}
-        </span>
-      ),
-    },
+  // const columns: ColumnDef<(typeof mockCourses.published)[number]>[] = [
+  //   {
+  //     accessorKey: "title",
+  //     header: "Courses",
+  //     cell: ({ row }) => {
+  //       const course = row.original;
+  //       return (
+  //         <div className="flex items-center gap-3">
+  //           <Image
+  //             src={course.thumbnail}
+  //             alt={course.title}
+  //             width={50}
+  //             height={50}
+  //             className="rounded-lg object-cover"
+  //           />
+  //           <span className="flex flex-col">
+  //             <h1 className="font-semibold text-sm">{course.title}</h1>
+  //             <p className="text-xs text-gray-500">{course.category}</p>
+  //           </span>
+  //         </div>
+  //       );
+  //     },
+  //   },
+  //   {
+  //     accessorKey: "level",
+  //     header: "Level",
+  //     cell: ({ row }) => (
+  //       <span className="text-xs font-medium px-2 py-1 bg-gray-100 rounded-full">
+  //         {row.getValue("level")}
+  //       </span>
+  //     ),
+  //   },
 
-    {
-      accessorKey: "revenue",
-      header: () => <div className="text-center">Revenue</div>,
-      cell: ({ row }) => {
-        const revenue = parseFloat(row.getValue("revenue"));
-        const formatted = new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "USD",
-        }).format(revenue);
+  //   {
+  //     accessorKey: "revenue",
+  //     header: () => <div className="text-center">Revenue</div>,
+  //     cell: ({ row }) => {
+  //       const revenue = parseFloat(row.getValue("revenue"));
+  //       const formatted = new Intl.NumberFormat("en-US", {
+  //         style: "currency",
+  //         currency: "USD",
+  //       }).format(revenue);
 
-        return (
-          <div className="text-center font-bold text-emerald-600">
-            {formatted}
-          </div>
-        );
-      },
-    },
+  //       return (
+  //         <div className="text-center font-bold text-emerald-600">
+  //           {formatted}
+  //         </div>
+  //       );
+  //     },
+  //   },
 
-    {
-      accessorKey: "lastUpdated",
-      header: "Last Updated",
-      cell: ({ row }) => (
-        <span className="text-gray-500 text-xs">
-          {row.getValue("lastUpdated")}
-        </span>
-      ),
-    },
-    {
-      accessorKey: "Actions",
-      cell: ({ row }) => {
-        return (
-          <div className="text-right">
-            <button className="bg-black text-white text-[10px] px-3 py-1.5 rounded-lg hover:bg-black/80 transition-all font-medium uppercase tracking-wider">
-              Stats
-            </button>
-          </div>
-        );
-      },
-    },
-  ];
+  //   {
+  //     accessorKey: "lastUpdated",
+  //     header: "Last Updated",
+  //     cell: ({ row }) => (
+  //       <span className="text-gray-500 text-xs">
+  //         {row.getValue("lastUpdated")}
+  //       </span>
+  //     ),
+  //   },
+  //   {
+  //     accessorKey: "Actions",
+  //     cell: ({ row }) => {
+  //       return (
+  //         <div className="text-right">
+  //           <button className="bg-black text-white text-[10px] px-3 py-1.5 rounded-lg hover:bg-black/80 transition-all font-medium uppercase tracking-wider">
+  //             Stats
+  //           </button>
+  //         </div>
+  //       );
+  //     },
+  //   },
+  // ];
 
   return (
     <div className="space-y-8">
@@ -163,7 +163,7 @@ const EarningsPage = () => {
             </button>
           </div>
           <div className="p-4">
-            <DataTable columns={columns} data={mockCourses.published} />
+            {/* <DataTable columns={columns} data={mockCourses.published} /> */}
           </div>
         </div>
 

@@ -13,144 +13,53 @@ import {
   Trash2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { courseService } from "@/services/course.service";
+import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-const tabs = [
-  { name: "Published", value: "published", count: 8 },
-  { name: "Drafts", value: "draft", count: 3 },
-  { name: "Archived", value: "archived", count: 2 },
+const tabConfig = [
+  { name: "Published", value: "published" },
+  { name: "Drafts", value: "draft" },
+  { name: "Archived", value: "archived" },
 ];
 
-export const mockCourses = {
-  published: [
-    {
-      id: 1,
-      title: "Modern React from Scratch",
-      thumbnail:
-        "https://img.freepik.com/free-photo/abstract-black-white-background_53876-10264.jpg",
-      students: 1248,
-      views: 8420,
-      rating: 4.7,
-      revenue: 12450,
-      status: "published",
-      lastUpdated: "2026-01-12",
-      category: "Web Development",
-      level: "Intermediate",
-    },
-    {
-      id: 2,
-      title: "UI Design Fundamentals",
-      thumbnail:
-        "https://img.freepik.com/free-photo/abstract-black-white-background_53876-10264.jpg",
-      students: 932,
-      views: 6104,
-      rating: 4.5,
-      revenue: 9320,
-      status: "published",
-      lastUpdated: "2026-01-08",
-      category: "Design",
-      level: "Beginner",
-    },
-    {
-      id: 5,
-      title: "Advanced MongoDB",
-      thumbnail:
-        "https://img.freepik.com/free-photo/abstract-black-white-background_53876-10264.jpg",
-      students: 0,
-      views: 0,
-      rating: 0,
-      revenue: 0,
-      status: "published",
-      lastUpdated: "2026-01-25",
-      category: "Backend",
-      level: "Advanced",
-    },
-    {
-      id: 6,
-      title: "Advanced MongoDB",
-      thumbnail:
-        "https://img.freepik.com/free-photo/abstract-black-white-background_53876-10264.jpg",
-      students: 0,
-      views: 0,
-      rating: 0,
-      revenue: 0,
-      status: "published",
-      lastUpdated: "2026-01-25",
-      category: "Database",
-      level: "Intermediate",
-    },
-    {
-      id: 7,
-      title: "Advanced MongoDB",
-      thumbnail:
-        "https://img.freepik.com/free-photo/abstract-black-white-background_53876-10264.jpg",
-      students: 0,
-      views: 0,
-      rating: 0,
-      revenue: 0,
-      status: "published",
-      lastUpdated: "2026-01-25",
-      category: "Backend",
-      level: "Advanced",
-    },
-    {
-      id: 8,
-      title: "Advanced Next.js",
-      thumbnail:
-        "https://img.freepik.com/free-photo/abstract-black-white-background_53876-10264.jpg",
-      students: 100,
-      views: 400,
-      rating: 4.5,
-      revenue: 1000,
-      status: "published",
-      lastUpdated: "2026-01-25",
-      category: "Frontend",
-      level: "Advanced",
-    },
-  ],
-  draft: [
-    {
-      id: 3,
-      title: "Advanced MongoDB",
-      thumbnail:
-        "https://img.freepik.com/free-photo/abstract-black-white-background_53876-10264.jpg",
-      students: 0,
-      views: 0,
-      rating: 0,
-      revenue: 0,
-      status: "draft",
-      lastUpdated: "2026-01-25",
-      category: "Backend",
-      level: "Beginner",
-    },
-  ],
-  archived: [
-    {
-      id: 4,
-      title: "Old JavaScript Course",
-      thumbnail:
-        "https://img.freepik.com/free-photo/abstract-black-white-background_53876-10264.jpg",
-      students: 456,
-      views: 2340,
-      rating: 4.2,
-      revenue: 4560,
-      status: "archived",
-      lastUpdated: "2025-11-15",
-      category: "Frontend",
-      level: "Beginner",
-    },
-  ],
-};
-
 const TCoursesPage = () => {
+  const getFileUrl = (path: string | undefined) => {
+    if (!path) return null;
+    if (path.startsWith("blob:") || path.startsWith("http")) return path;
+    const baseUrl =
+      process.env.NEXT_PUBLIC_API_BASE_URL?.replace("/api/v1", "") ||
+      "http://localhost:5000";
+    return `${baseUrl}${path}`;
+  };
+
   const [activeTab, setActiveTab] = useState<string>("published");
   const [searchQuery, setSearchQuery] = useState("");
+  const [courses, setCourses] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const currentCourses =
-    mockCourses[activeTab as keyof typeof mockCourses] || [];
+  useEffect(() => {
+    const fetchCourses = async () => {
+      setIsLoading(true);
+      try {
+        const data = await courseService.getTutorCourses(activeTab);
+        setCourses(data);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, [activeTab]);
+
+  const filteredCourses = courses.filter((course) =>
+    course.title.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
 
   return (
     <div className="w-full space-y-6">
@@ -196,7 +105,7 @@ const TCoursesPage = () => {
         {/* Enhanced Tabs with Motion */}
         <div className="mt-6 relative">
           <div className="inline-flex items-center gap-1 p-1 bg-gray-100 rounded-lg">
-            {tabs.map((tab) => (
+            {tabConfig.map((tab) => (
               <button
                 key={tab.value}
                 onClick={() => setActiveTab(tab.value)}
@@ -215,15 +124,11 @@ const TCoursesPage = () => {
                 )}
                 <span className="relative z-10 flex items-center gap-2">
                   {tab.name}
-                  <span
-                    className={`px-2 py-0.5 text-xs rounded-full ${
-                      activeTab === tab.value
-                        ? "bg-white/20 text-white"
-                        : "bg-gray-200 text-gray-600"
-                    }`}
-                  >
-                    {tab.count}
-                  </span>
+                  {activeTab === tab.value && (
+                    <span className="px-2 py-0.5 text-xs rounded-full bg-white/20 text-white">
+                      {courses.length}
+                    </span>
+                  )}
                 </span>
               </button>
             ))}
@@ -241,10 +146,14 @@ const TCoursesPage = () => {
           transition={{ duration: 0.3 }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {currentCourses.length > 0 ? (
-            currentCourses.map((course, index) => (
+          {isLoading ? (
+            <div className="col-span-full flex items-center justify-center py-20">
+              <Loader2 className="w-10 h-10 animate-spin text-primary" />
+            </div>
+          ) : filteredCourses.length > 0 ? (
+            filteredCourses.map((course, index) => (
               <motion.div
-                key={course.id}
+                key={course._id || course.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
@@ -253,7 +162,7 @@ const TCoursesPage = () => {
                 {/* Course Thumbnail */}
                 <div className="relative h-48 overflow-hidden bg-gray-100">
                   <Image
-                    src={course.thumbnail}
+                    src={getFileUrl(course.thumbnail) ?? "/placeholder.png"}
                     alt={course.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -284,13 +193,13 @@ const TCoursesPage = () => {
                   <div className="grid grid-cols-2 gap-3 mb-4">
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Users className="w-4 h-4" />
-                      <span>{course.students.toLocaleString()} students</span>
+                      <span>{course.students?.length || 0} students</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Eye className="w-4 h-4" />
-                      <span>{course.views.toLocaleString()} views</span>
+                      <span>{(course.views || 0).toLocaleString()} views</span>
                     </div>
-                    {course.rating > 0 && (
+                    {(course.rating || 0) > 0 && (
                       <>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -298,7 +207,7 @@ const TCoursesPage = () => {
                         </div>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <span className="font-semibold text-green-600">
-                            ${course.revenue.toLocaleString()}
+                            ${(course.revenue || 0).toLocaleString()}
                           </span>
                         </div>
                       </>
@@ -310,20 +219,42 @@ const TCoursesPage = () => {
                     <Clock className="w-3 h-3" />
                     <span>
                       Updated{" "}
-                      {new Date(course.lastUpdated).toLocaleDateString()}
+                      {new Date(
+                        course.updatedAt || course.lastUpdated,
+                      ).toLocaleDateString()}
                     </span>
                   </div>
 
                   {/* Action Buttons */}
                   <div className="flex items-center gap-2 pt-4 border-t">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1 gap-2"
+                    <Link
+                      href={
+                        course.status === "published"
+                          ? `/tutor/courses/${course._id || course.id}`
+                          : `/tutor/upload-course?id=${course._id || course.id}`
+                      }
+                      className="flex-1"
                     >
-                      <Edit className="w-4 h-4" />
-                      Edit
-                    </Button>
+                      <Button
+                        variant={
+                          course.status === "published" ? "default" : "outline"
+                        }
+                        size="sm"
+                        className="w-full gap-2"
+                      >
+                        {course.status === "published" ? (
+                          <>
+                            <Eye className="w-4 h-4" />
+                            View Details
+                          </>
+                        ) : (
+                          <>
+                            <Edit className="w-4 h-4" />
+                            Keep Editing
+                          </>
+                        )}
+                      </Button>
+                    </Link>
                     <Button
                       variant="outline"
                       size="sm"

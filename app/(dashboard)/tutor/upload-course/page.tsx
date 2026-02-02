@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
@@ -24,47 +24,80 @@ import {
   Video,
   FileText,
   Image as ImageIcon,
+  Loader2,
 } from "lucide-react";
+import { courseService } from "@/services/course.service";
+import { useRouter, useSearchParams } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
-type Lesson = {
-  id: string;
-  title: string;
-  videoUrl: string;
-  duration: string;
-  description: string;
-};
+const lessonSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  videoUrl: z.string().optional(),
+  duration: z.string().optional(),
+  description: z.string().optional(),
+});
 
-type Chapter = {
-  id: string;
-  title: string;
-  lessons: Lesson[];
-};
+const chapterSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  lessons: z.array(lessonSchema),
+});
 
-type CourseFormData = {
-  title: string;
-  subtitle: string;
-  description: string;
-  category: string;
-  level: string;
-  language: string;
-  price: string;
-  thumbnail: string;
-  chapters: Chapter[];
-};
+const courseSchema = z.object({
+  title: z.string().min(5, "Title must be at least 5 characters"),
+  subtitle: z.string().optional(),
+  description: z.string().min(20, "Description must be at least 20 characters"),
+  category: z.string().min(1, "Category is required"),
+  level: z.string().min(1, "Level is required"),
+  language: z.string().min(1, "Language is required"),
+  price: z.string().min(1, "Price is required"),
+  thumbnail: z.string().min(1, "Thumbnail is required"),
+  chapters: z.array(chapterSchema),
+});
 
-const UploadCoursePage = () => {
+type Lesson = z.infer<typeof lessonSchema>;
+type Chapter = z.infer<typeof chapterSchema>;
+type CourseFormData = z.infer<typeof courseSchema>;
+
+const UploadCourseContent = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const courseId = searchParams.get("id");
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState<CourseFormData>({
-    title: "",
-    subtitle: "",
-    description: "",
-    category: "",
-    level: "",
-    language: "",
-    price: "",
-    thumbnail: "",
-    chapters: [],
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<{
+    [key: string]: number;
+  }>({});
+  const [pendingFiles, setPendingFiles] = useState<{
+    [key: string]: File;
+  }>({});
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm<CourseFormData>({
+    resolver: zodResolver(courseSchema),
+    defaultValues: {
+      title: "",
+      subtitle: "",
+      description: "",
+      category: "",
+      level: "",
+      language: "",
+      price: "",
+      thumbnail: "",
+      chapters: [],
+    },
   });
+
+  const formData = watch();
 
   const [chapters, setChapters] = useState<Chapter[]>([
     {
@@ -73,6 +106,66 @@ const UploadCoursePage = () => {
       lessons: [],
     },
   ]);
+
+  useEffect(() => {
+    if (courseId) {
+      const fetchCourse = async () => {
+        try {
+          const course = await courseService.getCourseById(courseId);
+          reset({
+            title: course.title || "",
+            subtitle: course.subtitle || "",
+            description: course.description || "",
+            category: course.category || "",
+            level: course.level || "",
+            language: course.language || "",
+            price: course.price?.toString() || "",
+            thumbnail: course.thumbnail || "",
+            chapters: course.chapters || [],
+          });
+          if (course.chapters && course.chapters.length > 0) {
+            setChapters(course.chapters);
+          }
+        } catch (error) {
+          console.error("Error fetching course for edit:", error);
+        }
+      };
+      fetchCourse();
+    }
+  }, [courseId, reset]);
+
+  const getFileUrl = (path: string | undefined) => {
+    if (!path) return null;
+    if (path.startsWith("blob:") || path.startsWith("http")) return path;
+    const baseUrl =
+      process.env.NEXT_PUBLIC_API_BASE_URL?.replace("/api/v1", "") ||
+      "http://localhost:5000";
+    return `${baseUrl}${path}`;
+  };
+
+  const simulateUpload = async (file: File, key: string) => {
+    const isImage = file.type.startsWith("image/");
+    const maxSize = isImage ? 2 * 1024 * 1024 : 100 * 1024 * 1024; // 2MB image, 100MB video
+
+    if (file.size > maxSize) {
+      alert(`File size too large. Max ${isImage ? "2MB" : "100MB"} allowed.`);
+      return;
+    }
+
+    // Store the file for actual upload later
+    setPendingFiles((prev) => ({ ...prev, [key]: file }));
+
+    // UI Feedback: Show 100% immediately or simulate quick progress
+    setUploadProgress((prev) => ({ ...prev, [key]: 100 }));
+
+    const localUrl = URL.createObjectURL(file);
+
+    if (key === "thumbnail") {
+      setValue("thumbnail", localUrl);
+    } else {
+      return localUrl;
+    }
+  };
 
   const addChapter = () => {
     const newChapter: Chapter = {
@@ -147,14 +240,116 @@ const UploadCoursePage = () => {
     );
   };
 
+  const updateLessonVideo = async (
+    chapterId: string,
+    lessonId: string,
+    file: File,
+  ) => {
+    const videoUrl = await simulateUpload(file, `video-${lessonId}`);
+    if (videoUrl) {
+      setChapters(
+        chapters.map((ch) =>
+          ch.id === chapterId
+            ? {
+                ...ch,
+                lessons: ch.lessons.map((lesson) =>
+                  lesson.id === lessonId ? { ...lesson, videoUrl } : lesson,
+                ),
+              }
+            : ch,
+        ),
+      );
+    }
+  };
+
+  const handleCourseSubmit = async (
+    data: CourseFormData,
+    status: "draft" | "published",
+  ) => {
+    // 1. Validation for published status
+    if (status === "published") {
+      if (chapters.length < 2) {
+        alert("A published course must have at least 2 chapters.");
+        return;
+      }
+      const hasEmptyChapters = chapters.some(
+        (ch) => !ch.title || ch.lessons.length === 0,
+      );
+      if (hasEmptyChapters) {
+        alert(
+          "All chapters must have a title and at least one lesson before publishing.",
+        );
+        return;
+      }
+    }
+
+    // 2. Data Cleaning
+    const cleanedChapters = chapters.map((ch) => ({
+      title: ch.title || "Untitled Chapter",
+      lessons: ch.lessons.map((l) => ({
+        title: l.title || "Untitled Lesson",
+        videoUrl: l.videoUrl || "",
+        duration: l.duration || "",
+        description: l.description || "",
+      })),
+    }));
+
+    setIsSubmitting(true);
+    try {
+      const formDataToSend = new FormData();
+
+      const payload = {
+        ...data,
+        price: parseFloat(data.price) || 0,
+        chapters: cleanedChapters,
+        status,
+      };
+
+      // Append data as stringified JSON
+      formDataToSend.append("courseData", JSON.stringify(payload));
+
+      // Append files
+      Object.entries(pendingFiles).forEach(([key, file]) => {
+        formDataToSend.append(key, file);
+      });
+
+      if (status === "draft") {
+        await courseService.saveDraft(formDataToSend, courseId || undefined);
+      } else {
+        await courseService.publishCourse(
+          formDataToSend,
+          courseId || undefined,
+        );
+      }
+
+      alert(
+        `Course ${status === "draft" ? "saved as draft" : "published"} successfully!`,
+      );
+      router.push("/tutor/my-courses");
+    } catch (error: any) {
+      console.error(
+        `Error ${status === "draft" ? "saving draft" : "publishing course"}:`,
+        error,
+      );
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Unknown error occurred";
+      alert(
+        `Failed to ${status === "draft" ? "save draft" : "publish course"}: ${errorMessage}`,
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const saveDraft = () => {
-    console.log("Saving draft...", { ...formData, chapters });
-    // TODO: Implement API call to save draft
+    // For draft, we skip strict Zod validation if possible, or just use what we have
+    handleCourseSubmit(formData, "draft");
   };
 
   const publishCourse = () => {
-    console.log("Publishing course...", { ...formData, chapters });
-    // TODO: Implement API call to publish course
+    handleSubmit((data) => handleCourseSubmit(data, "published"))();
   };
 
   const renderStepIndicator = () => (
@@ -197,16 +392,20 @@ const UploadCoursePage = () => {
       </div>
 
       <FieldGroup>
-        <Label>Course Title *</Label>
+        <Label className="flex justify-between">
+          Course Title *
+          {errors.title && (
+            <span className="text-red-500 text-xs font-normal">
+              {errors.title.message}
+            </span>
+          )}
+        </Label>
         <Field>
           <input
             type="text"
             placeholder="e.g., Complete Web Development Bootcamp"
-            value={formData.title}
-            onChange={(e) =>
-              setFormData({ ...formData, title: e.target.value })
-            }
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+            {...register("title")}
+            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 ${errors.title ? "border-red-500" : "border-gray-300"}`}
           />
         </Field>
       </FieldGroup>
@@ -217,26 +416,27 @@ const UploadCoursePage = () => {
           <input
             type="text"
             placeholder="e.g., Learn HTML, CSS, JavaScript, React and more"
-            value={formData.subtitle}
-            onChange={(e) =>
-              setFormData({ ...formData, subtitle: e.target.value })
-            }
+            {...register("subtitle")}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
           />
         </Field>
       </FieldGroup>
 
       <FieldGroup>
-        <Label>Course Description *</Label>
+        <Label className="flex justify-between">
+          Course Description *
+          {errors.description && (
+            <span className="text-red-500 text-xs font-normal">
+              {errors.description.message}
+            </span>
+          )}
+        </Label>
         <Field>
           <textarea
             placeholder="Describe what students will learn in this course..."
-            value={formData.description}
-            onChange={(e) =>
-              setFormData({ ...formData, description: e.target.value })
-            }
+            {...register("description")}
             rows={6}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none ${errors.description ? "border-red-500" : "border-gray-300"}`}
           />
         </Field>
       </FieldGroup>
@@ -247,21 +447,31 @@ const UploadCoursePage = () => {
           <Select
             value={formData.category}
             onValueChange={(value) =>
-              setFormData({ ...formData, category: value })
+              setValue("category", value, { shouldValidate: true })
             }
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="web-development">Web Development</SelectItem>
-              <SelectItem value="mobile-development">
+              <SelectItem key="web-development" value="web-development">
+                Web Development
+              </SelectItem>
+              <SelectItem key="mobile-development" value="mobile-development">
                 Mobile Development
               </SelectItem>
-              <SelectItem value="data-science">Data Science</SelectItem>
-              <SelectItem value="design">Design</SelectItem>
-              <SelectItem value="business">Business</SelectItem>
-              <SelectItem value="marketing">Marketing</SelectItem>
+              <SelectItem key="data-science" value="data-science">
+                Data Science
+              </SelectItem>
+              <SelectItem key="design" value="design">
+                Design
+              </SelectItem>
+              <SelectItem key="business" value="business">
+                Business
+              </SelectItem>
+              <SelectItem key="marketing" value="marketing">
+                Marketing
+              </SelectItem>
             </SelectContent>
           </Select>
         </FieldGroup>
@@ -271,17 +481,25 @@ const UploadCoursePage = () => {
           <Select
             value={formData.level}
             onValueChange={(value) =>
-              setFormData({ ...formData, level: value })
+              setValue("level", value, { shouldValidate: true })
             }
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select level" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="beginner">Beginner</SelectItem>
-              <SelectItem value="intermediate">Intermediate</SelectItem>
-              <SelectItem value="advanced">Advanced</SelectItem>
-              <SelectItem value="all-levels">All Levels</SelectItem>
+              <SelectItem key="beginner" value="beginner">
+                Beginner
+              </SelectItem>
+              <SelectItem key="intermediate" value="intermediate">
+                Intermediate
+              </SelectItem>
+              <SelectItem key="advanced" value="advanced">
+                Advanced
+              </SelectItem>
+              <SelectItem key="all-levels" value="all-levels">
+                All Levels
+              </SelectItem>
             </SelectContent>
           </Select>
         </FieldGroup>
@@ -291,48 +509,105 @@ const UploadCoursePage = () => {
           <Select
             value={formData.language}
             onValueChange={(value) =>
-              setFormData({ ...formData, language: value })
+              setValue("language", value, { shouldValidate: true })
             }
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select language" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="english">English</SelectItem>
-              <SelectItem value="spanish">Spanish</SelectItem>
-              <SelectItem value="french">French</SelectItem>
-              <SelectItem value="german">German</SelectItem>
+              <SelectItem key="english" value="english">
+                English
+              </SelectItem>
+              <SelectItem key="spanish" value="spanish">
+                Spanish
+              </SelectItem>
+              <SelectItem key="french" value="french">
+                French
+              </SelectItem>
+              <SelectItem key="german" value="german">
+                German
+              </SelectItem>
             </SelectContent>
           </Select>
         </FieldGroup>
 
         <FieldGroup>
-          <Label>Price (USD) *</Label>
+          <Label className="flex justify-between">
+            Price (USD) *
+            {errors.price && (
+              <span className="text-red-500 text-xs font-normal">
+                {errors.price.message}
+              </span>
+            )}
+          </Label>
           <Field>
             <input
               type="number"
               placeholder="49.99"
-              value={formData.price}
-              onChange={(e) =>
-                setFormData({ ...formData, price: e.target.value })
-              }
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+              {...register("price")}
+              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 ${errors.price ? "border-red-500" : "border-gray-300"}`}
             />
           </Field>
         </FieldGroup>
       </div>
 
       <FieldGroup>
-        <Label>Course Thumbnail *</Label>
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer">
-          <ImageIcon className="w-12 h-12 mx-auto text-gray-400 mb-3" />
-          <p className="text-sm text-gray-600 mb-2">
-            Click to upload or drag and drop
-          </p>
-          <p className="text-xs text-gray-400">
-            PNG, JPG or WEBP (recommended: 1280x720px)
-          </p>
-          <input type="file" className="hidden" accept="image/*" />
+        <Label className="flex justify-between">
+          Course Thumbnail *
+          {errors.thumbnail && (
+            <span className="text-red-500 text-xs font-normal">
+              {errors.thumbnail.message}
+            </span>
+          )}
+        </Label>
+        <div
+          onClick={() => document.getElementById("thumbnail-upload")?.click()}
+          className={`border-2 border-dashed rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer relative overflow-hidden ${errors.thumbnail ? "border-red-500 bg-red-50/10" : "border-gray-300"}`}
+        >
+          {formData.thumbnail ? (
+            <div className="relative h-40 w-full group">
+              <img
+                src={getFileUrl(formData.thumbnail) ?? "/placeholder.png"}
+                alt="Thumbnail preview"
+                className="h-full w-full object-cover rounded-lg"
+              />
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <Upload className="text-white w-8 h-8" />
+              </div>
+            </div>
+          ) : (
+            <>
+              <ImageIcon className="w-12 h-12 mx-auto text-gray-400 mb-3" />
+              <p className="text-sm text-gray-600 mb-2">
+                Click to upload or drag and drop
+              </p>
+              <p className="text-xs text-gray-400">
+                PNG, JPG or WEBP (max: 2MB)
+              </p>
+            </>
+          )}
+
+          {uploadProgress["thumbnail"] !== undefined &&
+            uploadProgress["thumbnail"] < 100 && (
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-100">
+                <div
+                  className="h-full bg-primary transition-all duration-300"
+                  style={{ width: `${uploadProgress["thumbnail"]}%` }}
+                />
+              </div>
+            )}
+
+          <input
+            id="thumbnail-upload"
+            type="file"
+            className="hidden"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) simulateUpload(file, "thumbnail");
+            }}
+          />
         </div>
       </FieldGroup>
     </div>
@@ -384,38 +659,82 @@ const UploadCoursePage = () => {
                   {chapter.lessons.map((lesson, lessonIndex) => (
                     <div
                       key={lesson.id}
-                      className="flex items-center gap-3 bg-gray-50 p-4 rounded-lg"
+                      className="flex flex-col gap-3 bg-gray-50 p-4 rounded-lg relative overflow-hidden"
                     >
-                      <Video className="w-4 h-4 text-gray-400" />
-                      <input
-                        type="text"
-                        placeholder={`Lesson ${lessonIndex + 1}: Enter lesson title`}
-                        value={lesson.title}
-                        onChange={(e) =>
-                          updateLessonTitle(
-                            chapter.id,
-                            lesson.id,
-                            e.target.value,
-                          )
-                        }
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 bg-white"
-                      />
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-2 bg-white"
-                      >
-                        <Upload className="w-4 h-4" />
-                        Upload Video
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => removeLesson(chapter.id, lesson.id)}
-                        className="text-red-500 hover:bg-red-50 bg-white"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                      <div className="flex items-center gap-3">
+                        <Video className="w-4 h-4 text-gray-400" />
+                        <input
+                          type="text"
+                          placeholder={`Lesson ${lessonIndex + 1}: Enter lesson title`}
+                          value={lesson.title}
+                          onChange={(e) =>
+                            updateLessonTitle(
+                              chapter.id,
+                              lesson.id,
+                              e.target.value,
+                            )
+                          }
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 bg-white"
+                        />
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            document
+                              .getElementById(`video-upload-${lesson.id}`)
+                              ?.click()
+                          }
+                          className={`gap-2 bg-white ${lesson.videoUrl ? "text-green-600 border-green-200" : ""}`}
+                        >
+                          {lesson.videoUrl ? (
+                            <CheckCircle className="w-4 h-4" />
+                          ) : (
+                            <Upload className="w-4 h-4" />
+                          )}
+                          {lesson.videoUrl ? "Change Video" : "Upload Video"}
+                        </Button>
+                        <input
+                          id={`video-upload-${lesson.id}`}
+                          type="file"
+                          accept="video/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file)
+                              updateLessonVideo(chapter.id, lesson.id, file);
+                          }}
+                        />
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => removeLesson(chapter.id, lesson.id)}
+                          className="text-red-500 hover:bg-red-50 bg-white"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+
+                      {uploadProgress[`video-${lesson.id}`] !== undefined &&
+                        uploadProgress[`video-${lesson.id}`] < 100 && (
+                          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-100">
+                            <div
+                              className="h-full bg-primary transition-all duration-300"
+                              style={{
+                                width: `${uploadProgress[`video-${lesson.id}`]}%`,
+                              }}
+                            />
+                          </div>
+                        )}
+
+                      {lesson.videoUrl && (
+                        <p className="text-[10px] text-green-600 flex items-center gap-1 ml-7">
+                          <CheckCircle className="w-3 h-3" />
+                          Video ready:{" "}
+                          <span className="truncate max-w-[200px]">
+                            {lesson.videoUrl}
+                          </span>
+                        </p>
+                      )}
                     </div>
                   ))}
 
@@ -539,8 +858,17 @@ const UploadCoursePage = () => {
         </Button>
 
         <div className="flex gap-3">
-          <Button variant="outline" onClick={saveDraft} className="gap-2">
-            <Save className="w-4 h-4" />
+          <Button
+            variant="outline"
+            onClick={saveDraft}
+            className="gap-2"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Save className="w-4 h-4" />
+            )}
             Save as Draft
           </Button>
 
@@ -550,14 +878,33 @@ const UploadCoursePage = () => {
             <Button
               onClick={publishCourse}
               className="gap-2 bg-green-600 hover:bg-green-700"
+              disabled={isSubmitting}
             >
-              <CheckCircle className="w-4 h-4" />
+              {isSubmitting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <CheckCircle className="w-4 h-4" />
+              )}
               Publish Course
             </Button>
           )}
         </div>
       </div>
     </div>
+  );
+};
+
+const UploadCoursePage = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      }
+    >
+      <UploadCourseContent />
+    </Suspense>
   );
 };
 
