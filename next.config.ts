@@ -27,6 +27,10 @@ const nextConfig: NextConfig = {
         port: "3000",
         pathname: "/placeholder.png",
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
     ],
   },
 };

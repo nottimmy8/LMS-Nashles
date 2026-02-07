@@ -26,16 +26,9 @@ const tabConfig = [
   { name: "Archived", value: "archived" },
 ];
 
-const TCoursesPage = () => {
-  const getFileUrl = (path: string | undefined) => {
-    if (!path) return null;
-    if (path.startsWith("blob:") || path.startsWith("http")) return path;
-    const baseUrl =
-      process.env.NEXT_PUBLIC_API_BASE_URL?.replace("/api/v1", "") ||
-      "http://localhost:5000";
-    return `${baseUrl}${path}`;
-  };
+import { getFileUrl } from "@/lib/utils";
 
+const TCoursesPage = () => {
   const [activeTab, setActiveTab] = useState<string>("published");
   const [searchQuery, setSearchQuery] = useState("");
   const [courses, setCourses] = useState<any[]>([]);
@@ -45,7 +38,7 @@ const TCoursesPage = () => {
     const fetchCourses = async () => {
       setIsLoading(true);
       try {
-        const data = await courseService.getTutorCourses(activeTab);
+        const data = await courseService.getTutorCourses(activeTab as any);
         setCourses(data);
       } catch (error) {
         console.error("Error fetching courses:", error);

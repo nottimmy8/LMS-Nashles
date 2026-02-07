@@ -31,6 +31,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { getFileUrl } from "@/lib/utils";
 
 const lessonSchema = z.object({
   id: z.string(),
@@ -46,6 +47,7 @@ const chapterSchema = z.object({
   lessons: z.array(lessonSchema),
 });
 
+// Full validation schema for publishing
 const courseSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters"),
   subtitle: z.string().optional(),
@@ -56,6 +58,19 @@ const courseSchema = z.object({
   price: z.string().min(1, "Price is required"),
   thumbnail: z.string().min(1, "Thumbnail is required"),
   chapters: z.array(chapterSchema),
+});
+
+// Relaxed schema for drafts - only title is truly required
+const draftSchema = z.object({
+  title: z.string().min(1, "Title is required to save a draft"),
+  subtitle: z.string().optional(),
+  description: z.string().optional(),
+  category: z.string().optional(),
+  level: z.string().optional(),
+  language: z.string().optional(),
+  price: z.string().optional(),
+  thumbnail: z.string().optional(),
+  chapters: z.array(chapterSchema).optional(),
 });
 
 type Lesson = z.infer<typeof lessonSchema>;
@@ -81,6 +96,7 @@ const UploadCourseContent = () => {
     setValue,
     watch,
     reset,
+    getValues,
     formState: { errors },
   } = useForm<CourseFormData>({
     resolver: zodResolver(courseSchema),
@@ -112,19 +128,31 @@ const UploadCourseContent = () => {
       const fetchCourse = async () => {
         try {
           const course = await courseService.getCourseById(courseId);
+          const sanitizedChapters = (course.chapters || []).map((ch: any) => ({
+            id: ch.id || ch._id || Date.now().toString(),
+            title: ch.title || "",
+            lessons: (ch.lessons || []).map((l: any) => ({
+              id: l.id || l._id || Date.now().toString(),
+              title: l.title || "",
+              videoUrl: l.videoUrl || "",
+              duration: l.duration || "",
+              description: l.description || "",
+            })),
+          }));
+
           reset({
             title: course.title || "",
             subtitle: course.subtitle || "",
             description: course.description || "",
-            category: course.category || "",
             level: course.level || "",
             language: course.language || "",
             price: course.price?.toString() || "",
             thumbnail: course.thumbnail || "",
-            chapters: course.chapters || [],
+            chapters: sanitizedChapters,
           });
-          if (course.chapters && course.chapters.length > 0) {
-            setChapters(course.chapters);
+
+          if (sanitizedChapters.length > 0) {
+            setChapters(sanitizedChapters);
           }
         } catch (error) {
           console.error("Error fetching course for edit:", error);
@@ -133,15 +161,6 @@ const UploadCourseContent = () => {
       fetchCourse();
     }
   }, [courseId, reset]);
-
-  const getFileUrl = (path: string | undefined) => {
-    if (!path) return null;
-    if (path.startsWith("blob:") || path.startsWith("http")) return path;
-    const baseUrl =
-      process.env.NEXT_PUBLIC_API_BASE_URL?.replace("/api/v1", "") ||
-      "http://localhost:5000";
-    return `${baseUrl}${path}`;
-  };
 
   const simulateUpload = async (file: File, key: string) => {
     const isImage = file.type.startsWith("image/");
@@ -285,10 +304,13 @@ const UploadCourseContent = () => {
 
     // 2. Data Cleaning
     const cleanedChapters = chapters.map((ch) => ({
+      id: ch.id,
       title: ch.title || "Untitled Chapter",
       lessons: ch.lessons.map((l) => ({
+        id: l.id,
         title: l.title || "Untitled Lesson",
-        videoUrl: l.videoUrl || "",
+        // videoUrl: l.videoUrl || "",
+        videoUrl: l.videoUrl?.startsWith("blob:") ? "" : l.videoUrl,
         duration: l.duration || "",
         description: l.description || "",
       })),
@@ -343,8 +365,30 @@ const UploadCourseContent = () => {
     }
   };
 
+  // Sync chapters state with form data
+  useEffect(() => {
+    setValue("chapters", chapters);
+  }, [chapters, setValue]);
+
   const saveDraft = () => {
-    // For draft, we skip strict Zod validation if possible, or just use what we have
+    // Validate with draft schema (only title required)
+    const currentFormData = getValues(); // use getValues for latest state
+    const draftValidation = draftSchema.safeParse({
+      ...currentFormData,
+      chapters,
+    }); // Explicitly use chapters state
+    if (!draftValidation.success) {
+      // Safely access the first error message
+      const errorObject = (draftValidation as any).error;
+      const firstError = errorObject?.errors?.[0];
+      const errorMessage =
+        firstError?.message ||
+        "Please provide at least a course title to save as draft.";
+
+      alert(errorMessage);
+      console.error("Draft validation failed:", errorObject);
+      return;
+    }
     handleCourseSubmit(formData, "draft");
   };
 
@@ -445,7 +489,7 @@ const UploadCourseContent = () => {
         <FieldGroup>
           <Label>Category *</Label>
           <Select
-            value={formData.category}
+            value={formData.category ?? ""}
             onValueChange={(value) =>
               setValue("category", value, { shouldValidate: true })
             }
@@ -479,7 +523,7 @@ const UploadCourseContent = () => {
         <FieldGroup>
           <Label>Level *</Label>
           <Select
-            value={formData.level}
+            value={formData.level ?? ""}
             onValueChange={(value) =>
               setValue("level", value, { shouldValidate: true })
             }
@@ -507,7 +551,7 @@ const UploadCourseContent = () => {
         <FieldGroup>
           <Label>Language *</Label>
           <Select
-            value={formData.language}
+            value={formData.language ?? ""}
             onValueChange={(value) =>
               setValue("language", value, { shouldValidate: true })
             }
