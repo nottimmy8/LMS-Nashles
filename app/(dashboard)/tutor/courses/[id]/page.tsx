@@ -41,6 +41,7 @@ const CourseDetailsPage = () => {
   const [course, setCourse] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
+  const [selectedLesson, setSelectedLesson] = useState<any>(null);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -322,32 +323,77 @@ const CourseDetailsPage = () => {
                   {chapter.lessons?.map((lesson: any, lessonIdx: number) => (
                     <div
                       key={lesson._id || lesson.id}
-                      className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors group"
+                      className={`flex flex-col p-4 hover:bg-gray-50 transition-colors group cursor-pointer ${selectedLesson?.id === (lesson._id || lesson.id) ? "bg-primary/5 border-l-4 border-l-primary" : ""}`}
+                      onClick={() =>
+                        setSelectedLesson(
+                          selectedLesson?.id === (lesson._id || lesson.id)
+                            ? null
+                            : { ...lesson, id: lesson._id || lesson.id },
+                        )
+                      }
                     >
-                      <div className="flex items-center gap-4">
-                        <Play className="w-4 h-4 text-gray-400 group-hover:text-primary" />
-                        <div>
-                          <p className="text-sm font-medium">{lesson.title}</p>
-                          <p className="text-xs text-gray-500">
-                            {lesson.duration || "No duration set"}
-                          </p>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <Play
+                            className={`w-4 h-4 ${selectedLesson?.id === (lesson._id || lesson.id) ? "text-primary " : "text-gray-400 group-hover:text-primary"}`}
+                          />
+                          <div>
+                            <p className="text-sm font-medium">
+                              {lesson.title}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {lesson.duration || "No duration set"}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          {lesson.videoUrl ? (
+                            <span className="text-[10px] bg-green-100 text-green-700 px-2.5 py-1 rounded-full flex items-center gap-1 font-medium">
+                              <CheckCircle className="w-3 h-3" /> Video Ready
+                            </span>
+                          ) : (
+                            <span className="text-[10px] bg-yellow-100 text-yellow-700 px-2.5 py-1 rounded-full flex items-center gap-1 font-medium">
+                              <Clock className="w-3 h-3" /> Missing Video
+                            </span>
+                          )}
+                          <ChevronRight
+                            className={`w-4 h-4 transition-transform ${selectedLesson?.id === (lesson._id || lesson.id) ? "rotate-90 text-primary" : "text-gray-300"}`}
+                          />
                         </div>
                       </div>
-                      <div className="flex items-center gap-4">
-                        {lesson.videoUrl ? (
-                          <span className="text-[10px] bg-green-100 text-green-700 px-2.5 py-1 rounded-full flex items-center gap-1 font-medium">
-                            <CheckCircle className="w-3 h-3" /> Video Ready
-                          </span>
-                        ) : (
-                          <span className="text-[10px] bg-yellow-100 text-yellow-700 px-2.5 py-1 rounded-full flex items-center gap-1 font-medium">
-                            <Clock className="w-3 h-3" /> Missing Video
-                          </span>
-                        )}
-                        <span className="text-xs text-gray-400 flex items-center gap-1">
-                          <Eye className="w-3 h-3" />{" "}
-                          {Math.floor(Math.random() * 200)} views
-                        </span>
-                      </div>
+
+                      {selectedLesson?.id === (lesson._id || lesson.id) && (
+                        <div
+                          className="mt-4 animate-in slide-in-from-top-2 duration-300"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {lesson.videoUrl ? (
+                            <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-black shadow-lg">
+                              <video
+                                src={getFileUrl(lesson.videoUrl)}
+                                controls
+                                className="w-full h-full object-contain"
+                                autoPlay
+                              />
+                            </div>
+                          ) : (
+                            <div className="aspect-video w-full rounded-xl bg-gray-100 flex flex-col items-center justify-center text-gray-500 border-2 border-dashed">
+                              <Video className="w-12 h-12 mb-2 opacity-20" />
+                              <p>No video available for this lesson</p>
+                            </div>
+                          )}
+                          {lesson.description && (
+                            <div className="mt-4 p-4 bg-white rounded-lg border">
+                              <h5 className="text-xs font-bold uppercase text-gray-400 mb-2">
+                                Lesson Description
+                              </h5>
+                              <p className="text-sm text-gray-600 leading-relaxed">
+                                {lesson.description}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

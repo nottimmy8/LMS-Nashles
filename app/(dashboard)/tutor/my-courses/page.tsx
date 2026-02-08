@@ -248,14 +248,16 @@ const TCoursesPage = () => {
                         )}
                       </Button>
                     </Link>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1 gap-2"
-                    >
-                      <Eye className="w-4 h-4" />
-                      View
-                    </Button>
+                    <Link href={`/tutor/courses/${course._id || course.id}`}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 gap-2"
+                      >
+                        <Eye className="w-4 h-4" />
+                        View
+                      </Button>
+                    </Link>
                     <Button variant="outline" size="sm" className="px-3">
                       <MoreVertical className="w-4 h-4" />
                     </Button>

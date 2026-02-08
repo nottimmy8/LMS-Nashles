@@ -60,9 +60,32 @@ export interface CourseFilters {
 
 export const courseService = {
   /**
+   * Upload a file (image or video)
+   */
+  uploadFile: async (
+    file: File,
+    type: "image" | "video",
+    onProgress?: (progress: number) => void,
+  ): Promise<string> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await api.post(`/upload/${type}`, formData, {
+      onUploadProgress: (progressEvent) => {
+        if (onProgress && progressEvent.total) {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total,
+          );
+          onProgress(percentCompleted);
+        }
+      },
+    });
+    return response.data.url;
+  },
+
+  /**
    * Save a course as draft
    */
-  saveDraft: async (courseData: FormData, id?: string): Promise<Course> => {
+  saveDraft: async (courseData: any, id?: string): Promise<Course> => {
     const endpoint = id ? `/courses/save-draft/${id}` : "/courses/save-draft";
     const method = id ? "patch" : "post";
     const response = await api[method](endpoint, courseData);
@@ -72,7 +95,7 @@ export const courseService = {
   /**
    * Publish a course (create new or update existing)
    */
-  publishCourse: async (courseData: FormData, id?: string): Promise<Course> => {
+  publishCourse: async (courseData: any, id?: string): Promise<Course> => {
     const endpoint = id ? `/courses/publish/${id}` : "/courses/publish";
     const method = id ? "patch" : "post";
     const response = await api[method](endpoint, courseData);

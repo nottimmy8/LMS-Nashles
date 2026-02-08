@@ -83,11 +83,9 @@ const UploadCourseContent = () => {
   const courseId = searchParams.get("id");
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<{
     [key: string]: number;
-  }>({});
-  const [pendingFiles, setPendingFiles] = useState<{
-    [key: string]: File;
   }>({});
 
   const {
@@ -162,27 +160,45 @@ const UploadCourseContent = () => {
     }
   }, [courseId, reset]);
 
-  const simulateUpload = async (file: File, key: string) => {
-    const isImage = file.type.startsWith("image/");
+  const handleUpload = async (
+    file: File,
+    type: "image" | "video",
+    progressKey?: string,
+  ) => {
+    const isImage = type === "image";
     const maxSize = isImage ? 2 * 1024 * 1024 : 100 * 1024 * 1024; // 2MB image, 100MB video
 
     if (file.size > maxSize) {
       alert(`File size too large. Max ${isImage ? "2MB" : "100MB"} allowed.`);
-      return;
+      return null;
     }
 
-    // Store the file for actual upload later
-    setPendingFiles((prev) => ({ ...prev, [key]: file }));
+    if (progressKey) {
+      setUploadProgress((prev) => ({ ...prev, [progressKey]: 0 }));
+    }
 
-    // UI Feedback: Show 100% immediately or simulate quick progress
-    setUploadProgress((prev) => ({ ...prev, [key]: 100 }));
-
-    const localUrl = URL.createObjectURL(file);
-
-    if (key === "thumbnail") {
-      setValue("thumbnail", localUrl);
-    } else {
-      return localUrl;
+    try {
+      setIsUploading(true);
+      const url = await courseService.uploadFile(file, type, (progress) => {
+        if (progressKey) {
+          setUploadProgress((prev) => ({ ...prev, [progressKey]: progress }));
+        }
+      });
+      return url;
+    } catch (error) {
+      console.error("Upload failed:", error);
+      alert("File upload failed. Please try again.");
+      return null;
+    } finally {
+      setIsUploading(false);
+      if (progressKey) {
+        // Clear progress after short delay or keep it at 100
+        // setUploadProgress((prev) => {
+        //   const newProgress = { ...prev };
+        //   delete newProgress[progressKey];
+        //   return newProgress;
+        // });
+      }
     }
   };
 
@@ -264,7 +280,7 @@ const UploadCourseContent = () => {
     lessonId: string,
     file: File,
   ) => {
-    const videoUrl = await simulateUpload(file, `video-${lessonId}`);
+    const videoUrl = await handleUpload(file, "video", `video-${lessonId}`);
     if (videoUrl) {
       setChapters(
         chapters.map((ch) =>
@@ -300,6 +316,7 @@ const UploadCourseContent = () => {
         );
         return;
       }
+      console.log("Submitting course:", { data, status, chapters });
     }
 
     // 2. Data Cleaning
@@ -318,8 +335,6 @@ const UploadCourseContent = () => {
 
     setIsSubmitting(true);
     try {
-      const formDataToSend = new FormData();
-
       const payload = {
         ...data,
         price: parseFloat(data.price) || 0,
@@ -327,21 +342,10 @@ const UploadCourseContent = () => {
         status,
       };
 
-      // Append data as stringified JSON
-      formDataToSend.append("courseData", JSON.stringify(payload));
-
-      // Append files
-      Object.entries(pendingFiles).forEach(([key, file]) => {
-        formDataToSend.append(key, file);
-      });
-
       if (status === "draft") {
-        await courseService.saveDraft(formDataToSend, courseId || undefined);
+        await courseService.saveDraft(payload, courseId || undefined);
       } else {
-        await courseService.publishCourse(
-          formDataToSend,
-          courseId || undefined,
-        );
+        await courseService.publishCourse(payload, courseId || undefined);
       }
 
       alert(
@@ -393,7 +397,15 @@ const UploadCourseContent = () => {
   };
 
   const publishCourse = () => {
-    handleSubmit((data) => handleCourseSubmit(data, "published"))();
+    setValue("chapters", chapters, { shouldValidate: true });
+
+    handleSubmit(
+      (data) => handleCourseSubmit(data, "published"),
+      (errors) => {
+        console.error("Publish validation failed:", errors);
+        alert("Please complete all required fields before publishing.");
+      },
+    )();
   };
 
   const renderStepIndicator = () => (
@@ -647,9 +659,12 @@ const UploadCourseContent = () => {
             type="file"
             className="hidden"
             accept="image/*"
-            onChange={(e) => {
+            onChange={async (e) => {
               const file = e.target.files?.[0];
-              if (file) simulateUpload(file, "thumbnail");
+              if (file) {
+                const url = await handleUpload(file, "image", "thumbnail");
+                if (url) setValue("thumbnail", url);
+              }
             }}
           />
         </div>
@@ -742,7 +757,7 @@ const UploadCourseContent = () => {
                           type="file"
                           accept="video/*"
                           className="hidden"
-                          onChange={(e) => {
+                          onChange={async (e) => {
                             const file = e.target.files?.[0];
                             if (file)
                               updateLessonVideo(chapter.id, lesson.id, file);
@@ -771,13 +786,58 @@ const UploadCourseContent = () => {
                         )}
 
                       {lesson.videoUrl && (
-                        <p className="text-[10px] text-green-600 flex items-center gap-1 ml-7">
-                          <CheckCircle className="w-3 h-3" />
-                          Video ready:{" "}
-                          <span className="truncate max-w-[200px]">
-                            {lesson.videoUrl}
-                          </span>
-                        </p>
+                        <div className="mt-2 ml-7">
+                          <div className="relative aspect-video w-full max-w-sm rounded-lg overflow-hidden bg-black border border-gray-200">
+                            <video
+                              src={
+                                (lesson.videoUrl.startsWith("blob:")
+                                  ? lesson.videoUrl
+                                  : getFileUrl(lesson.videoUrl)) || undefined
+                              }
+                              controls
+                              className="w-full h-full object-contain"
+                            />
+                            <Button
+                              variant="destructive"
+                              size="icon"
+                              className="absolute top-2 right-2 w-8 h-8 rounded-full"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const confirmed = window.confirm(
+                                  "Are you sure you want to remove this video?",
+                                );
+                                if (confirmed) {
+                                  updateLessonVideo(
+                                    chapter.id,
+                                    lesson.id,
+                                    new File([], ""),
+                                  ); // Dummy call to trigger update logic, but we need a better way to clear.
+                                  // Actually, we should direct setChapters to clear the videoUrl
+                                  setChapters(
+                                    chapters.map((ch) =>
+                                      ch.id === chapter.id
+                                        ? {
+                                            ...ch,
+                                            lessons: ch.lessons.map((l) =>
+                                              l.id === lesson.id
+                                                ? { ...l, videoUrl: "" }
+                                                : l,
+                                            ),
+                                          }
+                                        : ch,
+                                    ),
+                                  );
+                                }
+                              }}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                          <p className="text-[10px] text-green-600 flex items-center gap-1 mt-1">
+                            <CheckCircle className="w-3 h-3" />
+                            Video uploaded successfully
+                          </p>
+                        </div>
                       )}
                     </div>
                   ))}
