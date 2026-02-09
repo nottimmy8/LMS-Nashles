@@ -60,9 +60,9 @@ const CourseDetailsPage = () => {
   const getFileUrl = (path: string | undefined) => {
     if (!path) return "";
     if (path.startsWith("blob:") || path.startsWith("http")) return path;
-    const baseUrl =
-      process.env.NEXT_PUBLIC_API_BASE_URL?.replace("/api/v1", "") ||
-      "http://localhost:5000";
+    const apiUrl =
+      process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
+    const baseUrl = apiUrl.replace("/api/v1", "");
     return `${baseUrl}${path}`;
   };
 

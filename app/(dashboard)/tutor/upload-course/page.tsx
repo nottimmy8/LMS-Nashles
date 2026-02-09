@@ -32,6 +32,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { getFileUrl } from "@/lib/utils";
+import ResultModal from "@/components/result-modal";
+
+type ModalState = {
+  open: boolean;
+  type: "success" | "error";
+  title: string;
+  message: string;
+  redirect?: "my-courses" | "stay";
+};
 
 const lessonSchema = z.object({
   id: z.string(),
@@ -84,9 +93,17 @@ const UploadCourseContent = () => {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [showPublishModal, setShowPublishModal] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<{
     [key: string]: number;
   }>({});
+
+  const [modal, setModal] = useState<ModalState>({
+    open: false,
+    type: "success",
+    title: "",
+    message: "",
+  });
 
   const {
     register,
@@ -304,16 +321,31 @@ const UploadCourseContent = () => {
     // 1. Validation for published status
     if (status === "published") {
       if (chapters.length < 2) {
-        alert("A published course must have at least 2 chapters.");
+        setModal({
+          open: true,
+          type: "error",
+          title: "Course Structure Incomplete",
+          message: "A published course must have at least 2 chapters.",
+          redirect: "stay",
+        });
+        // alert("A published course must have at least 2 chapters.");
         return;
       }
       const hasEmptyChapters = chapters.some(
         (ch) => !ch.title || ch.lessons.length === 0,
       );
       if (hasEmptyChapters) {
-        alert(
-          "All chapters must have a title and at least one lesson before publishing.",
-        );
+        setModal({
+          open: true,
+          type: "error",
+          title: "Incomplete Curriculum",
+          message:
+            "All chapters must have a title and at least one lesson before publishing.",
+          redirect: "stay",
+        });
+        // alert(
+        //   "All chapters must have a title and at least one lesson before publishing.",
+        // );
         return;
       }
       console.log("Submitting course:", { data, status, chapters });
@@ -348,11 +380,31 @@ const UploadCourseContent = () => {
         await courseService.publishCourse(payload, courseId || undefined);
       }
 
-      alert(
-        `Course ${status === "draft" ? "saved as draft" : "published"} successfully!`,
-      );
-      router.push("/tutor/my-courses");
+      // alert(
+      //   `Course ${status === "draft" ? "saved as draft" : "published"} successfully!`,
+      // );
+
+      setModal({
+        open: true,
+        type: "success",
+        title: status === "draft" ? "Draft Saved" : "Course Published",
+        message:
+          status === "draft"
+            ? "Your progress has been saved. You can continue editing later."
+            : "Your course is now live and visible to students.",
+        redirect: "my-courses",
+      });
+      //
     } catch (error: any) {
+      setModal({
+        open: true,
+        type: "error",
+        title: "Action Failed",
+        message:
+          error?.response?.data?.message ||
+          "Something went wrong. Please try again.",
+        redirect: "stay",
+      });
       console.error(
         `Error ${status === "draft" ? "saving draft" : "publishing course"}:`,
         error,
@@ -402,8 +454,16 @@ const UploadCourseContent = () => {
     handleSubmit(
       (data) => handleCourseSubmit(data, "published"),
       (errors) => {
+        setModal({
+          open: true,
+          type: "error",
+          title: "Incomplete Course",
+          message: "Please complete all required fields before publishing.",
+          redirect: "stay",
+        });
+
         console.error("Publish validation failed:", errors);
-        alert("Please complete all required fields before publishing.");
+        // alert("Please complete all required fields before publishing.");
       },
     )();
   };
@@ -448,14 +508,7 @@ const UploadCourseContent = () => {
       </div>
 
       <FieldGroup>
-        <Label className="flex justify-between">
-          Course Title *
-          {errors.title && (
-            <span className="text-red-500 text-xs font-normal">
-              {errors.title.message}
-            </span>
-          )}
-        </Label>
+        <Label className="flex justify-between">Course Title *</Label>
         <Field>
           <input
             type="text"
@@ -463,6 +516,11 @@ const UploadCourseContent = () => {
             {...register("title")}
             className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 ${errors.title ? "border-red-500" : "border-gray-300"}`}
           />
+          {errors.title && (
+            <span className="text-red-500 text-xs font-normal mt-1">
+              {errors.title.message}
+            </span>
+          )}
         </Field>
       </FieldGroup>
 
@@ -475,6 +533,11 @@ const UploadCourseContent = () => {
             {...register("subtitle")}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
           />
+          {errors.subtitle && (
+            <span className="text-red-500 text-xs font-normal mt-1">
+              {errors.subtitle.message}
+            </span>
+          )}
         </Field>
       </FieldGroup>
 
@@ -994,6 +1057,23 @@ const UploadCourseContent = () => {
           )}
         </div>
       </div>
+
+      <ResultModal
+        open={modal.open}
+        type={modal.type}
+        title={modal.title}
+        message={modal.message}
+        onContinue={
+          () => {
+            setModal((prev) => ({ ...prev, open: false }));
+
+            if (modal.redirect === "my-courses") {
+              router.push("/tutor/my-courses");
+            }
+          }
+          // setModal({ open: false, type: "success", title: "", message: "" })
+        }
+      />
     </div>
   );
 };

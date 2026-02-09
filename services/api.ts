@@ -15,12 +15,46 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+let isRefreshing = false;
+let failedQueue: any[] = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+
+  failedQueue = [];
+};
+
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
+    const originalRequest = error.config;
     const store = useAuthStore.getState();
 
-    if (error.response?.status === 401 && store.accessToken) {
+    // If error is 401 and we haven't already retried this request
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+        // Queue the request if we are already refreshing
+        return new Promise(function (resolve, reject) {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return api(originalRequest);
+          })
+          .catch((err) => {
+            return Promise.reject(err);
+          });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
       try {
         const res = await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh-token`,
@@ -28,12 +62,21 @@ api.interceptors.response.use(
           { withCredentials: true },
         );
 
-        store.setAccessToken(res.data.accessToken);
-        error.config.headers.Authorization = `Bearer ${res.data.accessToken}`;
-        return api(error.config);
-      } catch {
-        store.logout();
-        window.location.href = "/sign-in";
+        const { accessToken } = res.data;
+        store.setAccessToken(accessToken);
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+
+        processQueue(null, accessToken);
+        return api(originalRequest);
+      } catch (refreshError) {
+        processQueue(refreshError, null);
+        await store.logout();
+        if (typeof window !== "undefined") {
+          window.location.href = "/sign-in";
+        }
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
       }
     }
 

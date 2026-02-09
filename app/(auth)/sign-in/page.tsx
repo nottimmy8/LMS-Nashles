@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import { useRouter } from "next/navigation";
@@ -26,6 +25,7 @@ export default function SignIn() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,6 +39,7 @@ export default function SignIn() {
       const res = await api.post("/auth/login", {
         email,
         password,
+        rememberMe,
       });
 
       useAuthStore.getState().login(res.data);
@@ -76,9 +77,19 @@ export default function SignIn() {
         />
 
         <div className="flex justify-between align-center">
-          <span className="gap-2 flex justify-start align-start">
-            <Checkbox className="border border-primary " />
-            <label className="text-sm">Remember me</label>
+          <span
+            className="gap-2 flex justify-start align-start cursor-pointer"
+            onClick={() => setRememberMe(!rememberMe)}
+          >
+            <Checkbox
+              id="rememberMe"
+              checked={rememberMe}
+              onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+              className="border border-primary "
+            />
+            <label htmlFor="rememberMe" className="text-sm cursor-pointer">
+              Remember me
+            </label>
           </span>
           <Link href="/auth/forgot-password" className="text-primary text-sm">
             Forgot password?

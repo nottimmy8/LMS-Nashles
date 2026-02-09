@@ -140,8 +140,8 @@ const SidebarRoute = () => {
     setShowLogoutModal(true);
   };
 
-  const confirmLogout = () => {
-    logout();
+  const confirmLogout = async () => {
+    await logout();
     router.replace("/sign-in");
   };
 

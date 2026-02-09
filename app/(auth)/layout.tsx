@@ -34,7 +34,7 @@ export default function AuthLayout({
       <div className=" max-w-6xl w-full mx-auto px-6">
         <Link href="/">
           <div className="flex items-center ">
-            <Image src={logo} alt="nash logo" width={64} height={64} priority />
+            <Image src={logo} alt="nash logo" width={50} height={50} priority />
             <p className="text-2xl font-semibold font-roboto">Nashles</p>
           </div>
         </Link>
