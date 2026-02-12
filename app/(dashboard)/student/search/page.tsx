@@ -89,7 +89,7 @@ const SearchPage = () => {
   };
 
   return (
-    <div className="space-y-10 pb-20">
+    <div className="space-y-10 pb-20 px-4 md:px-0">
       {/* Search Header */}
       <div className="bg-black text-white rounded-[3rem] p-12 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl" />
@@ -118,12 +118,12 @@ const SearchPage = () => {
 
       {/* Categories & View Options */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-gray-100 pb-8">
-        <div className="flex items-center gap-3 overflow-x-auto no-scrollbar pb-2 lg:pb-0">
+        <div className="flex items-center gap-3 overflow-x-auto  no-scrollbar pb-2 lg:pb-2">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-6 py-3 rounded-full text-sm font-bold transition-all whitespace-nowrap ${
+              className={`px-4 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap ${
                 activeCategory === cat
                   ? "bg-black text-white shadow-lg"
                   : "bg-gray-50 text-gray-500 hover:bg-gray-100"

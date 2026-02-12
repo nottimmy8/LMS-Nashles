@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
   Star,
@@ -18,9 +18,12 @@ import {
   Loader2,
   Heart,
   Share2,
+  Sparkles,
 } from "lucide-react";
 import Image from "next/image";
 import { courseService, Course } from "@/services/course.service";
+import { enrollmentService } from "@/services/enrollment.service";
+import Modal from "@/components/modal";
 
 const CourseDetailsPage = () => {
   const { id } = useParams();
@@ -29,30 +32,70 @@ const CourseDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeChapter, setActiveChapter] = useState<string | null>(null);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [isEnrolling, setIsEnrolling] = useState(false);
+
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
-    const fetchCourse = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         if (typeof id === "string") {
-          const data = await courseService.getCourseById(id);
-          setCourse(data);
-          if (data.chapters && data.chapters.length > 0) {
+          const [courseData, enrollmentStatus] = await Promise.all([
+            courseService.getCourseById(id),
+            enrollmentService.checkEnrollment(id),
+          ]);
+          setCourse(courseData);
+          setIsEnrolled(enrollmentStatus);
+          if (courseData.chapters && courseData.chapters.length > 0) {
             setActiveChapter(
-              data.chapters[0]._id || data.chapters[0].id || null,
+              courseData.chapters[0]._id || courseData.chapters[0].id || null,
             );
           }
         }
       } catch (err: any) {
-        console.error("Fetch course details error:", err);
+        console.error("Fetch course details or enrollment error:", err);
         setError("Failed to load course details.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCourse();
+    fetchData();
   }, [id]);
+
+  const handleEnroll = async () => {
+    try {
+      setIsEnrolling(true);
+      if (typeof id !== "string") return;
+
+      // 1. Initiate Enrollment
+      const enrollment = await enrollmentService.initiateEnrollment(id);
+
+      // 2. Simulate Payment Flow
+      // In a real production app, you would redirect to a payment gateway here
+      // or open a payment modal (e.g., Paystack Inline, Stripe Elements).
+      // Here we simulate a successful transaction.
+      const mockTransactionId = `TRX-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+
+      // 3. Verify Payment
+      await enrollmentService.verifyPayment(
+        enrollment._id,
+        mockTransactionId,
+        "success",
+      );
+
+      setIsEnrolled(true);
+      setOpenModal(false);
+      router.refresh(); // Refresh to update enrollment counts etc. if needed
+    } catch (err: any) {
+      console.error("Enrollment error:", err);
+      setError("Failed to complete enrollment. Please try again.");
+    } finally {
+      setIsEnrolling(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -179,21 +222,44 @@ const CourseDetailsPage = () => {
             <div className="space-y-4">
               <div className="flex items-end gap-2">
                 <span className="text-4xl font-black text-gray-900">
-                  ${course.price}
+                  {course.price === 0 ? "FREE" : `$${course.price}`}
                 </span>
-                <span className="text-lg text-gray-400 line-through mb-1">
-                  ${(course.price * 1.5).toFixed(2)}
-                </span>
+                {course.price ? (
+                  <span className="text-lg text-gray-400 line-through mb-1">
+                    ${(course.price * 1.5).toFixed(2)}
+                  </span>
+                ) : null}
               </div>
-              <p className="text-sm font-bold text-rose-500">
-                85% off • 2 days left at this price!
-              </p>
+              {course.price ? (
+                <p className="text-sm font-bold text-rose-500">
+                  85% off • 2 days left at this price!
+                </p>
+              ) : (
+                <p className="text-sm font-bold text-emerald-500">
+                  Enroll now and start learning for free!
+                </p>
+              )}
             </div>
 
             <div className="space-y-4">
-              <button className="w-full py-5 bg-indigo-600 hover:bg-black text-white rounded-[1.5rem] font-black text-lg transition-all shadow-lg hover:shadow-indigo-200">
-                Enroll in Course
-              </button>
+              {isEnrolled ? (
+                <button
+                  className="w-full py-5 bg-emerald-600 text-white rounded-[1.5rem] font-black text-lg transition-all shadow-lg flex items-center justify-center gap-2"
+                  onClick={() =>
+                    router.push(`/student/my-learning/${course._id}`)
+                  }
+                >
+                  <CheckCircle2 size={24} />
+                  Continue Learning
+                </button>
+              ) : (
+                <button
+                  onClick={() => setOpenModal(true)}
+                  className="w-full py-5 bg-indigo-600 hover:bg-black text-white rounded-[1.5rem] font-black text-lg transition-all shadow-lg hover:shadow-indigo-200"
+                >
+                  Enroll in Course
+                </button>
+              )}
               <button className="w-full py-5 bg-gray-50 hover:bg-gray-100 text-black rounded-[1.5rem] font-black text-lg transition-all flex items-center justify-center gap-2">
                 Add to Wishlist
                 <Heart size={20} />
@@ -397,6 +463,67 @@ const CourseDetailsPage = () => {
           </div>
         </div>
       </div>
+      <Modal open={openModal} onClose={() => setOpenModal(false)}>
+        <div className="p-8 space-y-8 max-w-md">
+          <div className="w-20 h-20 bg-indigo-50 rounded-3xl flex items-center justify-center text-indigo-600 mx-auto">
+            <Sparkles size={40} />
+          </div>
+          <div className="text-center space-y-2">
+            <h2 className="text-3xl font-black text-gray-900">
+              Secure Enrollment
+            </h2>
+            <p className="text-gray-500 font-medium">
+              You are about to unlock &quot;{course.title}&quot; for a lifetime
+              of learning.
+            </p>
+          </div>
+
+          <div className="bg-gray-50 rounded-2xl p-6 space-y-4">
+            <div className="flex justify-between items-center text-sm font-bold text-gray-500">
+              <span>Course Price</span>
+              <span>{course.price === 0 ? "FREE" : `$${course.price}`}</span>
+            </div>
+            <div className="flex justify-between items-center text-sm font-bold text-gray-500">
+              <span>Platform Fee</span>
+              <span className="text-emerald-500">FREE</span>
+            </div>
+            <div className="pt-4 border-t border-gray-200 flex justify-between items-center text-xl font-black text-gray-900">
+              <span>Total</span>
+              <span>
+                {course.price === 0 ? "FREE" : `$${course.price || 0}`}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <button
+              disabled={isEnrolling}
+              onClick={handleEnroll}
+              className="w-full py-5 bg-black hover:bg-indigo-600 disabled:bg-gray-400 text-white rounded-[1.5rem] font-black text-lg transition-all shadow-xl flex items-center justify-center gap-3"
+            >
+              {isEnrolling ? (
+                <>
+                  <Loader2 className="animate-spin" size={24} />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  {course.price === 0
+                    ? "Confirm Free Enrollment"
+                    : `Confirm & Pay $${course.price}`}
+                </>
+              )}
+            </button>
+            <button
+              disabled={isEnrolling}
+              onClick={() => setOpenModal(false)}
+              className="w-full py-4 text-gray-400 hover:text-black font-bold transition-all"
+            >
+              Maybe later
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
