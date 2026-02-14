@@ -1,39 +1,36 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { getMyCertificates } from "@/services/analytics-service";
 import {
   Trophy,
   Download,
   Share2,
   ExternalLink,
   Award,
-  Search,
-  CheckCircle2,
+  FileCheck,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-const certificates = [
-  {
-    id: 1,
-    courseTitle: "Complete React & Next.js Course",
-    issueDate: "Jan 15, 2026",
-    instructor: "John Doe",
-    certificateId: "CERT-12345-6789",
-    thumbnail:
-      "https://images.unsplash.com/photo-1589330694653-731362e49c66?w=400&h=280&fit=crop",
-  },
-  {
-    id: 2,
-    courseTitle: "UI/UX Design Masterclass",
-    issueDate: "Dec 20, 2025",
-    instructor: "Sarah Johnson",
-    certificateId: "CERT-98765-4321",
-    thumbnail:
-      "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=400&h=280&fit=crop",
-  },
-];
-
 const Certificates = () => {
+  const [certificates, setCertificates] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCertificates = async () => {
+      try {
+        const data = await getMyCertificates();
+        setCertificates(data);
+      } catch (error) {
+        console.error("Failed to fetch certificates", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCertificates();
+  }, []);
+
   return (
     <div className="space-y-8 pb-10">
       {/* Header */}
@@ -58,76 +55,72 @@ const Certificates = () => {
       </div>
 
       {/* Grid */}
-      {certificates.length > 0 ? (
+      {loading ? (
+        <div className="text-center py-20">Loading certificates...</div>
+      ) : certificates.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {certificates.map((cert) => (
             <div
-              key={cert.id}
+              key={cert._id}
               className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group"
             >
-              {/* Certificate Preview */}
-              <div className="relative aspect-[4/3] bg-gray-50 overflow-hidden m-4 rounded-[2rem]">
-                <Image
-                  src={cert.thumbnail}
-                  alt={cert.courseTitle}
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                  <button className="p-3 bg-white text-black rounded-full hover:scale-110 transition-transform">
-                    <Download size={20} />
-                  </button>
-                  <button className="p-3 bg-white text-black rounded-full hover:scale-110 transition-transform">
-                    <Share2 size={20} />
-                  </button>
+              <div className="relative aspect-[4/3] bg-gray-900 p-6 flex flex-col justify-between text-white overflow-hidden">
+                <div className="absolute inset-0 opacity-20">
+                  <Image
+                    src={
+                      cert.course?.thumbnail ||
+                      "https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=400&h=225&fit=crop"
+                    }
+                    alt="Certificate Background"
+                    fill
+                    className="object-cover"
+                  />
                 </div>
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full flex items-center gap-2 shadow-sm">
-                  <CheckCircle2 size={14} className="text-emerald-500" />
-                  <span className="text-[10px] font-bold uppercase tracking-wider">
-                    Verified
-                  </span>
+                <div className="relative z-10">
+                  <div className="flex items-center gap-2 mb-2 opacity-80">
+                    <Award size={20} />
+                    <span className="text-xs font-bold tracking-widest uppercase">
+                      Certificate of Completion
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-bold leading-tight">
+                    {cert.course?.title || "Course Title"}
+                  </h3>
+                </div>
+                <div className="relative z-10">
+                  <p className="text-xs opacity-60 mb-1">Issued on</p>
+                  <p className="font-bold">
+                    {new Date(cert.issueDate).toLocaleDateString()}
+                  </p>
                 </div>
               </div>
 
-              {/* Info */}
-              <div className="px-8 pb-8 pt-2">
-                <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-1">
-                  {cert.courseTitle}
-                </h3>
-                <p className="text-sm text-gray-500 mb-4">
-                  Instructor: {cert.instructor}
-                </p>
-
-                <div className="flex items-center justify-between pt-4 border-t border-gray-50">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
                   <div>
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                      Issued On
-                    </p>
-                    <p className="text-sm font-bold text-gray-700">
-                      {cert.issueDate}
+                    <p className="text-xs text-gray-500 mb-1">Certificate ID</p>
+                    <p className="text-sm font-mono font-bold text-gray-900 bg-gray-50 px-2 py-1 rounded">
+                      {cert.certificateId}
                     </p>
                   </div>
-                  <Link
-                    href="#"
-                    className="p-2 bg-gray-50 text-gray-400 hover:text-black hover:bg-gray-100 rounded-xl transition-all"
-                  >
-                    <ExternalLink size={18} />
-                  </Link>
+                  <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                    <FileCheck size={20} />
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <button className="flex-1 py-3 border border-gray-200 rounded-xl font-bold text-sm hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+                    <Share2 size={16} />
+                    Share
+                  </button>
+                  <button className="flex-1 py-3 bg-black text-white rounded-xl font-bold text-sm hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                    <Download size={16} />
+                    Download PDF
+                  </button>
                 </div>
               </div>
             </div>
           ))}
-
-          {/* Add Placeholder for "Next Milestone" */}
-          <div className="bg-gray-50/50 rounded-[2.5rem] border-2 border-dashed border-gray-200 flex flex-col items-center justify-center p-8 text-center group hover:border-black/20 transition-colors">
-            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4 group-hover:scale-110 transition-transform">
-              <Trophy size={28} className="text-gray-300" />
-            </div>
-            <h4 className="font-bold text-gray-400">Next Milestone</h4>
-            <p className="text-sm text-gray-400 mt-1">
-              Complete your active courses to earn more!
-            </p>
-          </div>
         </div>
       ) : (
         <div className="text-center py-24 bg-white rounded-[3rem] border border-gray-100 shadow-sm">
@@ -142,7 +135,7 @@ const Certificates = () => {
             your new skills.
           </p>
           <Link
-            href="/student/my-learning"
+            href="/student/search"
             className="px-8 py-4 bg-black text-white rounded-2xl font-bold hover:shadow-2xl hover:-translate-y-1 transition-all"
           >
             Continue Learning

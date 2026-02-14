@@ -1,6 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { updateProfile, updatePassword } from "@/services/user-service";
+import { toast } from "@/hooks/use-toast";
 import {
   User,
   Lock,
@@ -26,7 +29,80 @@ const tabs = [
 ];
 
 const TSettingsPage = () => {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("profile");
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    bio: "",
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        name: user.name || "",
+        email: user.email || "",
+        bio: user.bio || "",
+      }));
+    }
+  }, [user]);
+
+  const handleProfileUpdate = async () => {
+    setLoading(true);
+    try {
+      await updateProfile({
+        name: formData.name,
+        bio: formData.bio,
+      });
+      toast({ title: "Success", description: "Profile updated successfully" });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update profile",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePasswordUpdate = async () => {
+    if (formData.newPassword !== formData.confirmPassword) {
+      toast({
+        title: "Error",
+        description: "Passwords do not match",
+        variant: "destructive",
+      });
+      return;
+    }
+    setLoading(true);
+    try {
+      await updatePassword({
+        currentPassword: formData.currentPassword,
+        newPassword: formData.newPassword,
+      });
+      toast({ title: "Success", description: "Password updated successfully" });
+      setFormData((prev) => ({
+        ...prev,
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      }));
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update password",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-10">
@@ -108,6 +184,10 @@ const TSettingsPage = () => {
                       />
                       <input
                         type="text"
+                        value={formData.name}
+                        onChange={(e) =>
+                          setFormData({ ...formData, name: e.target.value })
+                        }
                         placeholder="John Doe"
                         className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
                       />
@@ -125,8 +205,10 @@ const TSettingsPage = () => {
                       />
                       <input
                         type="email"
+                        value={formData.email}
+                        readOnly
                         placeholder="john@example.com"
-                        className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                        className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all cursor-not-allowed opacity-70"
                       />
                     </div>
                   </div>
@@ -137,6 +219,10 @@ const TSettingsPage = () => {
                     </label>
                     <textarea
                       rows={4}
+                      value={formData.bio}
+                      onChange={(e) =>
+                        setFormData({ ...formData, bio: e.target.value })
+                      }
                       placeholder="Tell us a little bit about yourself..."
                       className="w-full px-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all resize-none"
                     />
@@ -148,8 +234,12 @@ const TSettingsPage = () => {
                 <button className="px-6 py-3 rounded-xl font-bold text-sm text-gray-500 hover:bg-gray-50 transition-all">
                   Cancel
                 </button>
-                <button className="px-6 py-3 rounded-xl bg-black text-white font-bold text-sm hover:shadow-lg transition-all">
-                  Save Changes
+                <button
+                  className="px-6 py-3 rounded-xl bg-black text-white font-bold text-sm hover:shadow-lg transition-all"
+                  onClick={handleProfileUpdate}
+                  disabled={loading}
+                >
+                  {loading ? "Saving..." : "Save Changes"}
                 </button>
               </div>
             </div>
@@ -186,6 +276,13 @@ const TSettingsPage = () => {
                       </label>
                       <input
                         type="password"
+                        value={formData.currentPassword}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            currentPassword: e.target.value,
+                          })
+                        }
                         className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
                       />
                     </div>
@@ -196,6 +293,13 @@ const TSettingsPage = () => {
                         </label>
                         <input
                           type="password"
+                          value={formData.newPassword}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              newPassword: e.target.value,
+                            })
+                          }
                           className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
                         />
                       </div>
@@ -205,6 +309,13 @@ const TSettingsPage = () => {
                         </label>
                         <input
                           type="password"
+                          value={formData.confirmPassword}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              confirmPassword: e.target.value,
+                            })
+                          }
                           className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
                         />
                       </div>
@@ -233,8 +344,12 @@ const TSettingsPage = () => {
               </section>
 
               <div className="pt-4 flex justify-end gap-3">
-                <button className="px-6 py-3 rounded-xl bg-black text-white font-bold text-sm hover:shadow-lg transition-all">
-                  Update Password
+                <button
+                  className="px-6 py-3 rounded-xl bg-black text-white font-bold text-sm hover:shadow-lg transition-all"
+                  onClick={handlePasswordUpdate}
+                  disabled={loading}
+                >
+                  {loading ? "Updating..." : "Update Password"}
                 </button>
               </div>
             </div>

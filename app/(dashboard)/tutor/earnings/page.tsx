@@ -1,15 +1,16 @@
 "use client";
 import StatusCard from "../../_components/status-card";
 import MontlyProfit from "../../_components/profit-chart";
-import Image from "next/image";
-import { ColumnDef } from "@tanstack/react-table";
+// import Image from "next/image";
+// import { ColumnDef } from "@tanstack/react-table";
 // import { mockCourses } from "@/app/(dashboard)/tutor/my-courses/page";
-import { DataTable } from "../../_components/data-table";
+// import { DataTable } from "../../_components/data-table";
 import { EarningsChart } from "@/components/EarningsChart";
-import { RevenueTrendChart } from "@/components/revenue-chart";
-import { RevenueByCourseChart } from "@/components/revenuebychart";
+// import { RevenueTrendChart } from "@/components/revenue-chart";
+// import { RevenueByCourseChart } from "@/components/revenuebychart";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getTutorAnalytics } from "@/services/analytics-service";
 import {
   DollarSign,
   ArrowUpRight,
@@ -23,6 +24,22 @@ import { Modal } from "@/components/ui/modal";
 const EarningsPage = () => {
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [analytics, setAnalytics] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      try {
+        const data = await getTutorAnalytics();
+        setAnalytics(data);
+      } catch (error) {
+        console.error("Failed to fetch analytics", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAnalytics();
+  }, []);
 
   const handleWithdraw = () => {
     // Placeholder logic for withdrawal
@@ -31,79 +48,8 @@ const EarningsPage = () => {
     setWithdrawAmount("");
   };
 
-  // const columns: ColumnDef<(typeof mockCourses.published)[number]>[] = [
-  //   {
-  //     accessorKey: "title",
-  //     header: "Courses",
-  //     cell: ({ row }) => {
-  //       const course = row.original;
-  //       return (
-  //         <div className="flex items-center gap-3">
-  //           <Image
-  //             src={course.thumbnail}
-  //             alt={course.title}
-  //             width={50}
-  //             height={50}
-  //             className="rounded-lg object-cover"
-  //           />
-  //           <span className="flex flex-col">
-  //             <h1 className="font-semibold text-sm">{course.title}</h1>
-  //             <p className="text-xs text-gray-500">{course.category}</p>
-  //           </span>
-  //         </div>
-  //       );
-  //     },
-  //   },
-  //   {
-  //     accessorKey: "level",
-  //     header: "Level",
-  //     cell: ({ row }) => (
-  //       <span className="text-xs font-medium px-2 py-1 bg-gray-100 rounded-full">
-  //         {row.getValue("level")}
-  //       </span>
-  //     ),
-  //   },
-
-  //   {
-  //     accessorKey: "revenue",
-  //     header: () => <div className="text-center">Revenue</div>,
-  //     cell: ({ row }) => {
-  //       const revenue = parseFloat(row.getValue("revenue"));
-  //       const formatted = new Intl.NumberFormat("en-US", {
-  //         style: "currency",
-  //         currency: "USD",
-  //       }).format(revenue);
-
-  //       return (
-  //         <div className="text-center font-bold text-emerald-600">
-  //           {formatted}
-  //         </div>
-  //       );
-  //     },
-  //   },
-
-  //   {
-  //     accessorKey: "lastUpdated",
-  //     header: "Last Updated",
-  //     cell: ({ row }) => (
-  //       <span className="text-gray-500 text-xs">
-  //         {row.getValue("lastUpdated")}
-  //       </span>
-  //     ),
-  //   },
-  //   {
-  //     accessorKey: "Actions",
-  //     cell: ({ row }) => {
-  //       return (
-  //         <div className="text-right">
-  //           <button className="bg-black text-white text-[10px] px-3 py-1.5 rounded-lg hover:bg-black/80 transition-all font-medium uppercase tracking-wider">
-  //             Stats
-  //           </button>
-  //         </div>
-  //       );
-  //     },
-  //   },
-  // ];
+  const totalRevenue = analytics?.totalRevenue || 0;
+  // const totalEnrollments = analytics?.totalEnrollments || 0;
 
   return (
     <div className="space-y-8">
@@ -116,7 +62,12 @@ const EarningsPage = () => {
           <p className="text-white/60 text-sm font-medium mb-2 uppercase tracking-widest">
             Available Balance
           </p>
-          <h2 className="text-5xl font-bold mb-6">$8,450.00</h2>
+          <h2 className="text-5xl font-bold mb-6">
+            {new Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: "USD",
+            }).format(totalRevenue)}
+          </h2>
           <button
             onClick={() => setShowWithdrawModal(true)}
             className="bg-white text-black px-6 py-3 rounded-2xl font-bold text-sm hover:shadow-lg transition-all flex items-center gap-2"
@@ -129,19 +80,22 @@ const EarningsPage = () => {
         <div className="col-span-1 md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
           <StatusCard
             label="Pending Clearance"
-            value="$2,120.00"
+            value="$0.00"
             icon={Clock}
             color="orange"
           />
           <StatusCard
             label="Total Withdrawn"
-            value="$24,800.00"
+            value="$0.00"
             icon={CheckCircle2}
             color="emerald"
           />
           <StatusCard
             label="Lifetime Earnings"
-            value="$35,370.00"
+            value={new Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: "USD",
+            }).format(totalRevenue)}
             icon={DollarSign}
             color="indigo"
           />
@@ -164,6 +118,9 @@ const EarningsPage = () => {
           </div>
           <div className="p-4">
             {/* <DataTable columns={columns} data={mockCourses.published} /> */}
+            <div className="p-8 text-center text-gray-500">
+              Detail view coming soon.
+            </div>
           </div>
         </div>
 
@@ -212,7 +169,12 @@ const EarningsPage = () => {
               />
             </div>
             <p className="text-[10px] text-gray-400 mt-2">
-              Available: $8,450.00 • Transaction fee: $2.50
+              Available:{" "}
+              {new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+              }).format(totalRevenue)}{" "}
+              • Transaction fee: $2.50
             </p>
           </div>
           <div className="pt-4 flex gap-3">

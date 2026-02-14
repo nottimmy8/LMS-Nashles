@@ -1,6 +1,7 @@
 import React from "react";
 import Search from "../search/page";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import NotificationPopover from "@/components/notification-popover";
 
 const DashNavbar = ({ title }: { title: string }) => {
   return (
@@ -19,6 +20,9 @@ const DashNavbar = ({ title }: { title: string }) => {
           /> */}
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
+        <div>
+          <NotificationPopover />
+        </div>
       </div>
     </div>
   );

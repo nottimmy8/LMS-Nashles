@@ -4,7 +4,6 @@ import { useSearchParams, useRouter, useParams } from "next/navigation";
 import { useState, Suspense } from "react";
 import api from "@/services/api";
 import OTPInput from "../../auth/verify-otp/otp-input";
-import { motion } from "framer-motion";
 import Verified from "./verified";
 
 const VerifyRegistrationOTPContent = () => {

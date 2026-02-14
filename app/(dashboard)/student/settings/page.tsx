@@ -1,6 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { updateProfile, updatePassword } from "@/services/user-service";
+import { toast } from "@/hooks/use-toast"; // Assuming toast hook exists
 import {
   User,
   Lock,
@@ -27,7 +30,83 @@ const tabs = [
 ];
 
 const StudentSettings = () => {
+  const { user } = useAuth(); // Get user from context
   const [activeTab, setActiveTab] = useState("profile");
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    bio: "",
+    headline: "",
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        name: user.name || "",
+        email: user.email || "", // Email usually not editable directly without verification
+        bio: user.bio || "",
+        headline: user.headline || "",
+      }));
+    }
+  }, [user]);
+
+  const handleProfileUpdate = async () => {
+    setLoading(true);
+    try {
+      await updateProfile({
+        name: formData.name,
+        bio: formData.bio,
+        headline: formData.headline,
+      });
+      toast({ title: "Success", description: "Profile updated successfully" });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update profile",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePasswordUpdate = async () => {
+    if (formData.newPassword !== formData.confirmPassword) {
+      toast({
+        title: "Error",
+        description: "Passwords do not match",
+        variant: "destructive",
+      });
+      return;
+    }
+    setLoading(true);
+    try {
+      await updatePassword({
+        currentPassword: formData.currentPassword,
+        newPassword: formData.newPassword,
+      });
+      toast({ title: "Success", description: "Password updated successfully" });
+      setFormData((prev) => ({
+        ...prev,
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      }));
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update password",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-10">
@@ -111,6 +190,10 @@ const StudentSettings = () => {
                       />
                       <input
                         type="text"
+                        value={formData.name}
+                        onChange={(e) =>
+                          setFormData({ ...formData, name: e.target.value })
+                        }
                         placeholder="John Wilson"
                         className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
                       />
@@ -128,8 +211,9 @@ const StudentSettings = () => {
                       />
                       <input
                         type="email"
-                        placeholder="john.wilson@example.com"
-                        className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                        value={formData.email}
+                        readOnly
+                        className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all cursor-not-allowed opacity-70"
                       />
                     </div>
                   </div>
@@ -140,6 +224,10 @@ const StudentSettings = () => {
                     </label>
                     <input
                       type="text"
+                      value={formData.headline}
+                      onChange={(e) =>
+                        setFormData({ ...formData, headline: e.target.value })
+                      }
                       placeholder="Aspiring Full-Stack Developer | Design Enthusiast"
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
                     />
@@ -151,8 +239,12 @@ const StudentSettings = () => {
                 <button className="px-6 py-3 rounded-xl font-bold text-sm text-gray-500 hover:bg-gray-50 transition-all">
                   Cancel
                 </button>
-                <button className="px-6 py-3 rounded-xl bg-black text-white font-bold text-sm hover:shadow-lg transition-all">
-                  Save Profile
+                <button
+                  className="px-6 py-3 rounded-xl bg-black text-white font-bold text-sm hover:shadow-lg transition-all"
+                  onClick={handleProfileUpdate}
+                  disabled={loading}
+                >
+                  {loading ? "Saving..." : "Save Profile"}
                 </button>
               </div>
             </div>
@@ -199,6 +291,13 @@ const StudentSettings = () => {
                         </label>
                         <input
                           type="password"
+                          value={formData.newPassword}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              newPassword: e.target.value,
+                            })
+                          }
                           className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
                         />
                       </div>
@@ -208,6 +307,13 @@ const StudentSettings = () => {
                         </label>
                         <input
                           type="password"
+                          value={formData.confirmPassword}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              confirmPassword: e.target.value,
+                            })
+                          }
                           className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
                         />
                       </div>
@@ -236,8 +342,12 @@ const StudentSettings = () => {
               </section>
 
               <div className="pt-4 flex justify-end gap-3">
-                <button className="px-6 py-3 rounded-xl bg-black text-white font-bold text-sm hover:shadow-lg transition-all">
-                  Update Security
+                <button
+                  className="px-6 py-3 rounded-xl bg-black text-white font-bold text-sm hover:shadow-lg transition-all"
+                  onClick={handlePasswordUpdate}
+                  disabled={loading}
+                >
+                  {loading ? "Updating..." : "Update Security"}
                 </button>
               </div>
             </div>
