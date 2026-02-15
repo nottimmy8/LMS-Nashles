@@ -69,8 +69,8 @@ const StudentSignUp = ({ role }: { role: "student" }) => {
       };
 
       await api.post("/auth/register", payload);
-
-      router.push(`/sign-up/verify?email=${encodeURIComponent(form.email)}`);
+      // router.push(`/sign-up/verify?email=${encodeURIComponent(form.email)}`);
+      router.push("/sign-in");
     } catch (err: any) {
       setError(
         err.response?.data?.message ||
