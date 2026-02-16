@@ -144,10 +144,10 @@ const UploadCourseContent = () => {
         try {
           const course = await courseService.getCourseById(courseId);
           const sanitizedChapters = (course.chapters || []).map((ch: any) => ({
-            id: ch.id || ch._id || Date.now().toString(),
+            id: ch.id || ch._id || crypto.randomUUID(),
             title: ch.title || "",
             lessons: (ch.lessons || []).map((l: any) => ({
-              id: l.id || l._id || Date.now().toString(),
+              id: l.id || l._id || crypto.randomUUID(),
               title: l.title || "",
               videoUrl: l.videoUrl || "",
               duration: l.duration || "",
@@ -221,27 +221,27 @@ const UploadCourseContent = () => {
 
   const addChapter = () => {
     const newChapter: Chapter = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       title: "",
       lessons: [],
     };
-    setChapters([...chapters, newChapter]);
+    setChapters((prev) => [...prev, newChapter]);
   };
 
   const removeChapter = (chapterId: string) => {
-    setChapters(chapters.filter((ch) => ch.id !== chapterId));
+    setChapters((prev) => prev.filter((ch) => ch.id !== chapterId));
   };
 
   const addLesson = (chapterId: string) => {
-    setChapters(
-      chapters.map((ch) =>
+    setChapters((prev) =>
+      prev.map((ch) =>
         ch.id === chapterId
           ? {
               ...ch,
               lessons: [
                 ...ch.lessons,
                 {
-                  id: Date.now().toString(),
+                  id: crypto.randomUUID(),
                   title: "",
                   videoUrl: "",
                   duration: "",
@@ -255,8 +255,8 @@ const UploadCourseContent = () => {
   };
 
   const removeLesson = (chapterId: string, lessonId: string) => {
-    setChapters(
-      chapters.map((ch) =>
+    setChapters((prev) =>
+      prev.map((ch) =>
         ch.id === chapterId
           ? {
               ...ch,
@@ -268,8 +268,8 @@ const UploadCourseContent = () => {
   };
 
   const updateChapterTitle = (chapterId: string, title: string) => {
-    setChapters(
-      chapters.map((ch) => (ch.id === chapterId ? { ...ch, title } : ch)),
+    setChapters((prev) =>
+      prev.map((ch) => (ch.id === chapterId ? { ...ch, title } : ch)),
     );
   };
 
@@ -278,8 +278,8 @@ const UploadCourseContent = () => {
     lessonId: string,
     title: string,
   ) => {
-    setChapters(
-      chapters.map((ch) =>
+    setChapters((prev) =>
+      prev.map((ch) =>
         ch.id === chapterId
           ? {
               ...ch,
@@ -297,10 +297,27 @@ const UploadCourseContent = () => {
     lessonId: string,
     file: File,
   ) => {
+    // Immediate preview using blob URL
+    const blobUrl = URL.createObjectURL(file);
+    setChapters((prev) =>
+      prev.map((ch) =>
+        ch.id === chapterId
+          ? {
+              ...ch,
+              lessons: ch.lessons.map((lesson) =>
+                lesson.id === lessonId
+                  ? { ...lesson, videoUrl: blobUrl }
+                  : lesson,
+              ),
+            }
+          : ch,
+      ),
+    );
+
     const videoUrl = await handleUpload(file, "video", `video-${lessonId}`);
     if (videoUrl) {
-      setChapters(
-        chapters.map((ch) =>
+      setChapters((prev) =>
+        prev.map((ch) =>
           ch.id === chapterId
             ? {
                 ...ch,
@@ -1029,7 +1046,7 @@ const UploadCourseContent = () => {
             variant="outline"
             onClick={saveDraft}
             className="gap-2"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isUploading}
           >
             {isSubmitting ? (
               <Loader2 className="w-4 h-4 animate-spin" />
