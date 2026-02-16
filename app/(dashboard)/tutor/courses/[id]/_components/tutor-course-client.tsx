@@ -33,6 +33,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { getFileUrl } from "@/lib/utils";
 import Link from "next/link";
 
 const TutorCourseClient = () => {
@@ -56,15 +57,6 @@ const TutorCourseClient = () => {
     };
     fetchCourse();
   }, [id]);
-
-  const getFileUrl = (path: string | undefined) => {
-    if (!path) return "";
-    if (path.startsWith("blob:") || path.startsWith("http")) return path;
-    const apiUrl =
-      process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
-    const baseUrl = apiUrl.replace("/api/v1", "");
-    return `${baseUrl}${path}`;
-  };
 
   if (isLoading) {
     return (
@@ -372,6 +364,7 @@ const TutorCourseClient = () => {
                               <video
                                 src={getFileUrl(lesson.videoUrl)}
                                 controls
+                                crossOrigin="anonymous"
                                 className="w-full h-full object-contain"
                                 autoPlay
                               />

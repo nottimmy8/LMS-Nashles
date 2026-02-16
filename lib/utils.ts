@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const getFileUrl = (path: string | undefined) => {
-  if (!path) return null;
+  if (!path) return undefined;
   // Handle Cloudinary or other external URLs
   if (
     path.startsWith("http") ||
@@ -17,9 +17,10 @@ export const getFileUrl = (path: string | undefined) => {
 
   // Handle local files (fallback)
 
-  const baseUrl =
+  const baseUrl = (
     process.env.NEXT_PUBLIC_API_BASE_URL?.replace("/api/v1", "") ||
-    "http://localhost:5000";
+    "http://localhost:5000"
+  ).replace(/\/$/, "");
 
   // Ensure path starts with / if not present
   const cleanPath = path.startsWith("/") ? path : `/${path}`;

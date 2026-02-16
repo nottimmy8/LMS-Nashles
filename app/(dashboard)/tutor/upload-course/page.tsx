@@ -875,6 +875,7 @@ const UploadCourseContent = () => {
                                   : getFileUrl(lesson.videoUrl)) || undefined
                               }
                               controls
+                              crossOrigin="anonymous"
                               className="w-full h-full object-contain"
                             />
                             <Button

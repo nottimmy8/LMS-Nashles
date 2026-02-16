@@ -46,9 +46,9 @@ export default function SignIn() {
 
       const role = res.data.user.role;
 
-      if (role === "student") router.push("/student");
-      if (role === "tutor") router.push("/tutor");
-      if (role === "admin") router.push("/admin");
+      if (role === "student") window.location.href = "/student";
+      else if (role === "tutor") window.location.href = "/tutor";
+      else if (role === "admin") window.location.href = "/admin";
     } catch (err: any) {
       setError(err.response?.data?.message || "Login failed");
     } finally {

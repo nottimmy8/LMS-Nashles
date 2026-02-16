@@ -20,7 +20,7 @@ import {
   Clock,
 } from "lucide-react";
 import api from "@/services/api";
-import { cn } from "@/lib/utils";
+import { cn, getFileUrl } from "@/lib/utils";
 import dynamic from "next/dynamic";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
@@ -38,15 +38,6 @@ const MyLearningClient = () => {
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [completing, setCompleting] = useState(false);
-
-  const getFileUrl = (path: string | undefined) => {
-    if (!path) return "";
-    if (path.startsWith("blob:") || path.startsWith("http")) return path;
-    const apiUrl =
-      process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
-    const baseUrl = apiUrl.replace("/api/v1", "");
-    return `${baseUrl}${path}`;
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -270,27 +261,20 @@ const MyLearningClient = () => {
             {/* Player Container */}
             <div className="aspect-video bg-black rounded-none md:rounded-[2rem] overflow-hidden shadow-2xl relative group">
               {activeLesson?.videoUrl ? (
-                <ReactPlayer
+                <video
                   key={activeLesson._id}
-                  url={getFileUrl(activeLesson.videoUrl)}
-                  width="100%"
-                  height="100%"
+                  src={getFileUrl(activeLesson.videoUrl)}
+                  className="w-full h-full object-contain"
                   controls
-                  playing
-                  playsinline
+                  controlsList="nodownload"
+                  crossOrigin="anonymous"
+                  autoPlay
                   onEnded={handleCompleteLesson}
                   onError={(e: any) => {
                     // Suppress abort errors which are common when switching sources
                     if (e?.target?.error?.code !== 4) {
                       console.error("Video Player Error:", e);
                     }
-                  }}
-                  config={{
-                    file: {
-                      attributes: {
-                        controlsList: "nodownload",
-                      },
-                    },
                   }}
                 />
               ) : (
