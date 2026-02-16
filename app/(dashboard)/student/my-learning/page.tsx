@@ -226,7 +226,7 @@ const MyLearning = () => {
             Try adjusting your search or filters
           </p>
           <Link
-            href="/search"
+            href="/student/search"
             className="inline-flex px-6 py-3 bg-black text-white rounded-2xl font-bold text-sm hover:shadow-lg transition-all"
           >
             Browse Courses

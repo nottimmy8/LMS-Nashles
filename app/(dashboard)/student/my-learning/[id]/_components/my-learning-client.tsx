@@ -39,6 +39,15 @@ const MyLearningClient = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [completing, setCompleting] = useState(false);
 
+  const getFileUrl = (path: string | undefined) => {
+    if (!path) return "";
+    if (path.startsWith("blob:") || path.startsWith("http")) return path;
+    const apiUrl =
+      process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
+    const baseUrl = apiUrl.replace("/api/v1", "");
+    return `${baseUrl}${path}`;
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -248,7 +257,7 @@ const MyLearningClient = () => {
 
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 bg-black text-white rounded-xl hover:shadow-lg transition-all"
+              className="p-2 bg-black text-white rounded-xl hover:shadow-lg transition-all "
             >
               {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -263,11 +272,12 @@ const MyLearningClient = () => {
               {activeLesson?.videoUrl ? (
                 <ReactPlayer
                   key={activeLesson._id}
-                  url={activeLesson.videoUrl}
+                  url={getFileUrl(activeLesson.videoUrl)}
                   width="100%"
                   height="100%"
                   controls
                   playing
+                  playsinline
                   onEnded={handleCompleteLesson}
                   onError={(e: any) => {
                     // Suppress abort errors which are common when switching sources
@@ -379,7 +389,7 @@ const MyLearningClient = () => {
       {/* Course Content Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 right-0 w-full md:w-[400px] bg-white border-l border-gray-100 z-30 transition-all duration-300 ease-in-out transform",
+          "fixed inset-y-0 right-0 w-full md:w-[400px]  bg-white border-l border-gray-100 z-30 transition-all duration-300 ease-in-out transform",
           sidebarOpen ? "translate-x-0" : "translate-x-full",
         )}
       >
@@ -389,7 +399,7 @@ const MyLearningClient = () => {
               <h3 className="text-xl font-bold">Course Content</h3>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="p-2 hover:bg-gray-50 rounded-xl md:hidden"
+                className="p-2 hover:bg-gray-50 rounded-xl"
               >
                 <X size={20} />
               </button>
