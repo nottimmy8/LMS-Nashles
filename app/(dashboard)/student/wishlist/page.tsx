@@ -9,13 +9,14 @@ import {
   Clock,
   BookOpen,
   ArrowRight,
+  Loader2,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 import { useEffect, useState } from "react";
-import { getWishlist, toggleWishlist } from "@/services/user-service";
-import { toast } from "@/hooks/use-toast";
+import api from "@/services/api";
+import { toast } from "sonner";
 
 const Wishlist = () => {
   const [wishlistItems, setWishlistItems] = useState<any[]>([]);
@@ -24,8 +25,8 @@ const Wishlist = () => {
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
-        const data = await getWishlist();
-        setWishlistItems(data);
+        const res = await api.get("/user/wishlist");
+        setWishlistItems(res.data);
       } catch (error) {
         console.error("Failed to fetch wishlist", error);
       } finally {
@@ -37,17 +38,22 @@ const Wishlist = () => {
 
   const handleRemove = async (courseId: string) => {
     try {
-      await toggleWishlist(courseId);
+      await api.post("/user/wishlist/toggle", { courseId });
       setWishlistItems((prev) => prev.filter((item) => item._id !== courseId));
-      toast({ title: "Success", description: "Course removed from wishlist" });
+      toast.success("Course removed from wishlist");
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to remove course",
-        variant: "destructive",
-      });
+      toast.error("Failed to remove course");
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-[70vh]">
+        <Loader2 className="w-10 h-10 animate-spin text-indigo-600" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8 pb-10">
       {/* Header */}
@@ -65,9 +71,7 @@ const Wishlist = () => {
       </div>
 
       {/* Grid */}
-      {loading ? (
-        <div className="text-center py-20">Loading wishlist...</div>
-      ) : wishlistItems.length > 0 ? (
+      {wishlistItems.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {wishlistItems.map((item) => (
             <div
@@ -76,7 +80,10 @@ const Wishlist = () => {
             >
               <div className="relative aspect-video overflow-hidden">
                 <Image
-                  src={item.thumbnail}
+                  src={
+                    item.thumbnail ||
+                    "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=225&fit=crop"
+                  }
                   alt={item.title}
                   fill
                   className="object-cover group-hover:scale-110 transition-transform duration-700"
@@ -107,10 +114,10 @@ const Wishlist = () => {
                     }).format(item.price)}
                   </div>
                   <Link
-                    href={`/course/${item._id}`}
+                    href={`/search?id=${item._id}`} // Or direct to course details if you have it
                     className="px-6 py-3 bg-black text-white rounded-2xl font-bold text-sm hover:shadow-lg transition-all flex items-center gap-2"
                   >
-                    Enrol Now
+                    Enroll Now
                     <ArrowRight size={16} />
                   </Link>
                 </div>

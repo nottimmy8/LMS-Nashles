@@ -1,35 +1,45 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getMyCertificates } from "@/services/analytics-service";
 import {
   Trophy,
   Download,
-  Share2,
+  Calendar,
   ExternalLink,
   Award,
-  FileCheck,
+  Loader2,
+  Search,
+  BookOpen,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import api from "@/services/api";
 
-const Certificates = () => {
+const CertificatesPage = () => {
   const [certificates, setCertificates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCertificates = async () => {
       try {
-        const data = await getMyCertificates();
-        setCertificates(data);
+        const res = await api.get("/analytics/certificates");
+        setCertificates(res.data);
       } catch (error) {
-        console.error("Failed to fetch certificates", error);
+        console.error("Error fetching certificates:", error);
       } finally {
         setLoading(false);
       }
     };
     fetchCertificates();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-[70vh]">
+        <Loader2 className="w-10 h-10 animate-spin text-indigo-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 pb-10">
@@ -40,82 +50,65 @@ const Certificates = () => {
             My Certificates
           </h1>
           <p className="text-gray-500">
-            Celebrate your achievements and share your expertise
+            Showcase your achievements and professional milestones
           </p>
         </div>
-        <div className="flex items-center gap-2 p-4 bg-emerald-50 rounded-2xl text-emerald-600">
-          <Award size={24} />
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wider">
-              Total Earned
-            </p>
-            <p className="text-xl font-bold">{certificates.length}</p>
-          </div>
+        <div className="px-6 py-3 bg-white border border-gray-100 rounded-2xl shadow-sm text-sm font-bold flex items-center gap-2">
+          <Trophy className="text-amber-500" size={18} />
+          {certificates.length} Certificates Earned
         </div>
       </div>
 
-      {/* Grid */}
-      {loading ? (
-        <div className="text-center py-20">Loading certificates...</div>
-      ) : certificates.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {certificates.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {certificates.map((cert) => (
             <div
               key={cert._id}
-              className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group"
+              className="bg-white rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all overflow-hidden group"
             >
-              <div className="relative aspect-[4/3] bg-gray-900 p-6 flex flex-col justify-between text-white overflow-hidden">
-                <div className="absolute inset-0 opacity-20">
-                  <Image
-                    src={
-                      cert.course?.thumbnail ||
-                      "https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=400&h=225&fit=crop"
-                    }
-                    alt="Certificate Background"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="relative z-10">
-                  <div className="flex items-center gap-2 mb-2 opacity-80">
-                    <Award size={20} />
-                    <span className="text-xs font-bold tracking-widest uppercase">
-                      Certificate of Completion
-                    </span>
-                  </div>
-                  <h3 className="text-2xl font-bold leading-tight">
-                    {cert.course?.title || "Course Title"}
-                  </h3>
-                </div>
-                <div className="relative z-10">
-                  <p className="text-xs opacity-60 mb-1">Issued on</p>
-                  <p className="font-bold">
-                    {new Date(cert.issueDate).toLocaleDateString()}
-                  </p>
+              {/* Certificate Preview Mask */}
+              <div className="relative h-48 bg-gray-50 flex items-center justify-center overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10" />
+                <Award
+                  size={80}
+                  className="text-indigo-200 group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button className="px-6 py-2 bg-white text-black rounded-xl font-bold text-sm flex items-center gap-2">
+                    <Download size={16} />
+                    Download PDF
+                  </button>
                 </div>
               </div>
 
+              {/* Info */}
               <div className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1">Certificate ID</p>
-                    <p className="text-sm font-mono font-bold text-gray-900 bg-gray-50 px-2 py-1 rounded">
-                      {cert.certificateId}
-                    </p>
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] font-bold uppercase tracking-widest rounded-md">
+                    Official Certificate
+                  </span>
+                </div>
+                <h3 className="font-bold text-lg mb-2 line-clamp-1">
+                  {cert.course?.title || "Course Certificate"}
+                </h3>
+
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <Calendar size={14} />
+                    Issued on {new Date(cert.issueDate).toLocaleDateString()}
                   </div>
-                  <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                    <FileCheck size={20} />
+                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <ExternalLink size={14} />
+                    ID: {cert.certificateId}
                   </div>
                 </div>
 
-                <div className="flex gap-3">
-                  <button className="flex-1 py-3 border border-gray-200 rounded-xl font-bold text-sm hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
-                    <Share2 size={16} />
-                    Share
+                <div className="flex gap-2">
+                  <button className="flex-1 px-4 py-2 bg-black text-white rounded-xl font-bold text-sm hover:shadow-lg transition-all">
+                    View Online
                   </button>
-                  <button className="flex-1 py-3 bg-black text-white rounded-xl font-bold text-sm hover:shadow-lg transition-all flex items-center justify-center gap-2">
-                    <Download size={16} />
-                    Download PDF
+                  <button className="p-2 border border-gray-100 rounded-xl hover:bg-gray-50">
+                    <ExternalLink size={18} className="text-gray-400" />
                   </button>
                 </div>
               </div>
@@ -123,20 +116,20 @@ const Certificates = () => {
           ))}
         </div>
       ) : (
-        <div className="text-center py-24 bg-white rounded-[3rem] border border-gray-100 shadow-sm">
-          <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Award size={48} className="text-gray-200" />
+        <div className="text-center py-20 bg-gray-50 rounded-[3rem] border border-dashed border-gray-200">
+          <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+            <Trophy size={40} className="text-gray-200" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h3 className="text-xl font-bold text-gray-900 mb-2">
             No certificates yet
-          </h2>
+          </h3>
           <p className="text-gray-500 mb-8 max-w-sm mx-auto">
-            Complete your first course to unlock your achievement and showcase
-            your new skills.
+            Complete courses to earn official certificates and showcase your
+            skills to the world.
           </p>
           <Link
-            href="/student/search"
-            className="px-8 py-4 bg-black text-white rounded-2xl font-bold hover:shadow-2xl hover:-translate-y-1 transition-all"
+            href="/student/my-learning"
+            className="inline-flex px-8 py-3 bg-black text-white rounded-2xl font-bold text-sm hover:shadow-lg transition-all"
           >
             Continue Learning
           </Link>
@@ -146,4 +139,4 @@ const Certificates = () => {
   );
 };
 
-export default Certificates;
+export default CertificatesPage;

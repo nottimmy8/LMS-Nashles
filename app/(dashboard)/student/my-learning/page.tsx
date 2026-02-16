@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   Search,
   Filter,
@@ -12,88 +11,65 @@ import {
   MoreVertical,
   Download,
   Trash2,
+  Loader2,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import api from "@/services/api";
 
 const MyLearning = () => {
-  const [activeTab, setActiveTab] = useState("in-progress");
+  const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [courses, setCourses] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const courses = [
-    {
-      id: 1,
-      title: "Complete React & Next.js Course",
-      instructor: "John Doe",
-      progress: 65,
-      thumbnail:
-        "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=225&fit=crop",
-      totalLessons: 45,
-      completedLessons: 29,
-      duration: "12h 30m",
-      rating: 4.8,
-      status: "in-progress",
-    },
-    {
-      id: 2,
-      title: "Advanced TypeScript Patterns",
-      instructor: "Jane Smith",
-      progress: 32,
-      thumbnail:
-        "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=400&h=225&fit=crop",
-      totalLessons: 32,
-      completedLessons: 10,
-      duration: "8h 15m",
-      rating: 4.9,
-      status: "in-progress",
-    },
-    {
-      id: 3,
-      title: "UI/UX Design Masterclass",
-      instructor: "Sarah Johnson",
-      progress: 100,
-      thumbnail:
-        "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=225&fit=crop",
-      totalLessons: 28,
-      completedLessons: 28,
-      duration: "10h 45m",
-      rating: 4.7,
-      status: "completed",
-    },
-    {
-      id: 4,
-      title: "Python for Data Science",
-      instructor: "Mike Chen",
-      progress: 18,
-      thumbnail:
-        "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&h=225&fit=crop",
-      totalLessons: 50,
-      completedLessons: 9,
-      duration: "15h 20m",
-      rating: 4.6,
-      status: "in-progress",
-    },
-  ];
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const res = await api.get("/enrollments/my-learning");
+        setCourses(res.data);
+      } catch (error) {
+        console.error("Error fetching enrolled courses:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourses();
+  }, []);
 
-  const filteredCourses = courses.filter((course) => {
-    const matchesTab = activeTab === "all" || course.status === activeTab;
-    const matchesSearch = course.title
+  const filteredCourses = courses.filter((enrollment) => {
+    const isCompleted = enrollment.progressPercent === 100;
+    const matchesTab =
+      activeTab === "all" ||
+      (activeTab === "in-progress" && !isCompleted) ||
+      (activeTab === "completed" && isCompleted);
+
+    const matchesSearch = enrollment.course.title
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
     return matchesTab && matchesSearch;
   });
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-[70vh]">
+        <Loader2 className="w-10 h-10 animate-spin text-indigo-600" />
+      </div>
+    );
+  }
 
   const tabs = [
     { id: "all", label: "All Courses", count: courses.length },
     {
       id: "in-progress",
       label: "In Progress",
-      count: courses.filter((c) => c.status === "in-progress").length,
+      count: courses.filter((c) => c.progressPercent < 100).length,
     },
     {
       id: "completed",
       label: "Completed",
-      count: courses.filter((c) => c.status === "completed").length,
+      count: courses.filter((c) => c.progressPercent === 100).length,
     },
   ];
 
@@ -148,16 +124,19 @@ const MyLearning = () => {
       {/* Course Grid */}
       {filteredCourses.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCourses.map((course) => (
+          {filteredCourses.map((enrollment) => (
             <div
-              key={course.id}
+              key={enrollment._id}
               className="bg-white rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-lg transition-all overflow-hidden group"
             >
               {/* Thumbnail */}
               <div className="relative h-48 overflow-hidden">
                 <Image
-                  src={course.thumbnail}
-                  alt={course.title}
+                  src={
+                    enrollment.course.thumbnail ||
+                    "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=225&fit=crop"
+                  }
+                  alt={enrollment.course.title}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
@@ -165,7 +144,7 @@ const MyLearning = () => {
 
                 {/* Play Button */}
                 <Link
-                  href={`/course/${course.id}/learn`}
+                  href={`/student/my-learning/${enrollment.course._id}`}
                   className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-xl opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
                 >
                   <PlayCircle size={32} className="text-black ml-1" />
@@ -175,12 +154,12 @@ const MyLearning = () => {
                 <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-white/20">
                   <div
                     className="h-full bg-white transition-all duration-300"
-                    style={{ width: `${course.progress}%` }}
+                    style={{ width: `${enrollment.progressPercent}%` }}
                   />
                 </div>
 
                 {/* Status Badge */}
-                {course.status === "completed" && (
+                {enrollment.progressPercent === 100 && (
                   <div className="absolute top-4 right-4 px-3 py-1 bg-emerald-500 text-white text-xs font-bold rounded-full flex items-center gap-1">
                     <CheckCircle2 size={14} />
                     Completed
@@ -191,21 +170,18 @@ const MyLearning = () => {
               {/* Content */}
               <div className="p-6">
                 <h3 className="font-bold text-lg mb-2 line-clamp-2">
-                  {course.title}
+                  {enrollment.course.title}
                 </h3>
                 <p className="text-sm text-gray-500 mb-4">
-                  by {course.instructor}
+                  by {enrollment.course.tutor?.name || "Instructor"}
                 </p>
 
                 {/* Stats */}
                 <div className="flex items-center gap-4 text-xs text-gray-500 mb-4">
                   <span className="flex items-center gap-1">
                     <BookOpen size={14} />
-                    {course.completedLessons}/{course.totalLessons} lessons
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Clock size={14} />
-                    {course.duration}
+                    {enrollment.completedLessons?.length || 0}/
+                    {enrollment.totalLessons || 0} lessons
                   </span>
                 </div>
 
@@ -214,13 +190,13 @@ const MyLearning = () => {
                   <div className="flex items-center justify-between text-xs mb-2">
                     <span className="text-gray-500">Progress</span>
                     <span className="font-bold text-indigo-600">
-                      {course.progress}%
+                      {enrollment.progressPercent}%
                     </span>
                   </div>
                   <div className="bg-gray-100 rounded-full h-2 overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-indigo-500 to-purple-600 transition-all duration-300"
-                      style={{ width: `${course.progress}%` }}
+                      style={{ width: `${enrollment.progressPercent}%` }}
                     />
                   </div>
                 </div>
@@ -228,14 +204,11 @@ const MyLearning = () => {
                 {/* Actions */}
                 <div className="flex items-center gap-2">
                   <Link
-                    href={`/course/${course.id}/learn`}
+                    href={`/student/my-learning/${enrollment.course._id}`}
                     className="flex-1 px-4 py-2 bg-black text-white rounded-xl font-bold text-sm hover:shadow-lg transition-all text-center"
                   >
-                    {course.status === "completed" ? "Review" : "Continue"}
+                    {enrollment.progressPercent === 100 ? "Review" : "Continue"}
                   </Link>
-                  <button className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
-                    <MoreVertical size={18} className="text-gray-400" />
-                  </button>
                 </div>
               </div>
             </div>

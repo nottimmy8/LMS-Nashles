@@ -74,8 +74,8 @@ const TutorSignUp = ({ role }: { role: "tutor" }) => {
       };
 
       await api.post("/auth/register", payload);
-      // router.push(`/sign-up/verify?email=${encodeURIComponent(form.email)}`);
-      router.push("/sign-in");
+      router.push(`/sign-up/verify?email=${encodeURIComponent(form.email)}`);
+      // router.push("/sign-in");
     } catch (err: any) {
       setError(
         err.response?.data?.message ||

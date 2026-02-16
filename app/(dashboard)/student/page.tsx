@@ -11,48 +11,62 @@ import {
   Target,
   Calendar,
   ArrowRight,
+  Loader2,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import api from "@/services/api";
+import { useAuthStore } from "@/store/auth.store";
 
 const StudentPage = () => {
-  const continueLearning = [
-    {
-      id: 1,
-      title: "Complete React & Next.js Course",
-      instructor: "John Doe",
-      progress: 65,
-      thumbnail:
-        "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=225&fit=crop",
-      lastWatched: "Introduction to Hooks",
-      duration: "12h 30m total",
-    },
-    {
-      id: 2,
-      title: "Advanced TypeScript Patterns",
-      instructor: "Jane Smith",
-      progress: 32,
-      thumbnail:
-        "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=400&h=225&fit=crop",
-      lastWatched: "Generic Types Deep Dive",
-      duration: "8h 15m total",
-    },
-  ];
+  const { user } = useAuthStore();
+  const [stats, setStats] = useState<any>(null);
+  const [continueLearning, setContinueLearning] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [statsRes, learningRes] = await Promise.all([
+          api.get("/analytics/student"),
+          api.get("/enrollments/my-learning"),
+        ]);
+        setStats(statsRes.data);
+        // Only show top 2 for "Continue Learning" section
+        setContinueLearning(learningRes.data.slice(0, 2));
+      } catch (error) {
+        console.error("Error fetching student dashboard data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const upcomingDeadlines = [
     {
       course: "React Course",
       task: "Final Project",
-      dueDate: "Feb 5, 2026",
+      dueDate: "Feb 25, 2026",
       urgent: true,
     },
     {
       course: "TypeScript",
       task: "Quiz 3",
-      dueDate: "Feb 8, 2026",
+      dueDate: "Feb 28, 2026",
       urgent: false,
     },
   ];
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-[70vh]">
+        <Loader2 className="w-10 h-10 animate-spin text-indigo-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 pb-10">
@@ -60,7 +74,7 @@ const StudentPage = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Welcome back, Student! 👋
+            Welcome back, {user?.name?.split(" ")[0] || "Student"}! 👋
           </h1>
           <p className="text-gray-500">
             Ready to continue your learning journey?
@@ -84,7 +98,7 @@ const StudentPage = () => {
             </div>
             <span className="text-sm font-bold opacity-80">STREAK</span>
           </div>
-          <h3 className="text-4xl font-bold mb-1">12</h3>
+          <h3 className="text-4xl font-bold mb-1">{stats?.streak || 0}</h3>
           <p className="text-sm opacity-90">Days in a row</p>
         </div>
 
@@ -97,21 +111,25 @@ const StudentPage = () => {
               Completed
             </span>
           </div>
-          <h3 className="text-4xl font-bold text-gray-900 mb-1">8</h3>
+          <h3 className="text-4xl font-bold text-gray-900 mb-1">
+            {stats?.completedCourses || 0}
+          </h3>
           <p className="text-sm text-gray-500">Courses finished</p>
         </div>
 
         <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition-all">
           <div className="flex items-center justify-between mb-4">
             <div className="p-3 bg-blue-50 rounded-2xl text-blue-600">
-              <Clock size={24} />
+              <BookOpen size={24} />
             </div>
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-              Time
+              Lessons
             </span>
           </div>
-          <h3 className="text-4xl font-bold text-gray-900 mb-1">124</h3>
-          <p className="text-sm text-gray-500">Hours learned</p>
+          <h3 className="text-4xl font-bold text-gray-900 mb-1">
+            {stats?.totalLessonsCompleted || 0}
+          </h3>
+          <p className="text-sm text-gray-500">Lessons completed</p>
         </div>
 
         <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition-all">
@@ -120,11 +138,13 @@ const StudentPage = () => {
               <Trophy size={24} />
             </div>
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-              Achievements
+              Certificates
             </span>
           </div>
-          <h3 className="text-4xl font-bold text-gray-900 mb-1">15</h3>
-          <p className="text-sm text-gray-500">Certificates earned</p>
+          <h3 className="text-4xl font-bold text-gray-900 mb-1">
+            {stats?.totalCertificates || 0}
+          </h3>
+          <p className="text-sm text-gray-500">Credentials earned</p>
         </div>
       </div>
 
@@ -142,49 +162,73 @@ const StudentPage = () => {
           </Link>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {continueLearning.map((course) => (
-            <div
-              key={course.id}
-              className="bg-white rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-lg transition-all overflow-hidden group cursor-pointer"
-            >
-              <div className="relative h-48 overflow-hidden">
-                <Image
-                  src={course.thumbnail}
-                  alt={course.title}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <button className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-xl opacity-0 group-hover:opacity-100 transition-all hover:scale-110">
-                  <PlayCircle size={32} className="text-black ml-1" />
-                </button>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="bg-white/10 backdrop-blur-md rounded-full h-2 overflow-hidden">
-                    <div
-                      className="h-full bg-white transition-all duration-300"
-                      style={{ width: `${course.progress}%` }}
-                    />
+          {continueLearning.length > 0 ? (
+            continueLearning.map((enrollment) => (
+              <Link
+                key={enrollment._id}
+                href={`/student/my-learning/${enrollment.course._id}`}
+                className="bg-white rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-lg transition-all overflow-hidden group cursor-pointer"
+              >
+                <div className="relative h-48 overflow-hidden">
+                  <Image
+                    src={
+                      enrollment.course.thumbnail ||
+                      "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=225&fit=crop"
+                    }
+                    alt={enrollment.course.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-xl opacity-0 group-hover:opacity-100 transition-all hover:scale-110">
+                    <PlayCircle size={32} className="text-black ml-1" />
+                  </div>
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="bg-white/10 backdrop-blur-md rounded-full h-2 overflow-hidden">
+                      <div
+                        className="h-full bg-white transition-all duration-300"
+                        style={{ width: `${enrollment.progressPercent}%` }}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="p-6">
-                <h3 className="font-bold text-lg mb-2 line-clamp-1">
-                  {course.title}
-                </h3>
-                <p className="text-sm text-gray-500 mb-4">
-                  by {course.instructor}
-                </p>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-400">
-                    Last: {course.lastWatched}
-                  </span>
-                  <span className="font-bold text-indigo-600">
-                    {course.progress}% Complete
-                  </span>
+                <div className="p-6">
+                  <h3 className="font-bold text-lg mb-2 line-clamp-1">
+                    {enrollment.course.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 mb-4">
+                    by {enrollment.course.tutor?.name || "Instructor"}
+                  </p>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-400">
+                      {enrollment.progressPercent === 100
+                        ? "Completed"
+                        : "In Progress"}
+                    </span>
+                    <span className="font-bold text-indigo-600">
+                      {enrollment.progressPercent}% Complete
+                    </span>
+                  </div>
                 </div>
-              </div>
+              </Link>
+            ))
+          ) : (
+            <div className="lg:col-span-2 bg-gray-50 rounded-[2rem] border border-dashed border-gray-200 p-12 text-center">
+              <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                No active courses
+              </h3>
+              <p className="text-gray-500 mb-6">
+                Start your learning journey today!
+              </p>
+              <Link
+                href="/student/search"
+                className="inline-flex px-6 py-2 bg-black text-white rounded-xl font-bold text-sm hover:shadow-md transition-all"
+              >
+                Browse Courses
+              </Link>
             </div>
-          ))}
+          )}
         </div>
       </section>
 
