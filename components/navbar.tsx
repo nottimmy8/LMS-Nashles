@@ -15,7 +15,7 @@ const Navbar = () => {
       className="max-w-6xl w-full mx-auto flex items-center justify-between px-5 py-4"
     >
       {/* nav item */}
-      <ul className="flex gap-6 text-base">
+      <ul className=" hidden md:flex gap-6 text-base">
         {["Home", "Course", "Review"].map((item, index) => (
           <motion.li
             key={item}
