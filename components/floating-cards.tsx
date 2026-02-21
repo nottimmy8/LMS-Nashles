@@ -1,34 +1,64 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BookOpen, Users, Award, Sparkles } from "lucide-react";
+import {
+  BookOpen,
+  Users,
+  Award,
+  Sparkles,
+  Target,
+  BarChart3,
+} from "lucide-react";
 
 const features = [
   {
     icon: BookOpen,
     title: "Expert-Led Courses",
     description: "Learn from industry professionals with real-world experience",
+    color: "text-violet-400",
+    bg: "bg-violet-400/10",
   },
   {
     icon: Users,
     title: "Community Support",
     description: "Join thousands of learners on their journey to success",
+    color: "text-blue-400",
+    bg: "bg-blue-400/10",
   },
   {
     icon: Award,
     title: "Certified Programs",
     description: "Earn recognized certificates upon course completion",
+    color: "text-cyan-400",
+    bg: "bg-cyan-400/10",
   },
   {
     icon: Sparkles,
     title: "Lifetime Access",
     description: "Access your courses anytime, anywhere, forever",
+    color: "text-amber-400",
+    bg: "bg-amber-400/10",
+  },
+  {
+    icon: Target,
+    title: "Progress Tracking",
+    description:
+      "Visual progress bars, milestone badges, and completion certificates keep you motivated.",
+    color: "text-emerald-400",
+    bg: "bg-emerald-400/10",
+  },
+  {
+    icon: BarChart3,
+    title: "Tutor Analytics",
+    desc: "Real-time dashboards for tutors to monitor student engagement and course performance.",
+    color: "text-rose-400",
+    bg: "bg-rose-400/10",
   },
 ];
 
 export const FloatingCards = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {features.map((feature, index) => (
         <motion.div
           key={feature.title}
@@ -37,19 +67,19 @@ export const FloatingCards = () => {
           viewport={{ once: true }}
           transition={{ delay: index * 0.1, duration: 0.5 }}
           whileHover={{ y: -8, transition: { duration: 0.2 } }}
-          className="group"
+          className="group "
         >
-          <div className="relative h-full p-6 rounded-2xl bg-white border border-black/10 shadow-sm hover:shadow-xl transition-all duration-300">
+          <div className="glass-panel  relative h-full p-6 rounded-2xl bg-black/90 text-white border border-black/10 shadow-sm hover:shadow-xl transition-all duration-300">
             {/* Hover gradient effect */}
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-            <div className="relative z-10">
+            <div className="relative z-10 ">
               <motion.div
                 whileHover={{ rotate: 360 }}
                 transition={{ duration: 0.6 }}
-                className="w-12 h-12 rounded-xl bg-black flex items-center justify-center mb-4"
+                className={`  w-12 h-12 rounded-xl ${feature.bg} flex items-center justify-center mb-4`}
               >
-                <feature.icon className="w-6 h-6 text-white" />
+                <feature.icon className={`w-6 h-6 ${feature.color}`} />
               </motion.div>
 
               <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
