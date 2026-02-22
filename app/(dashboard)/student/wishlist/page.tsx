@@ -59,12 +59,12 @@ const Wishlist = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">My Wishlist</h1>
+          <h1 className="text-4xl font-bold text-white mb-2">My Wishlist</h1>
           <p className="text-gray-500">
             Courses you're interested in taking next
           </p>
         </div>
-        <div className="px-6 py-3 bg-white border border-gray-100 rounded-2xl shadow-sm text-sm font-bold flex items-center gap-2">
+        <div className="px-6 py-3 bg-white/10 border border-white/15 rounded-2xl shadow-sm text-sm font-bold flex items-center gap-2">
           <Heart className="text-rose-500 fill-rose-500" size={18} />
           {wishlistItems.length} Saved Courses
         </div>
@@ -76,7 +76,7 @@ const Wishlist = () => {
           {wishlistItems.map((item) => (
             <div
               key={item._id}
-              className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group"
+              className="bg-white/10 rounded-[2.5rem] border border-white/15 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group"
             >
               <div className="relative aspect-video overflow-hidden">
                 <Image
@@ -126,11 +126,11 @@ const Wishlist = () => {
           ))}
         </div>
       ) : (
-        <div className="text-center py-24 bg-white rounded-[3rem] border border-gray-100 shadow-sm">
-          <div className="w-24 h-24 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div className="text-center py-24 bg-black rounded-[3rem] border border-white/15 shadow-sm">
+          <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
             <Heart size={48} className="text-rose-200" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="text-2xl font-bold text-gray-500 mb-2">
             Your wishlist is empty
           </h2>
           <p className="text-gray-500 mb-8 max-w-sm mx-auto">
@@ -139,7 +139,7 @@ const Wishlist = () => {
           </p>
           <Link
             href="/student/search"
-            className="px-8 py-4 bg-black text-white rounded-2xl font-bold hover:shadow-2xl hover:-translate-y-1 transition-all"
+            className="px-8 py-4 bg-white/10 text-gray-500 rounded-2xl font-bold hover:shadow-2xl hover:-translate-y-1 transition-all"
           >
             Explore Courses
           </Link>

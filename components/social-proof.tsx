@@ -2,50 +2,70 @@
 
 import { motion } from "motion/react";
 import Image from "next/image";
+import { useState } from "react";
 
 const testimonials = [
   {
     id: 1,
     name: "Alex Rivera",
-    role: "Senior Product Designer",
+    role: "UX Design Student",
     company: "TechCorp",
     image: "https://picsum.photos/seed/user1/100/100",
     content:
-      "The AI-powered learning paths completely transformed how I upskill. It feels like having a personal mentor available 24/7.",
+      "Nashles completely changed how I approach learning. The interface is so clean, and the direct access to tutors makes complex topics easy to grasp.",
+    type: "student",
   },
   {
     id: 2,
     name: "Samantha Lee",
-    role: "Frontend Engineer",
+    role: "Language Learner",
     company: "StartupX",
     image: "https://picsum.photos/seed/user2/100/100",
     content:
-      "The gamified progress and real-time analytics kept me motivated. Best LMS I have ever used, hands down.",
+      "I've tried every LMS out there. This is the first one that feels like a premium product rather than a clunky enterprise tool.",
+    type: "student",
   },
   {
     id: 3,
     name: "David Chen",
-    role: "Engineering Manager",
+    role: "Photography Instructor",
     company: "GlobalTech",
     image: "https://picsum.photos/seed/user3/100/100",
     content:
-      "We onboarded our entire engineering team onto this platform. The results have been phenomenal. Highly recommended.",
+      "As a tutor, the analytics dashboard is a game-changer. I know exactly where my students are struggling and can intervene before they fall behind.",
+    type: "tutor",
+  },
+  {
+    id: 4,
+    name: "Elena Rodriguez",
+    role: "Computer Science Tutor",
+    company: "DataCorp",
+    image: "https://picsum.photos/seed/user3/100/100",
+    content:
+      "Publishing my photography course was incredibly intuitive. The platform handles all the heavy lifting so I can focus on teaching.",
+    type: "tutor",
   },
 ];
 
 export default function SocialProof() {
+  const [activeTab, setActiveTab] = useState<"all" | "student" | "tutor">(
+    "all",
+  );
+
+  const filtered = testimonials.filter(
+    (t) => activeTab === "all" || t.type === activeTab,
+  );
   return (
     <section id="reviews" className="py-32 relative z-10 bg-black">
-      <div className="container px-4 mx-auto">
-        <div className="text-center max-w-2xl mx-auto mb-20">
+      <div className=" max-w-7xl mx-auto  px-4 ">
+        <div className="text-center max-w-2xl mx-auto mb-16">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="text-4xl md:text-5xl font-bold tracking-tight mb-6"
           >
-            Loved by{" "}
-            <span className="text-gradient-accent">Industry Leaders</span>
+            Stories of <span className="text-gradient-accent">Success</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -59,8 +79,22 @@ export default function SocialProof() {
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
+        <div className="flex glass-panel p-1 rounded-full w-fit mb-9">
+          {["all", "student", "tutor"].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab as "all" | "student" | "tutor")}
+              className={`px-6 py-2 rounded-full text-sm hover:text-violet-500 font-medium capitalize transition-all ${
+                activeTab === tab ? "bg-violet-500/30 text-violet-500" : ""
+              } `}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
+        <div className=" grid grid-cols-1 md:grid-cols-3 gap-8">
+          {filtered.map((testimonial, index) => (
             <motion.div
               key={testimonial.id}
               initial={{ opacity: 0, y: 40 }}

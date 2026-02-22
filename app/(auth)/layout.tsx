@@ -31,19 +31,24 @@ export default function AuthLayout({
   }, []);
   return (
     <div className=" w-full  pt-6  ">
-      <div className=" max-w-6xl w-full mx-auto px-6">
+      <div className=" w-full  px-6 md:px-20">
         <Link href="/">
-          <div className="flex items-center ">
-            <Image src={logo} alt="nash logo" width={50} height={50} priority />
-            <p className="text-2xl font-semibold font-roboto">Nashles</p>
-          </div>
+          {/* <div className="flex items-center "> */}
+          {/* <Image src={logo} alt="nash logo" width={50} height={50} priority /> */}
+          <p className="text-2xl font-semibold font-roboto">Nashles</p>
+          {/* </div> */}
         </Link>
-        <div className="w-full min-h-screen h-full ">{children}</div>
+      </div>
+      <div className="relative w-full min-h-screen h-full ">
+        {/* Background Glow */}
+        <div className="absolute top-1/4 -right-1/4 w-[600px] h-[600px] bg-violet-600/10 blur-[120px] rounded-full " />
+        <div className="absolute bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-cyan-600/10 blur-[120px] rounded-full " />
+        {children}
       </div>
 
       <footer
         ref={footerRef}
-        className={`w-full bg-primary/50 min-h-102 h-full border-t border-primary py-6 text-center text-sm text-white
+        className={`w-full  min-h-102 h-full  py-6 text-center text-sm text-white
           transition-all duration-700 
           ${
             footerVisible

@@ -12,6 +12,7 @@ import {
   Download,
   Trash2,
   Loader2,
+  SearchIcon,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -77,17 +78,17 @@ const MyLearning = () => {
     <div className="space-y-8 pb-10">
       {/* Header */}
       <div>
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">My Learning</h1>
-        <p className="text-gray-500">
+        <h1 className="text-4xl font-bold text-gradient mb-2 ">My Learning</h1>
+        <p className="text-white/40  text-sm max-w-md ">
           Track your progress and continue where you left off
         </p>
       </div>
 
       {/* Search & Filter Bar */}
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="flex-1 relative">
-          <Search
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+        <div className="flex-1 relative ">
+          <SearchIcon
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 z-10"
             size={20}
           />
           <input
@@ -95,25 +96,25 @@ const MyLearning = () => {
             placeholder="Search your courses..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
+            className="w-full pl-12 pr-4 py-3 glass-panel border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
           />
         </div>
-        <button className="px-6 py-3 bg-white border border-gray-200 rounded-2xl font-bold text-sm hover:bg-gray-50 transition-all flex items-center gap-2">
+        <button className="px-6 py-3 bg-gradient-to-bl from-violet-500 to-cyan-500 border border-black rounded-2xl font-bold text-sm text-black hover:bg-gray-50 transition-all flex items-center gap-2">
           <Filter size={18} />
           Filters
         </button>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-gray-200 overflow-x-auto">
+      <div className="flex gap-2 border-b border-white/40 overflow-x-auto">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`px-6 py-3 font-bold text-sm transition-all whitespace-nowrap ${
               activeTab === tab.id
-                ? "text-black border-b-2 border-black"
-                : "text-gray-400 hover:text-gray-600"
+                ? "text-violet-500 border-b-2 border-violet-500"
+                : "text-gray-400 hover:text-violet-500/50"
             }`}
           >
             {tab.label} ({tab.count})
@@ -127,7 +128,7 @@ const MyLearning = () => {
           {filteredCourses.map((enrollment) => (
             <div
               key={enrollment._id}
-              className="bg-white rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-lg transition-all overflow-hidden group"
+              className="glass-panel rounded-[2rem]  shadow-sm hover:shadow-lg transition-all overflow-hidden group"
             >
               {/* Thumbnail */}
               <div className="relative h-48 overflow-hidden">
@@ -151,12 +152,12 @@ const MyLearning = () => {
                 </Link>
 
                 {/* Progress Bar */}
-                <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-white/20">
+                {/* <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-white/40">
                   <div
-                    className="h-full bg-white transition-all duration-300"
+                    className="h-full bg-violet-500 transition-all duration-300"
                     style={{ width: `${enrollment.progressPercent}%` }}
                   />
-                </div>
+                </div> */}
 
                 {/* Status Badge */}
                 {enrollment.progressPercent === 100 && (
@@ -168,7 +169,7 @@ const MyLearning = () => {
               </div>
 
               {/* Content */}
-              <div className="p-6">
+              <div className="p-6 ">
                 <h3 className="font-bold text-lg mb-2 line-clamp-2">
                   {enrollment.course.title}
                 </h3>

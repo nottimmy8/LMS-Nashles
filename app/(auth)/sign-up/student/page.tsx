@@ -84,118 +84,171 @@ const StudentSignUp = ({ role }: { role: "student" }) => {
   console.log("error", error);
 
   return (
-    <div className="grid grid-cols-1 gap-4 py-2.5 px-6 shadow-xl rounded-b-2xl">
-      <h1 className="text-center font-medium text-black text-[28px]">
-        Sign up and start learning
-      </h1>
-      <form className=" space-y-5" onSubmit={handleSubmit}>
-        <div>
-          <label className="text-sm block mb-2 font-medium text-black">
-            Full Name
-          </label>
-          <input
-            type="text"
-            name="fullName"
-            value={form.fullName}
-            onChange={handleChange}
-            placeholder="Enter Full Name"
-            className="border border-primary/50  w-full py-2.5 px-3 outline-none text-sm rounded text-black "
-          />
-        </div>
-        <div>
-          <label className="text-sm block mb-2 font-medium text-black">
-            Email address
-          </label>
-          <div className="flex items-center w-full overflow-hidden border border-primary/50  rounded">
+    <div className="w-full flex flex-col gap-6">
+      <form className="space-y-6" onSubmit={handleSubmit}>
+        <div className="space-y-4 text-left">
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-white/40 ml-1 uppercase tracking-wider">
+              Full Name
+            </label>
             <input
               type="text"
-              name="email"
-              value={form.email}
+              name="fullName"
+              value={form.fullName}
               onChange={handleChange}
-              placeholder="Enter Email Address"
-              className="w-full py-2.5 px-3 outline-none text-sm text-black "
+              placeholder="John Doe"
+              className="w-full bg-white/[0.03] border border-white/10 p-3 rounded-xl focus:outline-none focus:border-white/30 focus:bg-white/[0.05] transition-all duration-200 placeholder:text-white/20 text-sm text-white"
             />
-            <div className="w-12 h-full flex items-center justify-center ">
-              <Image src={emailIcon} alt="icon" width={20} height={20} />{" "}
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-white/40 ml-1 uppercase tracking-wider">
+              Email address
+            </label>
+            <div className="relative group">
+              <input
+                type="text"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                placeholder="name@example.com"
+                className="w-full bg-white/[0.03] border border-white/10 p-3 pr-11 rounded-xl focus:outline-none focus:border-white/30 focus:bg-white/[0.05] transition-all duration-200 placeholder:text-white/20 text-sm text-white"
+              />
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 opacity-30 group-focus-within:opacity-50 transition-opacity">
+                <Image
+                  src={emailIcon}
+                  alt="icon"
+                  width={18}
+                  height={18}
+                  className="invert"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-white/40 ml-1 uppercase tracking-wider">
+              Password
+            </label>
+            <div className="relative group">
+              <input
+                type="password"
+                name="password"
+                value={form.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+                className="w-full bg-white/[0.03] border border-white/10 p-3 pr-11 rounded-xl focus:outline-none focus:border-white/30 focus:bg-white/[0.05] transition-all duration-200 placeholder:text-white/20 text-sm text-white"
+              />
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 opacity-30 group-focus-within:opacity-50 transition-opacity cursor-pointer">
+                <Image
+                  src={eyeIcon}
+                  alt="icon"
+                  width={18}
+                  height={18}
+                  className="invert"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-white/40 ml-1 uppercase tracking-wider">
+              Confirm Password
+            </label>
+            <div className="relative group">
+              <input
+                type="password"
+                name="comfirmPassword"
+                value={form.comfirmPassword}
+                onChange={handleChange}
+                placeholder="••••••••"
+                className="w-full bg-white/[0.03] border border-white/10 p-3 pr-11 rounded-xl focus:outline-none focus:border-white/30 focus:bg-white/[0.05] transition-all duration-200 placeholder:text-white/20 text-sm text-white"
+              />
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 opacity-30 group-focus-within:opacity-50 transition-opacity cursor-pointer">
+                <Image
+                  src={eyeIcon}
+                  alt="icon"
+                  width={18}
+                  height={18}
+                  className="invert"
+                />
+              </div>
             </div>
           </div>
         </div>
-        <div>
-          <label className="text-sm block mb-2 font-medium text-black">
-            Password
-          </label>
-          <div className="flex items-center w-full overflow-hidden border border-primary/50  rounded">
-            <input
-              type="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              placeholder="Enter Password"
-              className="w-full py-2.5 px-3 outline-none text-sm text-black "
-            />
-            <div className="w-12 h-full flex items-center justify-center ">
-              <Image src={eyeIcon} alt="icon" width={20} height={20} />{" "}
-            </div>
-          </div>
-        </div>
-        <div>
-          <label className="text-sm block mb-2 font-medium text-black">
-            Comfirm Password
-          </label>
-          <div className="flex items-center w-full overflow-hidden border border-primary/50  rounded">
-            <input
-              type="password"
-              name="comfirmPassword"
-              value={form.comfirmPassword}
-              onChange={handleChange}
-              placeholder="Comfirm Password"
-              className="w-full py-2.5 px-3 outline-none text-sm text-black "
-            />
-            <div className="w-12 h-full flex items-center justify-center ">
-              <Image src={eyeIcon} alt="icon" width={20} height={20} />{" "}
-            </div>
-          </div>
-        </div>
-        <Field orientation={"horizontal"}>
+
+        <label className="flex items-start gap-3 group cursor-pointer">
           <Checkbox
             checked={form.acceptedTerms}
             onCheckedChange={handleCheckbox}
-            className="border-primary/50"
+            className="mt-1 border-white/20 data-[state=checked]:bg-white data-[state=checked]:text-black h-4 w-4 rounded-sm transition-colors transition-none"
           />
-          <FieldLabel className="text-gray">
-            By signing up you agree to our Terms and conditions and Privacy
-            policy.
-          </FieldLabel>
-        </Field>
-        <div>
+          <p className="text-[11px] leading-relaxed text-white/40 group-hover:text-white/60 transition-colors">
+            By signing up you agree to our{" "}
+            <span className="text-white decoration-white/20 hover:underline underline-offset-2">
+              Terms and conditions
+            </span>{" "}
+            and{" "}
+            <span className="text-white decoration-white/20 hover:underline underline-offset-2">
+              Privacy policy
+            </span>
+            .
+          </p>
+        </label>
+
+        <div className="space-y-4">
           <motion.button
-            whileHover={{ scale: 1.0 }}
-            whileTap={{ scale: 0.95 }}
-            className="rounded bg-primary text-white px-4.5 py-2 w-full "
+            whileTap={{ scale: 0.98 }}
+            disabled={loading}
+            className="w-full bg-white text-black hover:bg-white/90 py-3 rounded-xl font-bold text-sm tracking-wide shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed uppercase"
           >
-            Create account
+            {loading ? "Creating..." : "Create account"}
           </motion.button>
-          <p className="text-sm text-red-600">{error} </p>
+
+          {error && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-xs text-red-400 text-center font-medium bg-red-500/10 border border-red-500/20 p-3 rounded-lg"
+            >
+              {error}
+            </motion.p>
+          )}
+
+          <p className="text-xs text-center text-white/40 pt-2">
+            Already have an account?{" "}
+            <Link
+              href="/sign-in"
+              className="text-white hover:underline underline-offset-4 font-medium transition-all"
+            >
+              Sign in
+            </Link>
+          </p>
         </div>
-        <p>
-          Already have an account?
-          <Link href="/sign-in">
-            <span className="text-primary/50 ">Sign in</span>{" "}
-          </Link>
-        </p>
       </form>
-      <div className="inline-flex justify-center items-center gap-4 text-sm mt-6">
-        <div className="w-full border border-lightGray" /> or{" "}
-        <div className="w-full border border-lightGray" />{" "}
+
+      <div className="relative flex items-center gap-4 py-2">
+        <div className="flex-1 border-t border-white/5" />
+        <span className="text-[10px] uppercase tracking-[0.2em] text-white/20 font-semibold">
+          Or continue with
+        </span>
+        <div className="flex-1 border-t border-white/5" />
       </div>
-      <div className="grid grid-cols-1 gap-4 ">
-        <button className="flex items-center justify-center px-3 py-2.5 border border-primary/50 rounded gap-5 text-base text-gray font-medium ">
-          <Image src={googleIcon} alt="google icon" width={25} height={25} />
-          Continue with Google
+
+      <div className="grid grid-cols-2 gap-3 ">
+        <button className="flex items-center justify-center py-2.5 border border-white/10 rounded-xl gap-3 text-xs text-white/60 font-medium hover:bg-white/5 hover:border-white/20 transition-all">
+          <Image src={googleIcon} alt="google" width={16} height={16} />
+          Google
         </button>
-        <button className="flex items-center justify-center px-3 py-2.5 border border-primary/50 rounded gap-5 text-base text-gray font-medium">
-          <Image src={appleIcon} alt="google icon" width={25} height={25} />{" "}
-          Continue with Apple
+        <button className="flex items-center justify-center py-2.5 border border-white/10 rounded-xl gap-3 text-xs text-white/60 font-medium hover:bg-white/5 hover:border-white/20 transition-all">
+          <Image
+            src={appleIcon}
+            alt="apple"
+            width={16}
+            height={16}
+            className="invert"
+          />
+          Apple
         </button>
       </div>
     </div>

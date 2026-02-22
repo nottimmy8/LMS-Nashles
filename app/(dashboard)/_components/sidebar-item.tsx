@@ -1,4 +1,4 @@
-"use client";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
@@ -35,26 +35,34 @@ const SidebarItem = ({
   };
 
   return (
-    <div>
-      <button
-        onClick={handleClick}
-        type="button"
+    <button
+      onClick={handleClick}
+      type="button"
+      className={cn(
+        "flex items-center gap-4 px-4 py-3 font-medium w-full rounded-2xl mb-1.5 transition-all duration-300 group relative overflow-hidden",
+        isActive
+          ? "bg-gradient-to-r from-violet-500 to-cyan-500 text-black shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+          : "text-white/40 hover:text-white hover:bg-white/[0.03]",
+      )}
+    >
+      <Icon
         className={cn(
-          "flex items-center gap-4 px-4 py-3 font-medium w-full rounded-xl mb-1.5 transition-all duration-200 group",
+          "w-5 h-5 transition-transform duration-300",
           isActive
-            ? "bg-white text-black shadow-sm"
-            : "text-white/70 hover:bg-white/10 hover:text-white",
+            ? "text-black"
+            : "text-white/40 group-hover:text-white group-hover:scale-110",
         )}
-      >
-        <Icon
-          className={cn(
-            "w-5 h-5 transition-colors",
-            isActive ? "text-black" : "text-white/70 group-hover:text-white",
-          )}
+      />
+      <span className="text-sm tracking-tight">{label}</span>
+      {isActive && (
+        <motion.div
+          layoutId="active-pill"
+          className="absolute left-0 w-1 h-6 bg-black rounded-full"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
         />
-        <span className="text-sm">{label}</span>
-      </button>
-    </div>
+      )}
+    </button>
   );
 };
 

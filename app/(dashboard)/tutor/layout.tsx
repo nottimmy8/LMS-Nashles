@@ -21,20 +21,25 @@ export default function TutorLayout({
   return (
     <AuthGuard role="tutor">
       <DashboardLayout>
-        <div className="w-full min-h-screen bg-secondary">
-          <div className="flex w-full min-h-screen">
-            {/* Sidebar */}
+        <div className="w-full min-h-screen bg-[#050505]">
+          <div className="flex w-full min-h-screen relative overflow-hidden">
+            {/* Background Glow */}
+            <div className="absolute top-1/4 -right-1/4 w-[800px] h-[800px] bg-violet-600/5 blur-[120px] rounded-full pointer-events-none" />
+            <div className="absolute bottom-1/4 -left-1/4 w-[800px] h-[800px] bg-cyan-600/5 blur-[120px] rounded-full pointer-events-none" />
 
-            <div className="hidden md:flex h-full w-72 bg-primary/95 flex-col fixed inset-y-0 z-50 p-6">
+            {/* Sidebar */}
+            <div className="hidden md:flex h-full w-72 bg-[#050505]/95 flex-col fixed inset-y-0 z-50">
               <Sidebar />
             </div>
-            <div className="md:pl-72 flex-1 w-full h-full    ">
-              {/* Navbar */}
-              <div className="w-full p-6 pb-0 sticky top-0 z-10">
-                <DashNavbar title="Tutor" />
+            <div className="md:pl-72 flex-1 w-full min-h-screen relative z-10">
+              {/* Navbar / Top Bar */}
+              <div className="w-full px-6 py-6 md:px-10 flex justify-end">
+                <DashNavbar title="Instructor Hub" />
               </div>
-              {/*  */}
-              <main className="w-full p-6">{children} </main>
+
+              <main className="w-full h-full p-6 pt-0 md:p-10 md:pt-0">
+                {children}
+              </main>
             </div>
           </div>
           {/* footer */}

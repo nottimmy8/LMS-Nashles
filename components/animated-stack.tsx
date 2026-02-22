@@ -25,7 +25,7 @@ export const AnimatedStack = () => {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -32, opacity: 0 }}
           transition={{ duration: 0.45, ease: "easeInOut" }}
-          className="absolute inset-0 flex items-center justify-center text-2xl md:text-3xl text-white"
+          className="absolute inset-0 flex items-center justify-center text-2xl md:text-3xl  text-white"
         >
           {stacks[index]}
         </motion.span>

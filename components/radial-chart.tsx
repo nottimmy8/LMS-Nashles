@@ -38,14 +38,22 @@ const MonthlyViewsRadialChart = ({
   ];
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <h3 className="text-lg font-semibold">Monthly Views</h3>
+    <Card className="bg-[#0a0a0a] border-white/5 shadow-2xl rounded-[2.5rem] overflow-hidden transition-all hover:border-white/10 group relative">
+      <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+      <CardHeader className="relative z-10 flex flex-row items-center justify-between p-8 pb-4">
+        <div>
+          <div className="text-[10px] font-bold text-white/30 uppercase tracking-[0.3em] mb-1">
+            Engagement
+          </div>
+          <h3 className="text-xl font-bold text-white tracking-tight">
+            Monthly Views
+          </h3>
+        </div>
         <Select defaultValue="JAN">
-          <SelectTrigger className="w-20">
+          <SelectTrigger className="w-24 bg-white/5 border-white/10 text-white font-bold text-[10px] uppercase tracking-widest rounded-xl">
             <SelectValue placeholder="JAN" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-[#0a0a0a] border-white/10 text-white">
             {[
               "JAN",
               "FEB",
@@ -60,7 +68,11 @@ const MonthlyViewsRadialChart = ({
               "NOV",
               "DEC",
             ].map((month) => (
-              <SelectItem key={month} value={month}>
+              <SelectItem
+                key={month}
+                value={month}
+                className="text-[10px] font-bold uppercase tracking-widest focus:bg-white/10"
+              >
                 {month}
               </SelectItem>
             ))}
@@ -68,32 +80,47 @@ const MonthlyViewsRadialChart = ({
         </Select>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="relative z-10 p-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
+          className="mx-auto aspect-square max-h-[220px]"
         >
           <RadialBarChart
-            width={250}
-            height={250}
+            width={220}
+            height={220}
             cx="50%"
             cy="50%"
-            innerRadius="70%"
-            outerRadius="90%"
-            barSize={14}
+            innerRadius="75%"
+            outerRadius="95%"
+            barSize={12}
             data={data}
             startAngle={90}
             endAngle={-270}
           >
             <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
-            <RadialBar background dataKey="value" cornerRadius={10} />
+            <RadialBar
+              background={{ fill: "rgba(255,255,255,0.03)" }}
+              dataKey="value"
+              cornerRadius={10}
+              fill="#fff"
+            />
           </RadialBarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="text-center flex flex-col gap-2 ">
-        <p className="text-3xl font-bold">{views.toLocaleString()}</p>
-        <p className="text-sm text-muted-foreground">Monthly Views</p>
-        <p className="text-xs text-orange-500 mt-1">{percentage}% of goal</p>
+      <CardFooter className="relative z-10 text-center flex flex-col gap-1 p-8 pt-4">
+        <p className="text-4xl font-bold text-white tracking-tighter">
+          {views.toLocaleString()}
+        </p>
+        <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em]">
+          {percentage}% OF MONTHLY GOAL
+        </p>
+        <div className="mt-4 bg-white/5 rounded-full h-1 w-24 mx-auto overflow-hidden">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${percentage}%` }}
+            className="h-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.3)]"
+          />
+        </div>
       </CardFooter>
     </Card>
   );

@@ -98,7 +98,10 @@ const SearchPage = () => {
             Discover Your Next <span className="text-indigo-400">Skill</span>
           </h1>
           <div className="relative flex items-center">
-            <SearchIcon className="absolute left-6 text-gray-400" size={24} />
+            <SearchIcon
+              className="absolute left-6 text-white/40 z-10"
+              size={24}
+            />
             <input
               type="text"
               placeholder="What do you want to learn today?"
@@ -109,8 +112,8 @@ const SearchPage = () => {
           </div>
         </div>
         <div className="absolute bottom-12 right-12 hidden lg:flex items-center gap-4 text-white/40">
-          <Sparkles size={40} />
-          <p className="text-sm font-bold uppercase tracking-widest vertical-text">
+          <Sparkles size={40} className="" />
+          <p className="text-gradient-accent text-sm font-bold uppercase tracking-widest vertical-text">
             Premium Learn
           </p>
         </div>
@@ -126,7 +129,7 @@ const SearchPage = () => {
               className={`px-4 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap ${
                 activeCategory === cat
                   ? "bg-black text-white shadow-lg"
-                  : "bg-gray-50 text-gray-500 hover:bg-gray-100"
+                  : "glass-panel text-gray-500 hover:glass-panel-hover"
               }`}
             >
               {cat
@@ -137,15 +140,15 @@ const SearchPage = () => {
           ))}
         </div>
         <div className="flex items-center gap-4">
-          <div className="flex bg-gray-50 p-1.5 rounded-2xl">
-            <button className="p-2 bg-white rounded-xl shadow-sm text-black">
-              <LayoutGrid size={18} />
+          <div className="flex glass-panel p-1.5 rounded-2xl">
+            <button className="p-1.5 bg-black rounded-xl shadow-sm">
+              <LayoutGrid size={18} className="text-white" />
             </button>
-            <button className="p-2 text-gray-400 hover:text-black">
+            <button className="p-1.5 text-gray-400 hover:text-white">
               <List size={18} />
             </button>
           </div>
-          <button className="flex items-center gap-2 px-5 py-3 bg-white border border-gray-100 rounded-2xl text-sm font-bold hover:shadow-sm transition-all">
+          <button className="flex items-center gap-2 px-5 py-3.5 glass-panel border border-gray-100 rounded-2xl text-xs font-bold hover:shadow-sm transition-all">
             Sort by: Featured
             <ChevronDown size={16} />
           </button>
@@ -155,7 +158,7 @@ const SearchPage = () => {
       {/* Course Grid */}
       <div className="min-h-[400px] relative">
         {loading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/50 z-20 rounded-3xl">
+          <div className="absolute inset-0 flex items-center justify-center bg-[#0a0a0a] z-20 rounded-3xl">
             <Loader2 className="animate-spin text-indigo-600" size={48} />
           </div>
         )}
@@ -173,7 +176,8 @@ const SearchPage = () => {
         )}
 
         {!loading && courses.length === 0 && !error && (
-          <div className="text-center py-20 bg-gray-50 rounded-3xl">
+          <div className="text-center py-20 bg-[#0a0a0a] rounded-3xl">
+            <SearchIcon size={48} className="text-gray-500 mx-auto mb-4" />
             <p className="text-gray-500 font-bold text-xl">
               No courses found matching your criteria.
             </p>
@@ -183,11 +187,11 @@ const SearchPage = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {courses.map((course) => (
             <div
               key={course._id}
-              className="group flex flex-col bg-white rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden"
+              className="group flex flex-col glass-panel backdrop-blur-2xl hover:glass-panel-hover rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden"
             >
               <div className="relative aspect-video overflow-hidden">
                 <Image
@@ -200,7 +204,7 @@ const SearchPage = () => {
                   className="object-cover group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
-                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-lg">
+                <div className="absolute top-4 left-4 bg-white/5 backdrop-blur-sm px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-lg">
                   {course.category}
                 </div>
               </div>
@@ -217,26 +221,26 @@ const SearchPage = () => {
                   </span>
                 </div>
 
-                <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 leading-tight group-hover:text-indigo-600 transition-colors">
+                <h3 className="text-lg font-bold text-gradient  mb-2 line-clamp-2 leading-tight  transition-colors">
                   {course.title}
                 </h3>
                 <p className="text-xs text-gray-500 mb-6">
-                  by {course.tutor?.name || "Expert Instructor"}
+                  by {course.tutor?.name || "Nashles Instructor"}
                 </p>
 
                 <div className="flex items-center gap-3 mb-6 text-[10px] font-bold text-gray-400 mt-auto">
-                  <span className="flex items-center gap-1 bg-gray-50 px-2.5 py-1 rounded-md">
+                  <span className="flex items-center gap-1 bg-white/5 px-2.5 py-1 rounded-md">
                     <BookOpen size={12} />
                     {calculateTotalLessons(course)} lessons
                   </span>
-                  <span className="flex items-center gap-1 bg-gray-50 px-2.5 py-1 rounded-md">
+                  <span className="flex items-center gap-1 bg-white/5 px-2.5 py-1 rounded-md">
                     <Clock size={12} />
                     {calculateTotalDuration(course)}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <div className="text-xl font-black text-gray-900">
+                  <div className="text-xl font-black text-white">
                     ${course.price}
                   </div>
                   <Link

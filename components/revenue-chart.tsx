@@ -5,6 +5,7 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  CartesianGrid,
 } from "recharts";
 import {
   Card,
@@ -27,52 +28,81 @@ const data = [
 
 export function RevenueTrendChart() {
   return (
-    <Card>
-      <CardHeader className="pb-2">
-        <CardTitle>Revenue Trend</CardTitle>
+    <Card className="bg-[#0a0a0a] border-white/5 shadow-2xl rounded-[2.5rem] overflow-hidden p-8 transition-all hover:border-white/10 group relative">
+      <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+      <CardHeader className="relative z-10 pb-4">
+        <div className="text-[10px] font-bold text-white/30 uppercase tracking-[0.3em] mb-2">
+          Revenue Insights
+        </div>
+        <CardTitle className="text-xl font-bold text-white tracking-tight">
+          Earnings Trend
+        </CardTitle>
       </CardHeader>
-      <CardContent className="h-[300px]">
+      <CardContent className="relative z-10 h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={data}
             margin={{ top: 20, right: 20, left: 0, bottom: 0 }}
           >
+            <CartesianGrid
+              strokeDasharray="3 3"
+              vertical={false}
+              stroke="rgba(255,255,255,0.03)"
+            />
             <XAxis
               dataKey="month"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "#94a3b8", fontSize: 12 }}
-              dy={10}
+              tick={{
+                fill: "rgba(255,255,255,0.3)",
+                fontSize: 10,
+                fontWeight: 700,
+              }}
+              dy={15}
             />
             <YAxis
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "#94a3b8", fontSize: 12 }}
+              tick={{
+                fill: "rgba(255,255,255,0.3)",
+                fontSize: 10,
+                fontWeight: 700,
+              }}
             />
             <Tooltip
               contentStyle={{
-                borderRadius: "12px",
-                border: "none",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                backgroundColor: "#0a0a0a",
+                borderRadius: "16px",
+                border: "1px solid rgba(255,255,255,0.1)",
+                boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
+                color: "#fff",
               }}
+              itemStyle={{ color: "#fff", fontSize: "12px", fontWeight: "700" }}
             />
             <Line
               type="monotone"
               dataKey="revenue"
-              stroke="#0d0d0d"
-              strokeWidth={4}
-              dot={{ fill: "#0d0d0d", strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, strokeWidth: 0 }}
+              stroke="#fff"
+              strokeWidth={3}
+              dot={{ fill: "#fff", strokeWidth: 2, r: 4 }}
+              activeDot={{
+                r: 6,
+                strokeWidth: 0,
+                fill: "var(--color-violet-glow)",
+              }}
             />
           </LineChart>
         </ResponsiveContainer>
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 leading-none font-medium">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="text-muted-foreground flex items-center gap-2 leading-none">
-          January - June 2026
+      <CardFooter className="relative z-10 flex-col gap-2 text-sm pt-6 mt-6 border-t border-white/5">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-2 leading-none font-bold text-white/60 text-[10px] uppercase tracking-[0.2em]">
+            Monthly Growth +12%{" "}
+            <TrendingUp className="h-3 w-3 text-emerald-500" />
+          </div>
+          <div className="text-white/20 text-[10px] uppercase tracking-widest font-bold">
+            Jan - Jul 2026
+          </div>
         </div>
       </CardFooter>
     </Card>

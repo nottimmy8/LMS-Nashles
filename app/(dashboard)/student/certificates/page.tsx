@@ -46,14 +46,14 @@ const CertificatesPage = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+          <h1 className="text-4xl font-bold text-white mb-2">
             My Certificates
           </h1>
           <p className="text-gray-500">
             Showcase your achievements and professional milestones
           </p>
         </div>
-        <div className="px-6 py-3 bg-white border border-gray-100 rounded-2xl shadow-sm text-sm font-bold flex items-center gap-2">
+        <div className="px-6 py-3 bg-white/10 border border-white/15 rounded-2xl shadow-sm text-sm font-bold flex items-center gap-2">
           <Trophy className="text-amber-500" size={18} />
           {certificates.length} Certificates Earned
         </div>
@@ -64,7 +64,7 @@ const CertificatesPage = () => {
           {certificates.map((cert) => (
             <div
               key={cert._id}
-              className="bg-white rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all overflow-hidden group"
+              className="glass-panel backdrop-blur-2xl rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all overflow-hidden group"
             >
               {/* Certificate Preview Mask */}
               <div className="relative h-48 bg-gray-50 flex items-center justify-center overflow-hidden">
@@ -84,7 +84,7 @@ const CertificatesPage = () => {
               {/* Info */}
               <div className="p-6">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] font-bold uppercase tracking-widest rounded-md">
+                  <span className="px-2 py-0.5 bg-indigo-50/10 text-indigo-600 text-[10px] font-bold uppercase tracking-widest rounded-md">
                     Official Certificate
                   </span>
                 </div>
@@ -107,8 +107,11 @@ const CertificatesPage = () => {
                   <button className="flex-1 px-4 py-2 bg-black text-white rounded-xl font-bold text-sm hover:shadow-lg transition-all">
                     View Online
                   </button>
-                  <button className="p-2 border border-gray-100 rounded-xl hover:bg-gray-50">
-                    <ExternalLink size={18} className="text-gray-400" />
+                  <button className="p-2 border border-white/10 rounded-xl hover:bg-white/5 cursor-pointer">
+                    <ExternalLink
+                      size={18}
+                      className="text-gray-400 hover:text-white"
+                    />
                   </button>
                 </div>
               </div>

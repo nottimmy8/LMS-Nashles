@@ -11,10 +11,10 @@ export default function Navbar() {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed top-0 left-0 right-0 z-50 glass-nav px-6 md:px-12 lg:px-16 py-1 flex items-center justify-between"
+      className="fixed top-0 left-0 right-0 z-50 glass-nav px-6 md:px-12 lg:px-16 py-5 flex items-center justify-between"
     >
       <div className="flex items-center gap-2">
-        <Image src={logo} alt="logo" width={55} height={55} />
+        {/* <Image src={logo} alt="logo" width={55} height={55} /> */}
         <span className="font-display text-xl font-bold tracking-wide text-white">
           Nashles
         </span>
@@ -59,12 +59,16 @@ export default function Navbar() {
       </div>
 
       <div className="flex items-center gap-4">
-        <button className="hidden sm:block px-5 py-2 rounded-full border border-white/20 text-white text-sm font-medium hover:bg-white/10 transition-colors">
-          I&apos;m a Student
-        </button>
-        <button className="px-5 py-2 rounded-full bg-white text-black text-sm font-bold hover:bg-white/90 hover:scale-105 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-          I&apos;m a Tutor
-        </button>
+        <Link href="/sign-in">
+          <button className="hidden sm:block px-5 py-2 rounded-full border border-white/20 text-white text-sm font-medium hover:bg-white/10 transition-colors">
+            I&apos;m a Student
+          </button>
+        </Link>
+        <Link href="/sign-in">
+          <button className="px-5 py-2 rounded-full bg-white text-black text-sm font-bold hover:bg-white/90 hover:scale-105 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+            I&apos;m a Tutor
+          </button>
+        </Link>
       </div>
     </motion.nav>
   );

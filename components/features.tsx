@@ -16,7 +16,7 @@ const Features = () => {
             viewport={{ once: true }}
             className="text-4xl md:text-5xl text-white font-bold tracking-tight mb-6"
           >
-            Why Choose Nashles?
+            Why Choose <span className="text-gradient-accent"> Nashles?</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}

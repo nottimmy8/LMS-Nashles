@@ -111,9 +111,7 @@ const StudentSettings = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-10">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold text-gray-900 border-none">
-          Settings
-        </h1>
+        <h1 className="text-3xl font-bold text-white border-none">Settings</h1>
         <p className="text-gray-500">
           Manage your profile, preferences, and security.
         </p>
@@ -130,7 +128,7 @@ const StudentSettings = () => {
                 "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-200",
                 activeTab === tab.id
                   ? "bg-black text-white shadow-lg shadow-black/10"
-                  : "text-gray-500 hover:bg-gray-100 hover:text-gray-900",
+                  : "text-white/40 hover:text-white hover:bg-white/[0.03]",
               )}
             >
               <tab.icon size={18} />
@@ -140,21 +138,21 @@ const StudentSettings = () => {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden min-h-[600px]">
+        <div className="flex-1 glass-panel rounded-[2rem] border border-white/15 shadow-sm overflow-hidden min-h-[600px]">
           {activeTab === "profile" && (
             <div className="p-8 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
               <section>
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-bold">Public Profile</h3>
-                  <span className="px-3 py-1 bg-gray-50 text-[10px] font-black uppercase tracking-widest text-gray-400 rounded-lg">
+                  <span className="px-3 py-1 bg-white/10 text-[10px] font-black uppercase tracking-widest text-gray-400 rounded-lg">
                     Student Account
                   </span>
                 </div>
 
                 <div className="flex items-center gap-6 mb-8">
                   <div className="relative group">
-                    <div className="w-24 h-24 rounded-full bg-gray-100 overflow-hidden border-4 border-white shadow-sm">
-                      <div className="w-full h-full flex items-center justify-center bg-indigo-50 text-indigo-500">
+                    <div className="w-24 h-24 rounded-full bg-white/10 overflow-hidden border-4 border-white/15 shadow-sm">
+                      <div className="w-full h-full flex items-center justify-center bg-white/10 text-indigo-500">
                         <UserCircle size={48} />
                       </div>
                     </div>
@@ -168,7 +166,7 @@ const StudentSettings = () => {
                       Help your instructors recognize you.
                     </p>
                     <div className="flex gap-2">
-                      <button className="text-xs font-bold px-3 py-1.5 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                      <button className="text-xs font-bold px-3 py-1.5 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
                         Change
                       </button>
                       <button className="text-xs font-bold px-3 py-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
@@ -180,7 +178,7 @@ const StudentSettings = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-1.5 group">
-                    <label className="text-sm font-bold text-gray-400 group-focus-within:text-black transition-colors">
+                    <label className="text-sm font-bold text-white/40 group-focus-within:text-white transition-colors">
                       Full Name
                     </label>
                     <div className="relative">
@@ -195,13 +193,13 @@ const StudentSettings = () => {
                           setFormData({ ...formData, name: e.target.value })
                         }
                         placeholder="John Wilson"
-                        className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                        className="w-full pl-11 pr-4 py-3 bg-white/[0.03] border border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-white/[0.05] transition-all"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1.5 group">
-                    <label className="text-sm font-bold text-gray-400 group-focus-within:text-black transition-colors">
+                    <label className="text-sm font-bold text-white/40 group-focus-within:text-white transition-colors">
                       Email Address
                     </label>
                     <div className="relative">
@@ -213,13 +211,13 @@ const StudentSettings = () => {
                         type="email"
                         value={formData.email}
                         readOnly
-                        className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all cursor-not-allowed opacity-70"
+                        className="w-full pl-11 pr-4 py-3 bg-white/[0.03] border border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-white/[0.05] transition-all cursor-not-allowed opacity-70"
                       />
                     </div>
                   </div>
 
                   <div className="md:col-span-2 space-y-1.5 group">
-                    <label className="text-sm font-bold text-gray-400 group-focus-within:text-black transition-colors">
+                    <label className="text-sm font-bold text-white/40 group-focus-within:text-white transition-colors ">
                       Headline
                     </label>
                     <input
@@ -229,14 +227,14 @@ const StudentSettings = () => {
                         setFormData({ ...formData, headline: e.target.value })
                       }
                       placeholder="Aspiring Full-Stack Developer | Design Enthusiast"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                      className="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-white/[0.05] transition-all"
                     />
                   </div>
                 </div>
               </section>
 
               <div className="pt-4 flex justify-end gap-3 border-t border-gray-50">
-                <button className="px-6 py-3 rounded-xl font-bold text-sm text-gray-500 hover:bg-gray-50 transition-all">
+                <button className="px-6 py-3 rounded-xl font-bold text-sm text-white hover:bg-white/10 transition-all">
                   Cancel
                 </button>
                 <button
@@ -255,9 +253,9 @@ const StudentSettings = () => {
               <section>
                 <h3 className="text-lg font-bold mb-6">Password & Security</h3>
                 <div className="space-y-6">
-                  <div className="p-6 bg-gray-50 rounded-3xl border border-gray-100 flex items-center justify-between">
+                  <div className="p-6 bg-white/[0.03] rounded-3xl border border-white/[0.08] flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="p-3 bg-white rounded-2xl shadow-sm text-emerald-600">
+                      <div className="p-3 bg-white/15 rounded-2xl shadow-sm text-emerald-600">
                         <ShieldCheck size={24} />
                       </div>
                       <div>
@@ -281,7 +279,7 @@ const StudentSettings = () => {
                       </label>
                       <input
                         type="password"
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                        className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.08] rounded-2xl focus:outline-none focus:ring-2 focus:ring-white/[0.05] transition-all"
                       />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -298,7 +296,7 @@ const StudentSettings = () => {
                               newPassword: e.target.value,
                             })
                           }
-                          className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                          className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.08] rounded-2xl focus:outline-none focus:ring-2 focus:ring-white/[0.05] transition-all"
                         />
                       </div>
                       <div className="space-y-1.5">
@@ -314,7 +312,7 @@ const StudentSettings = () => {
                               confirmPassword: e.target.value,
                             })
                           }
-                          className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                          className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.08] rounded-2xl focus:outline-none focus:ring-2 focus:ring-white/[0.05] transition-all"
                         />
                       </div>
                     </div>
@@ -386,10 +384,10 @@ const StudentSettings = () => {
               ].map((item, i) => (
                 <div
                   key={i}
-                  className="flex items-center justify-between p-6 bg-gray-50 rounded-3xl border border-gray-100 hover:border-black transition-all group"
+                  className="flex items-center justify-between p-6 bg-white/[0.03] rounded-3xl border border-white/[0.08] hover:border-black transition-all group"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-white rounded-2xl shadow-sm text-gray-700 group-hover:text-black group-hover:scale-110 transition-all">
+                    <div className="p-3 bg-white/10 rounded-2xl shadow-sm text-white/40 group-hover:text-white group-hover:scale-110 transition-all">
                       <item.icon size={20} />
                     </div>
                     <div>

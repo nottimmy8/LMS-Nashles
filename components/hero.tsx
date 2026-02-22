@@ -49,13 +49,13 @@ const Hero = () => {
       <div className="absolute top-1/4 -right-1/4 w-[600px] h-[600px] bg-violet-600/10 blur-[120px] rounded-full " />
       <div className="absolute bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-cyan-600/10 blur-[120px] rounded-full " />
 
-      <section className=" w-full mt-20 md:mt-12 py-20 px-6 flex flex-col md:flex-row justify-center items-center text-center gap-12">
+      <section className=" w-full mt-20 md:mt-12 py-20 px-6 flex flex-col md:flex-row justify-center items-center text-center  ">
         {/* Text */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="space-y-6"
+          className="space-y-2"
         >
           {/* Badge */}
           <motion.div
@@ -70,12 +70,12 @@ const Hero = () => {
             </span>
           </motion.div>
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl text-white font-extrabold tracking-tight leading-tight uppercase font-display">
+          <h1 className="text-4xl md:text-6xl lg:text-8xl text-white font-extrabold tracking-tight leading-tight uppercase font-display">
             BUILD <span className="text-gradient-accent">IN-DEMAND</span> <br />
             <span className="text-gradient">TECH SKILLS</span>
           </h1>
 
-          <h2 className="text-2xl md:text-3xl lg:text-4xl text-white/90 font-semibold flex items-center gap-3 flex-wrap">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl text-white/90 font-semibold inline-flex gap-3 flex-wrap">
             Launch your
             <AnimatedStack />
             career
@@ -85,28 +85,33 @@ const Hero = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-muted-foreground max-w-md text-base leading-relaxed "
+            className="text-muted-foreground  text-base md:text-lg leading-relaxed "
           >
-            Build practical skills that modern tech companies actually hire for
-            — from design thinking to real-world frontend development.
+            Build practical skills that modern tech companies actually hire{" "}
+            <br /> for — from design thinking to real-world frontend
+            development.
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
-            className="pt-4 flex  items-center justify-center gap-4"
+            transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="pt-4 flex flex-col sm:flex-row items-center justify-center sm:w-auto gap-4 "
           >
             <Button
               size="lg"
-              className="rounded-full px-8 bg-white text-black hover:bg-white/90 group hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all duration-300 font-bold"
+              className="group relative overflow-hidden  rounded-full px-8 bg-white text-black hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all duration-300 font-bold"
             >
-              Get Started
+              <div className="absolute inset-0 bg-gradient-to-r from-violet-200 to-cyan-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <span className="group-hover:translate-x-1 transition-transform">
+                {" "}
+                Get Started
+              </span>
               <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Button
               size="lg"
-              className="rounded-full px-8 border border-white/20 bg-transparent text-white hover:bg-white/5 transition-all duration-300"
+              className="glass-panel glass-panel-hover rounded-full px-8 text-white hover:bg-white/5 transition-all duration-300"
             >
               Enroll Now
             </Button>
