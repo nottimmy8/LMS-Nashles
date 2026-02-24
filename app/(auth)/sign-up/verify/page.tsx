@@ -5,6 +5,7 @@ import { useState, Suspense } from "react";
 import api from "@/services/api";
 import OTPInput from "../../auth/verify-otp/otp-input";
 import Verified from "./verified";
+import { motion } from "framer-motion";
 
 const VerifyRegistrationOTPContent = () => {
   const searchParams = useSearchParams();
@@ -50,54 +51,93 @@ const VerifyRegistrationOTPContent = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-40 space-y-6 px-6 py-10 bg-white shadow-xl rounded-2xl">
-      {verified ? (
-        <Verified />
-      ) : (
-        <>
-          <h1 className="text-center text-2xl font-bold text-black font-['Outfit']">
-            Verify Your Email
-          </h1>
-          <p className="text-center text-gray-600">
-            We've sent a 6-digit verification code to{" "}
-            <span className="font-semibold text-primary">
-              {email || "your email"}
-            </span>
-            .
-          </p>
+    <div className="h-screen w-full mx-auto flex flex-col items-center justify-center text-center">
+      <div className="group relative w-full max-w-[420px] rounded-2xl p-[1.5px] overflow-hidden -mt-26">
+        {/* Professional Border Beam Effect */}
+        <div
+          className="absolute inset-0 rounded-2xl pointer-events-none"
+          style={{
+            padding: "1.5px",
+            maskImage:
+              "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+            maskComposite: "exclude",
+            WebkitMaskComposite: "destination-out",
+          }}
+        >
+          <motion.div
+            animate={{
+              rotate: [0, 360],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+            className="absolute inset-[-150%] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_300deg,var(--color-violet-glow)_330deg,var(--color-cyan-glow)_360deg)] opacity-100"
+          />
+        </div>
 
-          <OTPInput length={6} onComplete={handleOTPComplete} />
+        <div className="relative z-10 space-y-6 p-8 rounded-2xl bg-[#050505]/95 backdrop-blur-3xl shadow-2xl flex flex-col items-stretch">
+          {/* Hover Gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl" />
 
-          {loading && (
-            <p className="text-center text-sm text-primary animate-pulse">
-              Processing...
-            </p>
+          {verified ? (
+            <Verified />
+          ) : (
+            <>
+              <div className="space-y-2">
+                <h1 className="text-2xl font-bold tracking-tight text-gradient">
+                  Verify Your Email
+                </h1>
+                <p className="text-sm text-white/40">
+                  We've sent a 6-digit verification code to{" "}
+                  <span className="font-semibold text-white/70">
+                    {email || "your email"}
+                  </span>
+                  .
+                </p>
+              </div>
+
+              <OTPInput length={6} onComplete={handleOTPComplete} />
+
+              {loading && (
+                <p className="text-center text-sm text-white/50 animate-pulse">
+                  Processing...
+                </p>
+              )}
+
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-red-500/10 border border-red-500/20 p-3 rounded-lg"
+                >
+                  <p className="text-red-400 text-xs text-center font-medium">
+                    {error}
+                  </p>
+                </motion.div>
+              )}
+
+              <div className="pt-4 border-t border-white/10 text-center">
+                <p className="text-sm text-white/40 mb-2">
+                  Didn't receive the code?
+                </p>
+                <button
+                  onClick={handleResend}
+                  disabled={loading}
+                  className="text-white font-semibold hover:underline underline-offset-4 disabled:opacity-50 transition-all"
+                >
+                  Resend Code
+                </button>
+              </div>
+
+              <p className="text-center text-xs text-white/30">
+                Registration as <span className="capitalize">{role}</span>
+              </p>
+            </>
           )}
-
-          {error && (
-            <p className="text-center text-sm text-red-600 font-medium">
-              {error}
-            </p>
-          )}
-
-          <div className="pt-4 border-t border-gray-100 text-center">
-            <p className="text-sm text-gray-500 mb-2">
-              Didn't receive the code?
-            </p>
-            <button
-              onClick={handleResend}
-              disabled={loading}
-              className="text-primary font-semibold hover:underline disabled:opacity-50 transition-all"
-            >
-              Resend Code
-            </button>
-          </div>
-
-          <p className="text-center text-xs text-gray-400">
-            Registration as <span className="capitalize">{role}</span>
-          </p>
-        </>
-      )}
+        </div>
+      </div>
     </div>
   );
 };
@@ -106,7 +146,7 @@ export default function VerifyRegistrationOTP() {
   return (
     <Suspense
       fallback={
-        <div className="text-center mt-40 font-['Outfit'] text-primary animate-pulse">
+        <div className="text-center mt-40 text-white/50 animate-pulse">
           Loading verification...
         </div>
       }

@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { RadialBarChart, RadialBar, PolarAngleAxis } from "recharts";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import {

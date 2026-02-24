@@ -52,9 +52,10 @@ export default function OTPInput({ length = 6, onComplete }: OTPInputProps) {
           onChange={(e) => handleChange(e.target.value, index)}
           onKeyDown={(e) => handleKeyDown(e, index)}
           className={clsx(
-            "w-12 h-12 text-center text-lg font-semibold",
-            "border border-primary rounded-lg",
-            "focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20",
+            "w-12 h-12 text-center text-lg font-semibold text-white",
+            "bg-white/[0.03] border border-white/10 rounded-lg",
+            "focus:outline-none focus:border-white/30 focus:bg-white/[0.05] focus:ring-2 focus:ring-white/10",
+            "transition-all duration-200",
           )}
         />
       ))}
