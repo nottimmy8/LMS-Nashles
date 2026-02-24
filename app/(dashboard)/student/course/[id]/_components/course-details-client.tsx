@@ -152,7 +152,7 @@ const CourseDetailsClient = () => {
                 4.9 Featured
               </span>
             </div>
-            <h1 className="text-5xl font-black text-gray-900 leading-tight">
+            <h1 className="text-5xl font-black text-white leading-tight">
               {course.title}
             </h1>
             <p className="text-xl text-gray-500 leading-relaxed font-medium">
@@ -172,26 +172,26 @@ const CourseDetailsClient = () => {
               </div>
               <span>
                 By{" "}
-                <span className="text-indigo-600 underline cursor-pointer">
+                <span className="text-white underline cursor-pointer">
                   {course.tutor?.name}
                 </span>
               </span>
             </div>
             <div className="flex items-center gap-2">
               <Clock size={18} className="text-gray-400" />
-              <span>12h 45m total</span>
+              <span className="text-white">12h 45m total</span>
             </div>
             <div className="flex items-center gap-2">
               <BookOpen size={18} className="text-gray-400" />
-              <span>{totalLessons} lessons</span>
+              <span className="text-white">{totalLessons} lessons</span>
             </div>
             <div className="flex items-center gap-2">
               <Globe size={18} className="text-gray-400" />
-              <span className="capitalize">{course.language}</span>
+              <span className="capitalize text-white">{course.language}</span>
             </div>
             <div className="flex items-center gap-2">
               <Calendar size={18} className="text-gray-400" />
-              <span>
+              <span className="text-white">
                 Updated {new Date(course.updatedAt).toLocaleDateString()}
               </span>
             </div>
@@ -200,7 +200,7 @@ const CourseDetailsClient = () => {
 
         {/* Enrollment Card */}
         <div className="relative">
-          <div className="sticky top-24 bg-white rounded-[3rem] border border-gray-100 shadow-2xl p-8 space-y-8 overflow-hidden">
+          <div className="sticky top-24 glass-panel rounded-[3rem] border border-gray-100 shadow-2xl p-8 space-y-8 overflow-hidden">
             <div className="relative aspect-video rounded-3xl overflow-hidden group">
               <Image
                 src={
@@ -218,7 +218,7 @@ const CourseDetailsClient = () => {
 
             <div className="space-y-4">
               <div className="flex items-end gap-2">
-                <span className="text-4xl font-black text-gray-900">
+                <span className="text-4xl font-black text-white">
                   {course.price === 0 ? "FREE" : `$${course.price}`}
                 </span>
                 {course.price ? (
@@ -275,7 +275,7 @@ const CourseDetailsClient = () => {
                 ].map((item, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center gap-3 text-xs font-bold text-gray-600"
+                    className="flex items-center gap-3 text-xs font-bold text-white"
                   >
                     <item.icon size={14} className="text-indigo-600" />
                     <span>{item.text}</span>
@@ -291,8 +291,8 @@ const CourseDetailsClient = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         <div className="lg:col-span-2 space-y-16">
           {/* What You'll Learn */}
-          <div className="bg-gray-50 rounded-[3rem] p-10 space-y-8">
-            <h2 className="text-3xl font-black text-gray-900">
+          <div className="glass-panel rounded-[3rem] p-10 space-y-8">
+            <h2 className="text-3xl font-black text-white">
               What you&apos;ll learn
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -309,7 +309,7 @@ const CourseDetailsClient = () => {
                     size={20}
                     className="text-emerald-500 shrink-0 mt-0.5"
                   />
-                  <span className="font-bold text-gray-700 leading-tight">
+                  <span className="font-bold text-white leading-tight">
                     {benefit}
                   </span>
                 </div>
@@ -319,8 +319,8 @@ const CourseDetailsClient = () => {
 
           {/* Description */}
           <div className="space-y-6">
-            <h2 className="text-3xl font-black text-gray-900">Description</h2>
-            <div className="prose prose-indigo max-w-none text-gray-600 font-medium leading-relaxed">
+            <h2 className="text-3xl font-black text-gradient">Description</h2>
+            <div className="prose prose-indigo max-w-none text-white font-medium leading-relaxed">
               <p>{course.description}</p>
               <p className="mt-4">
                 This course is designed for individuals who want to take their
@@ -335,7 +335,7 @@ const CourseDetailsClient = () => {
           {/* Curriculum */}
           <div className="space-y-8">
             <div className="flex items-center justify-between">
-              <h2 className="text-3xl font-black text-gray-900">Curriculum</h2>
+              <h2 className="text-3xl font-black text-white">Curriculum</h2>
               <div className="text-sm font-bold text-gray-500">
                 {course.chapters?.length} Sections • {totalLessons} Lectures
               </div>
@@ -345,7 +345,7 @@ const CourseDetailsClient = () => {
               {course.chapters?.map((chapter, cIdx) => (
                 <div
                   key={chapter._id || cIdx}
-                  className="bg-white rounded-[2rem] border border-gray-100 overflow-hidden shadow-sm"
+                  className="glass-panel rounded-[2rem] border border-gray-100 overflow-hidden shadow-sm"
                 >
                   <button
                     onClick={() =>
@@ -355,14 +355,14 @@ const CourseDetailsClient = () => {
                           : chapter._id || chapter.id || null,
                       )
                     }
-                    className="w-full flex items-center justify-between p-7 hover:bg-gray-50 transition-colors"
+                    className="w-full flex items-center justify-between p-7 hover:bg-white/[0.03] transition-colors"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 font-black">
+                      <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-white font-black">
                         {cIdx + 1}
                       </div>
                       <div className="text-left">
-                        <h4 className="font-black text-gray-900">
+                        <h4 className="font-black text-white">
                           {chapter.title}
                         </h4>
                         <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">
@@ -379,11 +379,11 @@ const CourseDetailsClient = () => {
                   <div
                     className={`overflow-hidden transition-all duration-300 ${activeChapter === (chapter._id || chapter.id) ? "max-h-[1000px]" : "max-h-0"}`}
                   >
-                    <div className="p-4 bg-gray-50/50 space-y-2">
+                    <div className="p-4 bg-white/[0.05] space-y-2">
                       {chapter.lessons?.map((lesson, lIdx) => (
                         <div
                           key={lesson._id || lIdx}
-                          className="flex items-center justify-between p-4 bg-white rounded-xl group hover:shadow-md transition-all border border-transparent hover:border-indigo-100"
+                          className="flex items-center justify-between p-4 bg-white/[0.05] rounded-xl group hover:shadow-md transition-all border border-transparent hover:border-indigo-100"
                         >
                           <div className="flex items-center gap-4">
                             <PlayCircle
@@ -391,7 +391,7 @@ const CourseDetailsClient = () => {
                               className="text-gray-400 group-hover:text-indigo-600 transition-colors"
                             />
                             <div className="text-left">
-                              <p className="text-sm font-bold text-gray-700 group-hover:text-black transition-colors">
+                              <p className="text-sm font-bold text-white group-hover:text-indigo-600 transition-colors">
                                 {lesson.title}
                               </p>
                               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter mt-0.5">
@@ -417,8 +417,8 @@ const CourseDetailsClient = () => {
 
           {/* Instructor */}
           <div className="space-y-8">
-            <h2 className="text-3xl font-black text-gray-900">Instructor</h2>
-            <div className="flex items-start gap-8 bg-white rounded-[3rem] p-10 border border-gray-100">
+            <h2 className="text-3xl font-black text-white">Instructor</h2>
+            <div className="flex items-start gap-8 glass-panel rounded-[3rem] p-10 border border-gray-100">
               <div className="w-32 h-32 rounded-full overflow-hidden relative shrink-0">
                 <Image
                   src={`https://ui-avatars.com/api/?name=${encodeURIComponent(course.tutor?.name || "Tutor")}&background=random&size=128`}
@@ -429,7 +429,7 @@ const CourseDetailsClient = () => {
               </div>
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-2xl font-black text-gray-900">
+                  <h3 className="text-2xl font-black text-white">
                     {course.tutor?.name}
                   </h3>
                   <p className="text-sm font-bold text-indigo-600 uppercase tracking-widest mt-1">

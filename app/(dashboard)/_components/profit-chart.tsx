@@ -31,7 +31,7 @@ const chartConfig = {
   },
   safari: {
     label: "Safari",
-    color: "#0d0d0d",
+    color: "#57ffffde",
   },
 } satisfies ChartConfig;
 
@@ -43,7 +43,7 @@ const MontlyProfit = () => {
   }, []);
   return (
     // <div className="border border-tertiary rounded-lg p-5 bg-white ">
-    <Card className="flex flex-col w-full md:max-w-122  ">
+    <Card className="glass-panel flex flex-col w-full md:max-w-122  ">
       <CardHeader className="items-center pb-0">
         <CardTitle className=" text-[28px] font-semibold ">
           Montly Income
@@ -79,14 +79,14 @@ const MontlyProfit = () => {
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
+                          className="text-white opacity-30"
                         >
                           Total
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
+                          className="text-white text-3xl font-bold"
                         >
                           ${totaltotal.toLocaleString()}
                         </tspan>

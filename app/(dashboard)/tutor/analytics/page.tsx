@@ -63,7 +63,7 @@ const TAnalyticsPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-sky-700" />
+        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
       </div>
     );
   }
@@ -126,16 +126,16 @@ const TAnalyticsPage = () => {
           <MontlyDataChart />
         </div>
       </div>
-      <div className="w-full grid grid-cols-3 gap-6 mb-6">
+      {/* <div className="w-full grid grid-cols-3 gap-6 mb-6">
         <div className="col-span-3 md:col-span-1">
           <CompletionRateChart />
         </div>
         <div className="col-span-3 md:col-span-2 ">
           <EnrollmentGrowthChart />
         </div>
-      </div>
+      </div> */}
 
-      <div className="w-full bg-white rounded-2xl shadow px-6 py-4 mb-6">
+      <div className="w-full glass-panel rounded-2xl shadow px-6 py-4 mb-6">
         <div className="pb-6">
           <CardTitle className="text-2xl font-bold">
             Performance Summary

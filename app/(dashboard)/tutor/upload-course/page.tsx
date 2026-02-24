@@ -492,14 +492,14 @@ const UploadCourseContent = () => {
           <div
             className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all ${
               step >= stepNum
-                ? "bg-primary text-white"
-                : "bg-gray-200 text-gray-500"
+                ? "bg-black text-white"
+                : "bg-white/[0.03] text-gray-500"
             }`}
           >
             {step > stepNum ? <CheckCircle className="w-5 h-5" /> : stepNum}
           </div>
           <span
-            className={`text-sm font-medium ${step >= stepNum ? "text-primary" : "text-gray-500"}`}
+            className={`text-sm font-medium ${step >= stepNum ? "text-white" : "text-gray-500"}`}
           >
             {stepNum === 1 && "Basic Info"}
             {stepNum === 2 && "Curriculum"}
@@ -507,7 +507,7 @@ const UploadCourseContent = () => {
           </span>
           {stepNum < 3 && (
             <div
-              className={`w-16 h-1 ${step > stepNum ? "bg-primary" : "bg-gray-200"}`}
+              className={`w-16 h-1 ${step > stepNum ? "bg-white" : "bg-gray-200"}`}
             />
           )}
         </div>
@@ -761,8 +761,11 @@ const UploadCourseContent = () => {
             Organize your course content into chapters and lessons
           </p>
         </div>
-        <Button onClick={addChapter} className="gap-2">
-          <Plus className="w-4 h-4" />
+        <Button
+          className="bg-white/5 hover:bg-white/15 border-2 border-white text-white gap-2"
+          onClick={addChapter}
+        >
+          <Plus className="w-4 h-4 text-white" />
           Add Chapter
         </Button>
       </div>
@@ -788,7 +791,7 @@ const UploadCourseContent = () => {
                   <Button
                     variant="outline"
                     onClick={() => removeChapter(chapter.id)}
-                    className="text-red-500 hover:bg-red-50"
+                    className="text-red-500 hover:bg-white/20"
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
@@ -798,7 +801,7 @@ const UploadCourseContent = () => {
                   {chapter.lessons.map((lesson, lessonIndex) => (
                     <div
                       key={lesson.id}
-                      className="flex flex-col gap-3 bg-gray-50 p-4 rounded-lg relative overflow-hidden"
+                      className="flex flex-col gap-3 bg-white/5  p-4 rounded-lg relative overflow-hidden"
                     >
                       <div className="flex items-center gap-3">
                         <Video className="w-4 h-4 text-gray-400" />
@@ -813,7 +816,7 @@ const UploadCourseContent = () => {
                               e.target.value,
                             )
                           }
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 bg-white"
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 bg-white/[0.03]"
                         />
                         <Button
                           variant="outline"
@@ -823,7 +826,7 @@ const UploadCourseContent = () => {
                               .getElementById(`video-upload-${lesson.id}`)
                               ?.click()
                           }
-                          className={`gap-2 bg-white ${lesson.videoUrl ? "text-green-600 border-green-200" : ""}`}
+                          className={`gap-2 bg-white/[0.03] ${lesson.videoUrl ? "text-green-600 border-green-200" : ""}`}
                         >
                           {lesson.videoUrl ? (
                             <CheckCircle className="w-4 h-4" />
@@ -847,7 +850,7 @@ const UploadCourseContent = () => {
                           variant="outline"
                           size="sm"
                           onClick={() => removeLesson(chapter.id, lesson.id)}
-                          className="text-red-500 hover:bg-red-50 bg-white"
+                          className="text-red-500 hover:bg-red-50/10 bg-white/[0.03]"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -926,7 +929,7 @@ const UploadCourseContent = () => {
                   <Button
                     variant="outline"
                     onClick={() => addLesson(chapter.id)}
-                    className="w-full gap-2 border-dashed"
+                    className="w-full gap-2 border-dashed "
                   >
                     <Plus className="w-4 h-4" />
                     Add Lesson
@@ -1027,13 +1030,13 @@ const UploadCourseContent = () => {
     <div className="w-full max-w-5xl mx-auto p-6">
       {renderStepIndicator()}
 
-      <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
+      <div className="glass-panel rounded-2xl shadow-lg p-8 mb-6">
         {step === 1 && renderBasicInfo()}
         {step === 2 && renderCurriculum()}
         {step === 3 && renderPreview()}
       </div>
 
-      <div className="flex items-center justify-between bg-white rounded-2xl shadow-lg p-6">
+      <div className="flex items-center justify-between glass-panel rounded-2xl shadow-lg p-6">
         <Button
           variant="outline"
           onClick={() => setStep(Math.max(1, step - 1))}
@@ -1058,7 +1061,12 @@ const UploadCourseContent = () => {
           </Button>
 
           {step < 3 ? (
-            <Button onClick={() => setStep(step + 1)}>Next Step</Button>
+            <Button
+              className="bg-white/5 hover:bg-white/15 border border-white text-white"
+              onClick={() => setStep(step + 1)}
+            >
+              Next Step
+            </Button>
           ) : (
             <Button
               onClick={publishCourse}

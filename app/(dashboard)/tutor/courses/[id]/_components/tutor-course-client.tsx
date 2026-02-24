@@ -134,7 +134,7 @@ const TutorCourseClient = () => {
 
       {/* Main Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="p-6 space-y-2">
+        <Card className="p-6 space-y-2 glass-panel">
           <div className="flex items-center justify-between text-gray-500">
             <span className="text-sm font-medium">Total Students</span>
             <Users className="w-4 h-4" />
@@ -145,7 +145,7 @@ const TutorCourseClient = () => {
           </div>
         </Card>
 
-        <Card className="p-6 space-y-2">
+        <Card className="p-6 space-y-2  glass-panel">
           <div className="flex items-center justify-between text-gray-500">
             <span className="text-sm font-medium">Total Revenue</span>
             <DollarSign className="w-4 h-4" />
@@ -163,7 +163,7 @@ const TutorCourseClient = () => {
           </div>
         </Card>
 
-        <Card className="p-6 space-y-2">
+        <Card className="p-6 space-y-2  glass-panel">
           <div className="flex items-center justify-between text-gray-500">
             <span className="text-sm font-medium">Course Rating</span>
             <Star className="w-4 h-4" />
@@ -179,7 +179,7 @@ const TutorCourseClient = () => {
           </div>
         </Card>
 
-        <Card className="p-6 space-y-2">
+        <Card className="p-6 space-y-2  glass-panel">
           <div className="flex items-center justify-between text-gray-500">
             <span className="text-sm font-medium">Total Views</span>
             <Eye className="w-4 h-4" />
@@ -213,10 +213,10 @@ const TutorCourseClient = () => {
       </div>
 
       {/* Tab content */}
-      <div className="mt-6">
+      <div className="mt-6 ">
         {activeTab === "overview" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <Card className="lg:col-span-2 p-6 space-y-6">
+            <Card className="glass-panel border-2 border-white/40 lg:col-span-2 p-6 space-y-6">
               <div>
                 <h3 className="text-lg font-bold mb-3">About This Course</h3>
                 <p className="text-gray-600 leading-relaxed whitespace-pre-wrap">
@@ -249,7 +249,7 @@ const TutorCourseClient = () => {
             </Card>
 
             <div className="space-y-6">
-              <Card className="p-6 space-y-4">
+              <Card className="glass-panel border-2 border-white/40  p-6 space-y-4">
                 <h3 className="font-bold flex items-center gap-2">
                   <ImageIcon className="w-5 h-5 text-primary" /> Thumbnail
                 </h3>
@@ -262,23 +262,23 @@ const TutorCourseClient = () => {
                 </div>
               </Card>
 
-              <Card className="p-6 space-y-4">
+              <Card className="glass-panel border-2 border-white/40  p-6 space-y-4">
                 <h3 className="font-bold">Course Info</h3>
                 <ul className="space-y-3 text-sm">
-                  <li className="flex items-center gap-3 text-gray-600">
-                    <Video className="w-4 h-4 text-primary" />{" "}
+                  <li className="flex items-center gap-3 text-white">
+                    <Video className="w-4 h-4 text-white" />{" "}
                     {course.chapters?.length} Chapters
                   </li>
-                  <li className="flex items-center gap-3 text-gray-600">
-                    <FileText className="w-4 h-4 text-primary" /> {totalLessons}{" "}
+                  <li className="flex items-center gap-3 text-white">
+                    <FileText className="w-4 h-4 text-white" /> {totalLessons}{" "}
                     Lessons
                   </li>
-                  <li className="flex items-center gap-3 text-gray-600">
-                    <Users className="w-4 h-4 text-primary" />{" "}
+                  <li className="flex items-center gap-3 text-white">
+                    <Users className="w-4 h-4 text-white" />{" "}
                     {course.students?.length || 0} Enrolled
                   </li>
-                  <li className="flex items-center gap-3 text-gray-600">
-                    <Award className="w-4 h-4 text-primary" /> Certificate of
+                  <li className="flex items-center gap-3 text-white">
+                    <Award className="w-4 h-4 text-white" /> Certificate of
                     Completion
                   </li>
                 </ul>
@@ -286,7 +286,7 @@ const TutorCourseClient = () => {
                 <div className="pt-2">
                   <Button
                     variant="outline"
-                    className="w-full gap-2 text-primary border-primary hover:bg-primary/5"
+                    className="w-full gap-2 text-white border-white/30 hover:bg-primary/5"
                   >
                     <MessageSquare className="w-4 h-4" /> Message All Students
                   </Button>
@@ -299,8 +299,11 @@ const TutorCourseClient = () => {
         {activeTab === "curriculum" && (
           <div className="space-y-4">
             {course.chapters?.map((chapter: any, idx: number) => (
-              <Card key={chapter._id || chapter.id} className="overflow-hidden">
-                <div className="bg-gray-50 p-4 border-b flex items-center justify-between">
+              <Card
+                key={chapter._id || chapter.id}
+                className="glass-panel overflow-hidden"
+              >
+                <div className="bg-white/15 p-4 border-b flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
                       {idx + 1}
@@ -315,7 +318,7 @@ const TutorCourseClient = () => {
                   {chapter.lessons?.map((lesson: any, lessonIdx: number) => (
                     <div
                       key={lesson._id || lesson.id}
-                      className={`flex flex-col p-4 hover:bg-gray-50 transition-colors group cursor-pointer ${selectedLesson?.id === (lesson._id || lesson.id) ? "bg-primary/5 border-l-4 border-l-primary" : ""}`}
+                      className={`flex flex-col p-4 hover:bg-white/10 transition-colors group cursor-pointer ${selectedLesson?.id === (lesson._id || lesson.id) ? "bg-primary/5 border-l-4 border-l-primary" : ""}`}
                       onClick={() =>
                         setSelectedLesson(
                           selectedLesson?.id === (lesson._id || lesson.id)
@@ -396,8 +399,8 @@ const TutorCourseClient = () => {
         )}
 
         {activeTab === "students" && (
-          <Card className="p-0 overflow-hidden">
-            <div className="p-6 border-b bg-gray-50 flex items-center justify-between">
+          <Card className="glass-panel p-0 overflow-hidden">
+            <div className="p-6 border-b bg-white/5 flex items-center justify-between">
               <h3 className="font-bold">Enrolled Students</h3>
               <div className="flex items-center gap-2">
                 <div className="relative">
@@ -412,7 +415,7 @@ const TutorCourseClient = () => {
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
-                <thead className="bg-gray-50/50 text-gray-500 text-xs uppercase font-semibold">
+                <thead className="bg-white/15 text-gray-500 text-xs uppercase font-semibold">
                   <tr>
                     <th className="px-6 py-4">Student</th>
                     <th className="px-6 py-4">Enrolled Date</th>
@@ -426,17 +429,17 @@ const TutorCourseClient = () => {
                     course.students.map((student: any) => (
                       <tr
                         key={student._id || student}
-                        className="hover:bg-gray-50 transition-colors"
+                        className="hover:bg-white/5 transition-colors"
                       >
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-primary font-bold">
+                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-white font-bold">
                               {student.name?.charAt(0) || (
                                 <User className="w-4 h-4" />
                               )}
                             </div>
                             <div>
-                              <p className="font-medium text-gray-900">
+                              <p className="font-medium text-white">
                                 {student.name || "Unknown Student"}
                               </p>
                               <p className="text-xs text-gray-500">
@@ -495,7 +498,7 @@ const TutorCourseClient = () => {
         {activeTab === "analytics" && (
           <div className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="p-6">
+              <Card className="glass-panel p-6">
                 <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
                   <BarChart3 className="w-5 h-5 text-primary" /> Video
                   Engagement
@@ -539,7 +542,7 @@ const TutorCourseClient = () => {
                 </div>
               </Card>
 
-              <Card className="p-6">
+              <Card className="glass-panel p-6">
                 <h3 className="text-lg font-bold mb-6">Enrollment Activity</h3>
                 <div className="h-62.5 flex items-end justify-between gap-3 px-2">
                   {[45, 65, 35, 80, 55, 95, 75].map((height, i) => (
@@ -564,7 +567,7 @@ const TutorCourseClient = () => {
               </Card>
             </div>
 
-            <Card className="p-6">
+            <Card className="glass-panel p-6">
               <div className="flex items-center justify-between mb-8">
                 <h3 className="text-lg font-bold">Recent Activity</h3>
                 <Button

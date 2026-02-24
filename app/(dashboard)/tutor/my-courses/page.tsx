@@ -11,6 +11,7 @@ import {
   Clock,
   Edit,
   Trash2,
+  EyeOff,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
@@ -56,76 +57,70 @@ const TCoursesPage = () => {
 
   return (
     <div className="w-full space-y-6">
-      {/* Header Section */}
-      <div className="bg-white p-6 rounded-2xl shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold">My Courses</h1>
-            <p className="text-sm text-gray-500 mt-1">
-              Manage and track your course performance
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {/* Search Bar */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search courses..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-primary/50 w-64"
-              />
-            </div>
-
-            {/* Filter Button */}
-            <Button variant="outline" className="gap-2">
-              <Filter className="w-4 h-4" />
-              Filter
-            </Button>
-
-            {/* Create Course Button */}
-            <Link href="/tutor/upload-course">
-              <Button className="gap-2">
-                <Plus className="w-4 h-4" />
-                Create Course
-              </Button>
-            </Link>
-          </div>
+      <div>
+        <h1 className="text-4xl font-bold text-gradient mb-2">My Courses</h1>
+        <p className="text-white/40  text-sm max-w-md ">
+          Manage and track your course performance
+        </p>
+      </div>
+      {/* Search Bar */}
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex-1 relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 z-10" />
+          <input
+            type="text"
+            placeholder="Search courses..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-12 pr-4 py-3 glass-panel border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-white/[0.05] transition-all"
+          />
         </div>
 
-        {/* Enhanced Tabs with Motion */}
-        <div className="mt-6 relative">
-          <div className="inline-flex items-center gap-1 p-1 bg-gray-100 rounded-lg">
-            {tabConfig.map((tab) => (
-              <button
-                key={tab.value}
-                onClick={() => setActiveTab(tab.value)}
-                className={`relative px-6 py-2.5 font-medium text-sm transition-colors rounded-md ${
-                  activeTab === tab.value
-                    ? "text-white"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-              >
+        {/* Filter Button */}
+        <button className="flex items-center  rounded-2xl px-3.5 py-3 gap-2 glass-panel hover:bg-white/10 hover:text-white">
+          <Filter className="w-4 h-4" />
+          Filter
+        </button>
+
+        {/* Create Course Button */}
+        <Link href="/tutor/upload-course">
+          <button className="flex items-center  rounded-2xl px-3 py-3 gap-2 glass-panel hover:bg-white/10 hover:text-white">
+            <Plus className="w-4 h-4" />
+            Create Course
+          </button>
+        </Link>
+      </div>
+
+      {/* Enhanced Tabs with Motion */}
+      <div className="mt-6 relative">
+        <div className="inline-flex items-center gap-1 p-1 bg-white/5 rounded-lg">
+          {tabConfig.map((tab) => (
+            <button
+              key={tab.value}
+              onClick={() => setActiveTab(tab.value)}
+              className={`relative px-6 py-2.5 font-medium text-sm transition-colors rounded-md ${
+                activeTab === tab.value
+                  ? "text-white"
+                  : "text-white/70 hover:text-white"
+              }`}
+            >
+              {activeTab === tab.value && (
+                <motion.div
+                  layoutId="activeTab"
+                  className="absolute inset-0 bg-white/10 rounded-md"
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                />
+              )}
+              <span className="relative z-10 flex items-center gap-2">
+                {tab.name}
                 {activeTab === tab.value && (
-                  <motion.div
-                    layoutId="activeTab"
-                    className="absolute inset-0 bg-primary rounded-md"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
+                  <span className="px-2 py-0.5 text-xs rounded-full bg-white/20 text-white">
+                    {courses.length}
+                  </span>
                 )}
-                <span className="relative z-10 flex items-center gap-2">
-                  {tab.name}
-                  {activeTab === tab.value && (
-                    <span className="px-2 py-0.5 text-xs rounded-full bg-white/20 text-white">
-                      {courses.length}
-                    </span>
-                  )}
-                </span>
-              </button>
-            ))}
-          </div>
+              </span>
+            </button>
+          ))}
         </div>
       </div>
 
@@ -141,7 +136,7 @@ const TCoursesPage = () => {
         >
           {isLoading ? (
             <div className="col-span-full flex items-center justify-center py-20">
-              <Loader2 className="w-10 h-10 animate-spin text-primary" />
+              <Loader2 className="w-10 h-10 animate-spin text-indigo-600" />
             </div>
           ) : filteredCourses.length > 0 ? (
             filteredCourses.map((course, index) => (
@@ -150,7 +145,7 @@ const TCoursesPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden group"
+                className="glass-panel  rounded-3xl shadow-sm hover:shadow-md transition-shadow overflow-hidden group"
               >
                 {/* Course Thumbnail */}
                 <div className="relative h-48 overflow-hidden bg-gray-100">
@@ -233,7 +228,7 @@ const TCoursesPage = () => {
                           course.status === "published" ? "default" : "outline"
                         }
                         size="sm"
-                        className="w-full gap-2"
+                        className="w-full gap-2 bg-black text-white hover:bg-black/80"
                       >
                         {course.status === "published" ? (
                           <>
@@ -250,12 +245,11 @@ const TCoursesPage = () => {
                     </Link>
                     <Link href={`/tutor/courses/${course._id || course.id}`}>
                       <Button
-                        variant="outline"
                         size="sm"
-                        className="flex-1 gap-2"
+                        className="flex-1 gap-2 border-white/[0.05] border-3 glass-panel hover:bg-white/15 "
                       >
-                        <Eye className="w-4 h-4" />
-                        View
+                        <EyeOff className="w-4 h-4" />
+                        Archive
                       </Button>
                     </Link>
                     <Button variant="outline" size="sm" className="px-3">
@@ -269,12 +263,12 @@ const TCoursesPage = () => {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="col-span-full flex flex-col items-center justify-center py-16 bg-white rounded-xl"
+              className="col-span-full flex flex-col items-center justify-center py-16 glass-panel rounded-xl"
             >
-              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+              <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mb-4">
                 <Search className="w-10 h-10 text-gray-400" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-white mb-2">
                 No courses found
               </h3>
               <p className="text-gray-500 mb-6">
@@ -285,7 +279,7 @@ const TCoursesPage = () => {
                     : "No archived courses"}
               </p>
               <Link href="/tutor/upload-course">
-                <Button className="gap-2">
+                <Button className="gap-2 bg-white/10 hover:bg-white/20 ">
                   <Plus className="w-4 h-4" />
                   Create Your First Course
                 </Button>

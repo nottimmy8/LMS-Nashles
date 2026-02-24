@@ -1,6 +1,6 @@
 import { AuthGuard } from "@/components/auth/auth-guard";
 import DashboardLayout from "../layout";
-import DashNavbar from "../_components/navbar";
+
 import Sidebar from "../_components/sidebar";
 
 export default function StudentLayout({

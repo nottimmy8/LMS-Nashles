@@ -39,7 +39,7 @@ export const Modal = ({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.2 }}
-              className="bg-white/[0.06] rounded-xl shadow-xl w-full max-w-md p-6 pointer-events-auto relative mx-4"
+              className="bg-black/90 rounded-xl shadow-xl w-full max-w-md p-6 pointer-events-auto relative mx-4"
             >
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold text-white">{title}</h2>

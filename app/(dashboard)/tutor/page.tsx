@@ -63,7 +63,7 @@ const Tutorpage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-[70vh]">
-        <Loader2 className="h-10 w-10 animate-spin text-white/20" />
+        <Loader2 className="h-10 w-10 animate-spin  text-indigo-600" />
       </div>
     );
   }
@@ -148,17 +148,11 @@ const Tutorpage = () => {
         <div className="xl:col-span-2">
           <PopularCoursesChart />
         </div>
-        <div className="w-full">
-          <MonthlyViewsRadialChart />
-        </div>
-      </div>
-
-      <div className="w-full">
-        <RevenueTrendChart />
+        <div className="w-full">{/* <MonthlyViewsRadialChart /> */}</div>
       </div>
 
       {/* Recent Courses Table */}
-      <div className="w-full bg-[#0a0a0a] rounded-[2.5rem] border border-white/5 shadow-2xl p-8 overflow-hidden transition-all hover:border-white/10 group">
+      <div className="w-full glass-panel rounded-[2.5rem] border border-white/5 shadow-2xl p-5 overflow-hidden transition-all hover:border-white/10 group">
         {/* Hover Gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 

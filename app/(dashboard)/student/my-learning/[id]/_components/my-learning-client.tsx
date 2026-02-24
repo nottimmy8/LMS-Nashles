@@ -196,7 +196,7 @@ const MyLearningClient = () => {
     return (
       <div className="flex items-center justify-center h-screen bg-white">
         <div className="text-center space-y-4">
-          <Loader2 className="w-10 h-10 animate-spin text-black mx-auto" />
+          <Loader2 className="w-10 h-10 animate-spin text-violet-500 mx-auto" />
           <p className="text-gray-500 font-medium">Loading your course...</p>
         </div>
       </div>
@@ -206,11 +206,11 @@ const MyLearningClient = () => {
   if (!course) return null;
 
   return (
-    <div className="flex h-screen bg-white overflow-hidden">
+    <div className="flex h-screen bg-black overflow-hidden">
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 bg-gray-50">
+      <div className="flex-1 flex flex-col min-w-0 glass-panel">
         {/* Top Navbar */}
-        <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-6 z-20">
+        <header className="h-16 bg-white/5 border-b border-gray-100/50 flex items-center justify-between px-6 z-20">
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.back()}
@@ -231,16 +231,16 @@ const MyLearningClient = () => {
           <div className="flex items-center gap-6">
             <div className="hidden lg:flex items-center gap-3">
               <div className="text-right">
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                <p className="text-[10px] font-bold text-white uppercase tracking-widest">
                   Course Progress
                 </p>
-                <p className="text-xs font-bold text-black">
+                <p className="text-xs font-bold text-violet-500">
                   {progressPercent}% Complete
                 </p>
               </div>
               <div className="w-24 h-2 bg-gray-100 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-black transition-all duration-500"
+                  className="h-full bg-gradient-to-r from-violet-500 to-cyan-500 transition-all duration-500"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -291,7 +291,7 @@ const MyLearningClient = () => {
             <div className="px-6 md:px-0 space-y-6 pb-12">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="space-y-2">
-                  <h2 className="text-2xl font-bold text-gray-900 group">
+                  <h2 className="text-2xl font-bold text-white group">
                     {activeLesson?.title}
                   </h2>
                   <div className="flex items-center gap-4 text-sm text-gray-500">
@@ -340,7 +340,10 @@ const MyLearningClient = () => {
               </div>
 
               {/* Description */}
-              <div className="bg-white rounded-[2rem] border border-gray-100 p-8 shadow-sm space-y-4">
+              <div className="relative glass-panel backdrop-blur-3xl rounded-[2rem] border border-gray-100 p-8 shadow-sm space-y-4">
+                {/* Hover Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
                 <h3 className="font-bold text-lg flex items-center gap-2">
                   <Info size={20} className="text-indigo-500" />
                   About this lesson
@@ -373,7 +376,7 @@ const MyLearningClient = () => {
       {/* Course Content Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 right-0 w-full md:w-[400px]  bg-white border-l border-gray-100 z-30 transition-all duration-300 ease-in-out transform",
+          "fixed inset-y-0 right-0 w-full md:w-[400px]   bg-[#05050A] z-30 transition-all duration-300 ease-in-out transform",
           sidebarOpen ? "translate-x-0" : "translate-x-full",
         )}
       >
@@ -383,25 +386,28 @@ const MyLearningClient = () => {
               <h3 className="text-xl font-bold">Course Content</h3>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="p-2 hover:bg-gray-50 rounded-xl"
+                className="p-2 bg-white rounded-xl"
               >
-                <X size={20} />
+                <X size={20} className="text-black" />
               </button>
             </div>
 
             {/* Overall Progress */}
-            <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
+            <div className=" relative p-4  rounded-2xl border border-gray-100">
+              {/* Glowing Gradient Outline */}
+              <div className="absolute inset-0 bg-gradient-to-br from-violet-500/50 via-transparent to-cyan-500/50 opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
+
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                <span className="text-xs font-bold text-white uppercase tracking-widest">
                   Progress
                 </span>
-                <span className="text-xs font-bold text-black">
+                <span className="text-xs font-bold text-white">
                   {completedCount}/{totalLessons} Lessons
                 </span>
               </div>
               <div className="h-2 bg-white rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-black transition-all duration-1000"
+                  className="h-full bg-cyan-500 transition-all duration-1000"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -412,10 +418,10 @@ const MyLearningClient = () => {
             {course.chapters?.map((chapter: any, chapterIdx: number) => (
               <div
                 key={chapter._id}
-                className="border-b border-gray-50 last:border-0"
+                className="border-b border-black last:border-0"
               >
-                <div className="px-6 py-4 bg-gray-50/50 flex items-center justify-between">
-                  <h4 className="font-bold text-sm text-gray-400 uppercase tracking-wider">
+                <div className="px-6 py-4  flex items-center justify-between">
+                  <h4 className="font-bold text-sm text-white uppercase tracking-wider">
                     Chapter {chapterIdx + 1}: {chapter.title}
                   </h4>
                 </div>
@@ -431,8 +437,8 @@ const MyLearningClient = () => {
                         key={lesson._id}
                         onClick={() => handleLessonSelect(lesson)}
                         className={cn(
-                          "w-full px-6 py-5 flex items-start gap-4 text-left transition-all hover:bg-gray-50",
-                          isActive && "bg-indigo-50/50",
+                          "w-full px-6 py-5 flex items-start gap-4 text-left transition-all hover:bg-white/[0.05] ",
+                          isActive && "bg-white/10",
                         )}
                       >
                         <div className="mt-1">
@@ -464,8 +470,8 @@ const MyLearningClient = () => {
                           <p
                             className={cn(
                               "text-sm font-bold line-clamp-2 mb-1",
-                              isActive ? "text-indigo-600" : "text-gray-900",
-                              isCompleted && !isActive && "text-gray-400",
+                              isActive ? "text-cyan-600" : "text-gray-900",
+                              isCompleted && !isActive && "text-white",
                             )}
                           >
                             {lessonIdx + 1}. {lesson.title}
@@ -490,11 +496,11 @@ const MyLearningClient = () => {
           </div>
 
           {/* Sidebar Footer */}
-          <div className="p-6 border-t border-gray-100 bg-gray-50">
+          <div className="p-6 border-t border-white/[0.08] bg-white/[0.05] ">
             <Link
               href={progressPercent === 100 ? "/student/certificates" : "#"}
               className={cn(
-                "bg-white p-4 rounded-2xl border border-gray-100 flex items-center gap-4 transition-all block",
+                "bg-white/[0.03] p-4 rounded-2xl border border-gray-100 flex items-center gap-4 transition-all block",
                 progressPercent === 100
                   ? "hover:shadow-md hover:border-indigo-100 cursor-pointer"
                   : "opacity-80 cursor-default",
@@ -504,7 +510,7 @@ const MyLearningClient = () => {
                 className={cn(
                   "p-3 rounded-xl",
                   progressPercent === 100
-                    ? "bg-indigo-50 text-indigo-600"
+                    ? "bg-gradient-to-r from-violet-500/50 to-cyan-500/50 text-white"
                     : "bg-amber-50 text-amber-600",
                 )}
               >

@@ -25,7 +25,7 @@ const Wishlist = () => {
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
-        const res = await api.get("/user/wishlist");
+        const res = await api.get("/users/wishlist");
         setWishlistItems(res.data);
       } catch (error) {
         console.error("Failed to fetch wishlist", error);

@@ -109,10 +109,10 @@ const EarningsPage = () => {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        <div className="xl:col-span-2 bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
+        <div className="xl:col-span-2 rounded-[2rem] glass-panel overflow-hidden">
           <div className="p-8 border-b border-gray-50 flex items-center justify-between">
             <h3 className="text-xl font-bold">Revenue by Course</h3>
-            <button className="text-sm font-medium text-gray-400 hover:text-black transition-colors underline underline-offset-4">
+            <button className="text-sm font-medium text-gray-400 hover:text-white transition-colors underline underline-offset-4">
               Download Report
             </button>
           </div>
@@ -140,7 +140,7 @@ const EarningsPage = () => {
         </div>
       </div>
 
-      <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm">
+      <div className="glass-panel p-8 rounded-[2rem] border border-gray-900 shadow-sm">
         <h3 className="text-xl font-bold mb-6">Earnings Analytics</h3>
         <EarningsChart />
       </div>
@@ -165,7 +165,7 @@ const EarningsPage = () => {
                 value={withdrawAmount}
                 onChange={(e) => setWithdrawAmount(e.target.value)}
                 placeholder="0.00"
-                className="w-full pl-8 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                className="w-full pl-8 pr-4 py-3 bg-white/5 border border-white/15 rounded-xl focus:outline-none focus:ring-2 focus:ring-black transition-all"
               />
             </div>
             <p className="text-[10px] text-gray-400 mt-2">
@@ -180,14 +180,14 @@ const EarningsPage = () => {
           <div className="pt-4 flex gap-3">
             <button
               onClick={() => setShowWithdrawModal(false)}
-              className="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-sm font-bold hover:bg-gray-50 transition-all"
+              className="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-sm font-bold hover:shadow-sm  shadow-white hover:text-white transition-all"
             >
               Cancel
             </button>
             <button
               onClick={handleWithdraw}
               disabled={!withdrawAmount}
-              className="flex-1 px-4 py-3 bg-black text-white rounded-xl text-sm font-bold hover:bg-black/90 transition-all disabled:opacity-50"
+              className="flex-1 px-4 py-3 bg-white/10 text-white rounded-xl text-sm font-bold hover:bg-white/15 transition-all disabled:opacity-50"
             >
               Confirm Withdrawal
             </button>
