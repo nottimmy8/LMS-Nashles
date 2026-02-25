@@ -36,7 +36,7 @@ const Verified = () => {
         <h1 className="text-3xl font-bold text-black font-poppins">
           Verification Successful
         </h1>
-        <p className="text-gray-600 max-w-xs mx-auto">
+        <p className="text-white max-w-xs mx-auto">
           Your account has been verified successfully. You can now login to your
           account and start learning.
         </p>
@@ -49,7 +49,7 @@ const Verified = () => {
       >
         <Link
           href="/sign-in"
-          className="block w-full rounded bg-primary text-white py-2 font-semibold shadow-lg shadow-primary/30 transition-all hover:bg-primary/90"
+          className="block w-full rounded bg-primary text-black py-2 font-semibold shadow-lg shadow-primary/30 transition-all hover:bg-primary/90"
         >
           Back to Sign In
         </Link>

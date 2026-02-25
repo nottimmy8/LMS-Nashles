@@ -10,7 +10,7 @@ import {
   Search,
   BookOpen,
 } from "lucide-react";
-import Image from "next/image";
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import api from "@/services/api";
@@ -119,20 +119,20 @@ const CertificatesPage = () => {
           ))}
         </div>
       ) : (
-        <div className="text-center py-20 bg-gray-50 rounded-[3rem] border border-dashed border-gray-200">
-          <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+        <div className="text-center py-20 bg-black rounded-[3rem] border border-dashed border-gray-200">
+          <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
             <Trophy size={40} className="text-gray-200" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 mb-2">
+          <h3 className="text-xl font-bold text-white mb-2">
             No certificates yet
           </h3>
-          <p className="text-gray-500 mb-8 max-w-sm mx-auto">
+          <p className="text-white mb-8 max-w-sm mx-auto">
             Complete courses to earn official certificates and showcase your
             skills to the world.
           </p>
           <Link
             href="/student/my-learning"
-            className="inline-flex px-8 py-3 bg-black text-white rounded-2xl font-bold text-sm hover:shadow-lg transition-all"
+            className="inline-flex px-8 py-3 bg-white/20 text-white rounded-2xl font-bold text-sm hover:shadow-lg transition-all"
           >
             Continue Learning
           </Link>

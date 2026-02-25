@@ -112,7 +112,7 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/10 text-sm text-white/40">
-          <p>© 2026 Next-Gen LMS. All rights reserved.</p>
+          <p>© 2026 Nashles LMS. All rights reserved.</p>
           <div className="flex gap-4 mt-4 md:mt-0">
             <a href="#" className="hover:text-white transition-colors">
               Twitter
