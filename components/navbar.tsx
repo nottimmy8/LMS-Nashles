@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import logo from "@/public/nashlogo.png";
+import logo from "@/public/nashlogow.png";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -11,14 +11,39 @@ export default function Navbar() {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed top-0 left-0 right-0 z-50 glass-nav px-6 md:px-12 lg:px-16 py-5 flex items-center justify-between"
+      className="fixed top-0 left-0 right-0 z-50 glass-nav px-6 md:px-12 lg:px-16 py-4 flex items-center justify-between"
     >
       <div className="flex items-center gap-2">
-        {/* <Image src={logo} alt="logo" width={55} height={55} /> */}
-        <span className="font-display text-xl font-bold tracking-wide text-white">
-          Nashles
-        </span>
+        <div className="relative">
+          <div className="absolute inset-0 bg-white/20 blur-xl rounded-full" />
+          <Image
+            src={logo}
+            alt="logo"
+            width={42}
+            height={42}
+            className="relative z-10"
+          />
+        </div>
+        <div>
+          <h1 className="text-white font-bold text-lg tracking-tight">
+            Nashles
+          </h1>
+          <p className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-medium">
+            Academy
+          </p>
+        </div>
       </div>
+      {/* <div className="flex items-center gap-3 px-2 py-6 mb-4">
+              
+              <div>
+                <h1 className="text-white font-bold text-lg tracking-tight">
+                  Nashles
+                </h1>
+                <p className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-medium">
+                  Academy
+                </p>
+              </div>
+            </div> */}
 
       <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/70">
         <a
