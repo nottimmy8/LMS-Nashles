@@ -214,7 +214,7 @@ const MyLearningClient = () => {
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.back()}
-              className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+              className="p-2 hover:bg-white/[0.05] hover:text-white rounded-xl transition-colors"
             >
               <ChevronLeft size={20} />
             </button>

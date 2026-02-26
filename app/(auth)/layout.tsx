@@ -3,7 +3,7 @@
 import Footer from "@/components/footer";
 import Image from "next/image";
 import Link from "next/link";
-import logo from "@/public/nashlogo.png";
+import logo from "@/public/nashlogow.png";
 import { useEffect, useRef, useState } from "react";
 
 export default function AuthLayout({
@@ -33,10 +33,26 @@ export default function AuthLayout({
     <div className=" w-full  pt-6  ">
       <div className=" w-full  px-6 md:px-20">
         <Link href="/">
-          {/* <div className="flex items-center "> */}
-          {/* <Image src={logo} alt="nash logo" width={50} height={50} priority /> */}
-          <p className="text-2xl font-semibold font-roboto">Nashles</p>
-          {/* </div> */}
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <div className="absolute inset-0 bg-white/20 blur-xl rounded-full" />
+              <Image
+                src={logo}
+                alt="logo"
+                width={42}
+                height={42}
+                className="relative z-10"
+              />
+            </div>
+            <div>
+              <h1 className="text-white font-bold text-lg tracking-tight">
+                Nashles
+              </h1>
+              <p className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-medium">
+                Academy
+              </p>
+            </div>
+          </div>
         </Link>
       </div>
       <div className="relative w-full min-h-screen h-full ">

@@ -33,17 +33,6 @@ export default function Navbar() {
           </p>
         </div>
       </div>
-      {/* <div className="flex items-center gap-3 px-2 py-6 mb-4">
-              
-              <div>
-                <h1 className="text-white font-bold text-lg tracking-tight">
-                  Nashles
-                </h1>
-                <p className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-medium">
-                  Academy
-                </p>
-              </div>
-            </div> */}
 
       <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/70">
         <a

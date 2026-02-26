@@ -138,15 +138,18 @@ const TutorSignUp = ({ role }: { role: "tutor" }) => {
               name="expertise"
               value={form.expertise}
               onChange={handleChange}
-              className="w-full bg-[#0a0a0a] border border-white/10 p-3 rounded-xl focus:outline-none focus:border-white/30 focus:bg-white/[0.05] transition-all duration-200 text-sm text-white appearance-none cursor-pointer"
+              className="w-full bg-white/[0.03] border border-white/10 p-3 rounded-xl focus:outline-none focus:border-white/30 focus:bg-white/5 transition-all duration-200 text-sm text-white appearance-none cursor-pointer"
             >
-              <option value="" disabled className="bg-[#0a0a0a]">
+              <option value="" disabled className="text-black bg-white/20">
                 Select your expertise
               </option>
-              <option value="ui-ux" className="bg-[#0a0a0a]">
+              <option value="ui-ux" className="text-black bg-white/20">
                 UI/UX Design
               </option>
-              <option value="software-engineer" className="bg-[#0a0a0a]">
+              <option
+                value="software-engineer"
+                className="text-black bg-white/20"
+              >
                 Software Engineering
               </option>
             </select>
